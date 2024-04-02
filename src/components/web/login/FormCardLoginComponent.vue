@@ -138,7 +138,7 @@ const submit = (): void => {
       loading.alternateState(true);
 
       setTimeout(() => {
-        Router.replace('/inicio');
+        Router.replace('/ageCommissiona/b2b/financeiro');
         loading.alternateState(false);
         statusSubmit.value = false;
 

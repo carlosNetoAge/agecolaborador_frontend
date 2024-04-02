@@ -10,7 +10,7 @@ const alterStateMenu = () => {
   stateMenu().alternateState(!stateMenu().status);
 }
 
-const actualMenu = ref('home');
+const actualMenu = ref('commission');
 const actualSubMenu = ref('')
 
 </script>
@@ -33,14 +33,14 @@ const actualSubMenu = ref('')
          <span class="title__wrapper">Menu</span>
          <nav>
            <ul class="list__menu">
-             <li class="item__menu">
-               <router-link to="/inicio" :class="{'active__link' : actualMenu == 'home'}" @click="actualMenu = 'home'">
-                 <div class="active__item">
-                 </div>
-                 <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 24 24" width="512" height="512"><path d="M14,18h-4c-1.103,0-2-.897-2-2v-4c0-1.103,.897-2,2-2h4c1.103,0,2,.897,2,2v4c0,1.103-.897,2-2,2Zm-4-6v4h4.002l-.002-4h-4Zm9,12H5c-2.757,0-5-2.243-5-5V9.724c0-1.665,.824-3.215,2.204-4.145L9.203,.855c1.699-1.146,3.895-1.146,5.594,0l7,4.724c1.379,.93,2.203,2.479,2.203,4.145v9.276c0,2.757-2.243,5-5,5ZM12,1.997c-.584,0-1.168,.172-1.678,.517L3.322,7.237c-.828,.558-1.322,1.487-1.322,2.486v9.276c0,1.654,1.346,3,3,3h14c1.654,0,3-1.346,3-3V9.724c0-.999-.494-1.929-1.321-2.486L13.678,2.514c-.51-.345-1.094-.517-1.678-.517Z"/></svg>
-                 <span>Início</span>
-               </router-link>
-             </li>
+<!--             <li class="item__menu">-->
+<!--               <router-link to="/inicio" :class="{'active__link' : actualMenu == 'home'}" @click="actualMenu = 'home'">-->
+<!--                 <div class="active__item">-->
+<!--                 </div>-->
+<!--                 <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 24 24" width="512" height="512"><path d="M14,18h-4c-1.103,0-2-.897-2-2v-4c0-1.103,.897-2,2-2h4c1.103,0,2,.897,2,2v4c0,1.103-.897,2-2,2Zm-4-6v4h4.002l-.002-4h-4Zm9,12H5c-2.757,0-5-2.243-5-5V9.724c0-1.665,.824-3.215,2.204-4.145L9.203,.855c1.699-1.146,3.895-1.146,5.594,0l7,4.724c1.379,.93,2.203,2.479,2.203,4.145v9.276c0,2.757-2.243,5-5,5ZM12,1.997c-.584,0-1.168,.172-1.678,.517L3.322,7.237c-.828,.558-1.322,1.487-1.322,2.486v9.276c0,1.654,1.346,3,3,3h14c1.654,0,3-1.346,3-3V9.724c0-.999-.494-1.929-1.321-2.486L13.678,2.514c-.51-.345-1.094-.517-1.678-.517Z"/></svg>-->
+<!--                 <span>Início</span>-->
+<!--               </router-link>-->
+<!--             </li>-->
              <li class="item__menu">
                <router-link to="/ageCommissiona/b2b/financeiro" :class="{'active__link' : actualMenu == 'commission'}" @click="actualMenu = 'commission'">
                  <div class="active__item">
@@ -50,27 +50,27 @@ const actualSubMenu = ref('')
                </router-link>
              </li>
 
-             <li class="item__menu">
-                <div class="title__submenu" :class="{'active__group' : actualMenu == 'management'}">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="512" height="512"><g id="_01_align_center" data-name="01 align center"><path d="M10.931,2.75a3.728,3.728,0,0,0-7.195,0H0v2H3.736a3.728,3.728,0,0,0,7.195,0H24v-2ZM7.333,5.5a1.75,1.75,0,1,1,1.75-1.75A1.753,1.753,0,0,1,7.333,5.5Z"/><path d="M16.667,8.25A3.745,3.745,0,0,0,13.07,11H0v2H13.07a3.727,3.727,0,0,0,7.194,0H24V11H20.264A3.745,3.745,0,0,0,16.667,8.25Zm0,5.5A1.75,1.75,0,1,1,18.417,12,1.752,1.752,0,0,1,16.667,13.75Z"/><path d="M7.333,16.5a3.745,3.745,0,0,0-3.6,2.75H0v2H3.736a3.728,3.728,0,0,0,7.195,0H24v-2H10.931A3.745,3.745,0,0,0,7.333,16.5Zm0,5.5a1.75,1.75,0,1,1,1.75-1.75A1.753,1.753,0,0,1,7.333,22Z"/></g></svg>
-                  <span>Gerenciamento</span>
-                  <svg v-if="actualMenu != 'management'" @click="actualMenu = 'management'" xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24" width="512" height="512"><path d="M15.4,9.88,10.81,5.29a1,1,0,0,0-1.41,0,1,1,0,0,0,0,1.42L14,11.29a1,1,0,0,1,0,1.42L9.4,17.29a1,1,0,0,0,1.41,1.42l4.59-4.59A3,3,0,0,0,15.4,9.88Z"/></svg>
-                  <svg v-else @click="[actualMenu = '', actualSubMenu = '']" xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24" width="512" height="512"><path d="M18.71,8.21a1,1,0,0,0-1.42,0l-4.58,4.58a1,1,0,0,1-1.42,0L6.71,8.21a1,1,0,0,0-1.42,0,1,1,0,0,0,0,1.41l4.59,4.59a3,3,0,0,0,4.24,0l4.59-4.59A1,1,0,0,0,18.71,8.21Z"/></svg>
-                </div>
-                  <transition name="fade">
-                    <ul class="list__submenu" v-if="actualMenu == 'management'">
-                      <li class="item__submenu" :class="{'active__submenu' : actualSubMenu == 'users'}" @click="actualSubMenu = 'users'">
-                        <p>Usuários</p>
-                      </li>
-                      <li class="item__submenu" :class="{'active__submenu' : actualSubMenu == 'permissions'}" @click="actualSubMenu = 'permissions'">
-                        <p>Permissões</p>
-                      </li>
-                      <li class="item__submenu" :class="{'active__submenu' : actualSubMenu == 'settings'}" @click="actualSubMenu = 'settings'">
-                        <p>Configurações</p>
-                      </li>
-                    </ul>
-                  </transition>
-             </li>
+<!--             <li class="item__menu">-->
+<!--                <div class="title__submenu" :class="{'active__group' : actualMenu == 'management'}">-->
+<!--                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="512" height="512"><g id="_01_align_center" data-name="01 align center"><path d="M10.931,2.75a3.728,3.728,0,0,0-7.195,0H0v2H3.736a3.728,3.728,0,0,0,7.195,0H24v-2ZM7.333,5.5a1.75,1.75,0,1,1,1.75-1.75A1.753,1.753,0,0,1,7.333,5.5Z"/><path d="M16.667,8.25A3.745,3.745,0,0,0,13.07,11H0v2H13.07a3.727,3.727,0,0,0,7.194,0H24V11H20.264A3.745,3.745,0,0,0,16.667,8.25Zm0,5.5A1.75,1.75,0,1,1,18.417,12,1.752,1.752,0,0,1,16.667,13.75Z"/><path d="M7.333,16.5a3.745,3.745,0,0,0-3.6,2.75H0v2H3.736a3.728,3.728,0,0,0,7.195,0H24v-2H10.931A3.745,3.745,0,0,0,7.333,16.5Zm0,5.5a1.75,1.75,0,1,1,1.75-1.75A1.753,1.753,0,0,1,7.333,22Z"/></g></svg>-->
+<!--                  <span>Gerenciamento</span>-->
+<!--                  <svg v-if="actualMenu != 'management'" @click="actualMenu = 'management'" xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24" width="512" height="512"><path d="M15.4,9.88,10.81,5.29a1,1,0,0,0-1.41,0,1,1,0,0,0,0,1.42L14,11.29a1,1,0,0,1,0,1.42L9.4,17.29a1,1,0,0,0,1.41,1.42l4.59-4.59A3,3,0,0,0,15.4,9.88Z"/></svg>-->
+<!--                  <svg v-else @click="[actualMenu = '', actualSubMenu = '']" xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24" width="512" height="512"><path d="M18.71,8.21a1,1,0,0,0-1.42,0l-4.58,4.58a1,1,0,0,1-1.42,0L6.71,8.21a1,1,0,0,0-1.42,0,1,1,0,0,0,0,1.41l4.59,4.59a3,3,0,0,0,4.24,0l4.59-4.59A1,1,0,0,0,18.71,8.21Z"/></svg>-->
+<!--                </div>-->
+<!--                  <transition name="fade">-->
+<!--                    <ul class="list__submenu" v-if="actualMenu == 'management'">-->
+<!--                      <li class="item__submenu" :class="{'active__submenu' : actualSubMenu == 'users'}" @click="actualSubMenu = 'users'">-->
+<!--                        <p>Usuários</p>-->
+<!--                      </li>-->
+<!--                      <li class="item__submenu" :class="{'active__submenu' : actualSubMenu == 'permissions'}" @click="actualSubMenu = 'permissions'">-->
+<!--                        <p>Permissões</p>-->
+<!--                      </li>-->
+<!--                      <li class="item__submenu" :class="{'active__submenu' : actualSubMenu == 'settings'}" @click="actualSubMenu = 'settings'">-->
+<!--                        <p>Configurações</p>-->
+<!--                      </li>-->
+<!--                    </ul>-->
+<!--                  </transition>-->
+<!--             </li>-->
            </ul>
          </nav>
        </div>

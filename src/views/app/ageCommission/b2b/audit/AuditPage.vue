@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import DetailsSellerComponent from "@/components/app/ageCommission/b2b/financial/audit/DetailsSellerComponent.vue";
-import {onMounted, ref} from "vue";
+import {onMounted, ref, watch} from "vue";
 import {AXIOS} from "@api/AXIOS";
 import Cookie from "js-cookie";
 
@@ -16,29 +16,42 @@ const viewDetails = (data: Object) => {
 
 const data = ref({});
 const statusDashboard = ref(false);
+const statusReq = ref(false);
 
 const getData = () => {
 
+  statusReq.value = true;
+  statusDashboard.value = false;
   AXIOS({
     method: 'get',
     url: 'agerv/b2b/commission/financial/builder',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + Cookie.get('token')
+    },
+    params: {
+      period: selectedPeriod.value
     }
   }).then((response) => {
     data.value = response.data
     statusDashboard.value = true
+    statusReq.value = false;
   }).catch((error) => {
     console.log(error);
   });
-
 }
+
+const selectedPeriod = ref('2024-01-01');
 
 onMounted(() => {
   getData()
 })
 
+watch(selectedPeriod, (newVal, oldVal) => {
+  if (newVal !== oldVal) {
+    getData();
+  }
+});
 </script>
 
 
@@ -47,6 +60,14 @@ onMounted(() => {
     <div class="title__container">
       <h1>Auditoria de vendas B2b - Mês Ref. Janeiro de 2024</h1>
       <p>Examine cada transação, garantindo precisão e integridade nas vendas.</p>
+    </div>
+    <div class="options">
+      <select @change="getData" v-model="selectedPeriod" :disabled="statusReq">
+        <option value="2024-01-01">Janeiro de 2024</option>
+        <option value="2024-02-01">Fevereiro de 2024</option>
+        <option value="2024-03-01">Março de 2024</option>
+        <option value="2024-04-01">Abril de 2024</option>
+      </select>
     </div>
     <div class="table__container">
       <table>
@@ -97,6 +118,23 @@ onMounted(() => {
       font-size: 1.4rem;
       font-weight: 400;
       color: #777;
+    }
+  }
+
+
+  select {
+    cursor: pointer;
+    font-size: 1.4rem;
+    color: #333;
+    padding: 1vh 1vw;
+    border-radius: 5px;
+    border: 1px solid #f4f4f4;
+    outline: none;
+    transition: border-color ease-in-out .2s;
+    box-shadow: $global-box-shadow;
+
+    &:hover {
+      border-color: #53AEE2;
     }
   }
 
