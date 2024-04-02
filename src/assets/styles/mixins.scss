@@ -1,0 +1,18 @@
+
+@mixin flex($direction: row, $justify: flex-start, $align: initial, $gap: 0, $wrap: nowrap) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: $justify;
+  align-items: $align;
+  gap: $gap;
+  flex-wrap: $wrap;
+}
+
+@mixin container($width: 0, $height: 0, $padding: 0, $margin: 0, $br: 0, $bg: transparent) {
+  width: $width;
+  height: $height;
+  padding: $padding;
+  margin: $margin;
+  border-radius: $br;
+  background-color: $bg;
+}

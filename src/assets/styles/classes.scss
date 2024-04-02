@@ -1,0 +1,165 @@
+
+// Formulário
+
+@mixin form {
+  form {
+  @include flex(column, $gap: 3vh);
+    .input__container {
+      @include flex(column, $gap: .5vh);
+
+      label {
+        font-size: 1.2rem;
+        color: #666666;
+        font-weight: 400;
+      }
+
+      .input__box {
+        border: 1px solid #c8ccd460;
+        @include flex($justify: space-between, $align: center);
+        width: 100%;
+        border-radius: 5px;
+        background-color: #ffffff;
+        position: relative;
+
+
+        input[type="text"],input[type=email], input[type=password] {
+          width: 100%;
+          padding: 10px 10px;
+          border: none;
+          outline: none;
+          font-size: 1.4rem;
+          z-index: 1;
+        }
+
+
+        svg {
+          width: 1.4rem;
+          height: auto;
+          fill: #666666;
+          cursor: pointer;
+          position: absolute;
+          right: 10px;
+          z-index: 2;
+        }
+      }
+
+
+
+    }
+
+    .submit__button {
+      @include flex(row, center, center);
+      width: 100%;
+      margin-top: 1vh;
+      height: 6vh;
+      border: none;
+      outline: none;
+      background-color: #2d9cdb;
+      color: white;
+      font-size: 1.6rem;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: opacity .3s;
+      box-shadow: $global-box-shadow;
+      &:hover {
+          opacity: .9;
+      }
+
+      .spinner {
+        position: relative;
+        width: 22px;
+      }
+
+      .spinner:before {
+        content: "";
+        display: block;
+        padding-top: 100%;
+      }
+
+      .circular {
+        animation: rotate73451 2s linear infinite;
+        height: 100%;
+        transform-origin: center center;
+        width: 100%;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+      }
+
+      .path {
+        stroke-dasharray: 1, 200;
+        stroke-dashoffset: 0;
+        animation: dash0175 1.5s ease-in-out infinite;
+        stroke-linecap: round;
+        stroke: #ffffff;
+      }
+
+      @keyframes rotate73451 {
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes dash0175 {
+        0% {
+          stroke-dasharray: 1, 200;
+          stroke-dashoffset: 0;
+        }
+
+        50% {
+          stroke-dasharray: 89, 200;
+          stroke-dashoffset: -35px;
+        }
+
+        100% {
+          stroke-dasharray: 89, 200;
+          stroke-dashoffset: -124px;
+        }
+      }
+
+    }
+  }
+
+  .warning {
+    @include flex(row, center, center);
+    padding-bottom: 2vh;
+
+
+    span {
+      font-size: 1.2rem !important;
+      font-weight: 500;
+      color: #fff !important;
+      background: #FF5F5F;
+      padding: 5px 10px;
+      border-radius: 5px;
+    }
+
+    .wrapper {
+      overflow: hidden !important;
+      animation: growIn .3s ease forwards !important;
+      opacity: 0;
+      padding: 0;
+    }
+
+    @keyframes growIn {
+      from {
+        padding: 0 0 .1vh 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+  }
+
+  .wrapper {
+    span {
+        font-size: 1rem;
+        font-weight: 400;
+        color: #FF5F5F;
+    }
+  }
+
+}
