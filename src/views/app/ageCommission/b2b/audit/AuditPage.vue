@@ -1,25 +1,36 @@
 <script setup lang="ts">
-
+// Importações necessárias
 import DetailsSellerComponent from "@/components/app/ageCommission/b2b/financial/audit/DetailsSellerComponent.vue";
-import {onMounted, ref, watch} from "vue";
-import {AXIOS} from "@api/AXIOS";
+import { onMounted, ref, watch } from "vue";
+import { AXIOS } from "@api/AXIOS";
 import Cookie from "js-cookie";
 
+// Referências reativas
 const dataSeller = ref({});
 const page = ref('list');
-
-
-const viewDetails = (data: Object) => {
-  dataSeller.value = data;
-  page.value = 'details';
-}
-
-const data = ref({});
+const data = ref([]);
 const statusDashboard = ref(false);
 const statusReq = ref(false);
+const selectedPeriod = ref('2024-01-01');
+const periodRefer = ref('');
 
+// Opções de período para seleção
+const periodOptions = ref([
+  { label: 'Janeiro de 2024', value: '2024-01-01' },
+  { label: 'Fevereiro de 2024', value: '2024-02-01' },
+  { label: 'Março de 2024', value: '2024-03-01' },
+  { label: 'Abril de 2024', value: '2024-04-01' }
+]);
+
+// Função para visualizar detalhes do vendedor
+const viewDetails = (data: Object) => {
+  dataSeller.value = data;
+  periodRefer.value = computeReferenceMonth();
+  page.value = 'details';
+};
+
+// Função para obter dados da API
 const getData = () => {
-
   statusReq.value = true;
   statusDashboard.value = false;
   AXIOS({
@@ -29,67 +40,58 @@ const getData = () => {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + Cookie.get('token')
     },
-    params: {
-      period: selectedPeriod.value
-    }
+    params: { period: selectedPeriod.value }
   }).then((response) => {
-    data.value = response.data
-    statusDashboard.value = true
+    data.value = response.data;
+    statusDashboard.value = true;
     statusReq.value = false;
   }).catch((error) => {
     console.log(error);
   });
-}
+};
 
-const selectedPeriod = ref('2024-01-01');
-
-onMounted(() => {
-  getData()
-})
-
+// Observa mudanças e busca dados na montagem
+onMounted(getData);
 watch(selectedPeriod, (newVal, oldVal) => {
-  if (newVal !== oldVal) {
-    getData();
-  }
+  if (newVal !== oldVal) getData();
 });
+
+// Computar o mês referência dinamicamente
+const computeReferenceMonth = () => {
+  const periodDate = new Date(selectedPeriod.value + 1);
+  const options = { month: 'long', year: 'numeric' };
+  return `${periodDate.toLocaleDateString('pt-BR', options)}`;
+};
 </script>
 
-
 <template>
-  <div class="audit__container" v-if="page == 'list'">
+  <div class="audit__container" v-if="page === 'list'">
     <div class="title__container">
-      <h1>Auditoria de vendas B2b - Mês Ref. Janeiro de 2024</h1>
+      <h1>Auditoria de vendas B2B - Referente à {{ computeReferenceMonth() }}</h1>
       <p>Examine cada transação, garantindo precisão e integridade nas vendas.</p>
     </div>
     <div class="options">
       <select @change="getData" v-model="selectedPeriod" :disabled="statusReq">
-        <option value="2024-01-01">Janeiro de 2024</option>
-        <option value="2024-02-01">Fevereiro de 2024</option>
-        <option value="2024-03-01">Março de 2024</option>
-        <option value="2024-04-01">Abril de 2024</option>
+        <option v-for="option in periodOptions" :value="option.value" :key="option.value">{{ option.label }}</option>
       </select>
     </div>
     <div class="table__container">
       <table>
         <thead>
-          <tr>
-            <th>Executivo</th>
-            <th>Vendas</th>
-            <th>Comissão</th>
-            <th>Status</th>
-          </tr>
+        <tr>
+          <th>Executivo</th>
+          <th>Vendas</th>
+          <th>Comissão</th>
+          <th>Status</th>
+        </tr>
         </thead>
         <transition name="fade">
           <tbody v-if="statusDashboard">
-          <tr @click="viewDetails(sellerData)" v-for="(sellerData, idx) in data" :key="idx">
-            <td>{{sellerData.seller}}</td>
-            <td>{{sellerData.contracts.dedicated + sellerData.contracts.business}}</td>
-            <td>R$ {{(sellerData.commissionDedicated + sellerData.commissionBusiness).toFixed(2)}}</td>
-            <td>
-              <span>
-                Pendente
-              </span>
-            </td>
+          <tr v-for="(sellerData, idx) in data" :key="idx" @click="viewDetails(sellerData)">
+            <td>{{ sellerData.seller }}</td>
+            <td>{{ sellerData.contracts.dedicated + sellerData.contracts.business }}</td>
+            <td>R$ {{ (sellerData.commissionDedicated + sellerData.commissionBusiness).toFixed(2) }}</td>
+            <td><span>Pendente</span></td>
           </tr>
           </tbody>
         </transition>
@@ -97,10 +99,9 @@ watch(selectedPeriod, (newVal, oldVal) => {
     </div>
   </div>
 
-  <DetailsSellerComponent
-      @return="page = 'list'"
-      v-if="page == 'details'" :dataSeller="dataSeller" />
+  <DetailsSellerComponent @return="page = 'list'" v-if="page === 'details'" :dataSeller="dataSeller" :periodRefer />
 </template>
+
 
 <style scoped lang="scss">
 

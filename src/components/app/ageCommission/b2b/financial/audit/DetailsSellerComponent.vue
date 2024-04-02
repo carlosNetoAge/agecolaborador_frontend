@@ -13,7 +13,8 @@ const returnPage = () => {
 }
 
 const props = defineProps({
-  dataSeller: Object
+  dataSeller: Object,
+  periodRefer: String
 });
 
 const seller = ref(props.dataSeller);
@@ -35,6 +36,7 @@ const page = ref('details');
     <div class="content__details">
       <GridOne
         :data="seller"
+        :periodRefer="props.periodRefer"
         @viewSales="page = 'listSales'"
       />
       <GridTwo

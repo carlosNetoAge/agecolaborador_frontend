@@ -11,7 +11,7 @@ interface DataSeller {
   invoices?: { [key: string]: InvoiceItem }; // Assumindo um objeto com chaves desconhecidas.
 }
 
-const props = defineProps<{ data: DataSeller }>();
+const props = defineProps<{ data: DataSeller, periodRefer: String }>();
 
 const dataSeller = ref(props.data);
 
@@ -73,7 +73,7 @@ const viewSales = () => {
           Executivo: <b>{{ dataSeller.seller }}</b>
         </p>
         <p>Supervisionado por: B2B</p>
-        <p>Comissionamento referente à <b>janeiro de 2024</b></p>
+        <p>Comissionamento referente à <b>{{ props.periodRefer }}</b></p>
       </div>
     </div>
     <div class="grid__item" style="height: 35%">
