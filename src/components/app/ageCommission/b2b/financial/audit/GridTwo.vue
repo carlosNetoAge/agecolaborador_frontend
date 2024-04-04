@@ -74,13 +74,13 @@ const dataSeller = props.data;
 
       </div>
       <div class="steps__container">
-        <div class="box" :class="{'check__business' : dataSeller.contracts.business >= 10}">
+        <div class="box" :class="{'check__business' : dataSeller.contracts.business >= 1}">
           <div class="level">
             <div class="icon">
               1
             </div>
             <div class="rule">
-              <span>10 à 14 empresariais</span>
+              <span>1 à 10 empresariais</span>
               <span>30%</span>
             </div>
           </div>
@@ -88,13 +88,13 @@ const dataSeller = props.data;
             <div></div>
           </div>
         </div>
-        <div class="box" :class="{'check__business' : dataSeller.contracts.business >= 15}">
+        <div class="box" :class="{'check__business' : dataSeller.contracts.business >= 11}">
           <div class="level">
             <div class="icon">
               2
             </div>
             <div class="rule">
-              <span>15 à 24 empresariais</span>
+              <span>11 à 24 empresariais</span>
               <span>50%</span>
             </div>
           </div>
