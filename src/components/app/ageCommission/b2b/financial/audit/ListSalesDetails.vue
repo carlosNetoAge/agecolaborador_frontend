@@ -17,10 +17,10 @@ const returnPage = () => {
 
 <template>
   <div class="audit__container">
-    <div class="title__container">
-      <h1>Listagem de vendas do Executivo(a) {{ dataSeller.seller }} - Mês Ref. Janeiro de 2024</h1>
-      <p>Examine cada transação, garantindo precisão e integridade nas vendas.</p>
-    </div>
+<!--    <div class="title__container">-->
+<!--      <h1>Listagem de vendas do Executivo(a) {{ dataSeller.seller }} - Mês Ref. Janeiro de 2024</h1>-->
+<!--      <p>Examine cada transação, garantindo precisão e integridade nas vendas.</p>-->
+<!--    </div>-->
     <div class="return">
       <button @click="returnPage">
         Voltar
@@ -66,7 +66,7 @@ const returnPage = () => {
 <style scoped lang="scss">
 .audit__container {
   @include flex(column, flex-start, initial, 3vh);
-  @include container(100%, 100%, 6vh 4vw 4vh 2vw);
+  @include container(100%, 100%);
   position: relative;
 
   .title__container {
@@ -84,8 +84,8 @@ const returnPage = () => {
 
   .return {
     position: absolute;
-    top: 6vh;
-    right: 4vw;
+    top: -6vh;
+    right: 1vw;
 
     button {
       cursor: pointer;
@@ -108,7 +108,7 @@ const returnPage = () => {
   .table__container {
     width: 100%;
     overflow-y: auto;
-    max-height: 90%;
+    max-height: 100%;
     border-radius: 10px;
     background-color: #fff;
     box-shadow: $global-box-shadow;

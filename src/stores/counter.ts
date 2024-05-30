@@ -22,3 +22,24 @@ export const stateMenu = defineStore('menu', () => {
 
   return { status, alternateState }
 })
+
+
+interface InfoPagePayload {
+  title: string
+  subtitle: string
+}
+
+export const infoPage = defineStore('infoPage', () => {
+
+  const title = ref('Título')
+    const subtitle = ref('Descrição')
+
+  function setInfoPage(payload: InfoPagePayload) {
+    title.value = payload.title
+    subtitle.value = payload.subtitle
+  }
+
+
+
+    return { title, subtitle, setInfoPage }
+})

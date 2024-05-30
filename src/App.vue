@@ -4,22 +4,27 @@ import LoadingWidget from "@/components/widgets/LoadingWidget.vue";
 import { stateLoading, stateMenu } from "@/stores/counter";
 import MenuComponent from "@/components/widgets/menu/MenuComponent.vue";
 import { useRoute } from 'vue-router';
+import TitleComponent from "@/components/widgets/header/TitleComponent.vue";
 
 const route = useRoute();
 const loading = stateLoading();
 const menu = stateMenu();
 
+
 </script>
 
 <template>
-      <MenuComponent v-if="route.meta.auth"/>
-      <RouterView
-        class="page__container"
-        :style="{'width': menu.status ? '92%' : '82%' }"
-      />
-   <transition name="fade">
-     <LoadingWidget v-if="loading.status"/>
-   </transition>
+      <div class="content" :class="{'app': route.meta.auth, 'menu__retract': menu.status}">
+        <MenuComponent v-if="route.meta.auth"/>
+        <TitleComponent v-if="route.meta.auth"/>
+        <div class="page" :class="{'page__container' : route.meta.auth}">
+          <RouterView
+          />
+        </div>
+        <transition name="fade">
+          <LoadingWidget v-if="loading.status"/>
+        </transition>
+      </div>
 </template>
 
 <style lang="scss">
@@ -41,15 +46,43 @@ const menu = stateMenu();
   -moz-osx-font-smoothing: grayscale;
   width: 100vw;
   height: 100vh;
-  background: $global-background-color;
-  position: relative;
-  @include flex(row, space-between, center);
 
-  .page__container {
+  .content {
+    width: 100%;
     height: 100%;
-    transition: width .3s ease-in-out;
+    background: $global-background-color;
+    position: relative;
+
+    .page {
+      @include container(98%,100%);
+
+    }
+
+    .page__container {
+      grid-area: content;
+      padding: 0 0 4vh 0;
+    }
+
   }
+
+  .app {
+    display: grid;
+    grid-template-columns: 15% 83%;
+    grid-template-rows: 15% 83%;
+    gap: 2%;
+    grid-template-areas: 'menu header'
+                      'menu content';
+    transition: grid-template-columns 0.3s ease-in-out;
+
+  }
+
+  .menu__retract {
+    grid-template-columns: 5% 93%;
+
+  }
+
 }
+
 
 html {
   font-size: 62.5%;

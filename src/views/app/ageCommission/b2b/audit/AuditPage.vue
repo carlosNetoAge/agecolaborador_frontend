@@ -4,6 +4,9 @@ import DetailsSellerComponent from "@/components/app/ageCommission/b2b/financial
 import { onMounted, ref, watch } from "vue";
 import { AXIOS } from "@api/AXIOS";
 import Cookie from "js-cookie";
+import { infoPage } from "@/stores/counter";
+
+
 
 // Referências reativas
 const dataSeller = ref({});
@@ -13,6 +16,7 @@ const statusDashboard = ref(false);
 const statusReq = ref(false);
 const selectedPeriod = ref('2024-01-01');
 const periodRefer = ref('');
+const info = infoPage();
 
 // Opções de período para seleção
 const periodOptions = ref([
@@ -45,8 +49,9 @@ const getData = () => {
     data.value = response.data;
     statusDashboard.value = true;
     statusReq.value = false;
+    setInfoPage();
   }).catch((error) => {
-    console.log(error);
+
   });
 };
 
@@ -62,14 +67,23 @@ const computeReferenceMonth = () => {
   const options = { month: 'long', year: 'numeric' };
   return `${periodDate.toLocaleDateString('pt-BR', options)}`;
 };
+
+const setInfoPage = () => {
+  info.setInfoPage({
+    title: 'Auditoria de vendas B2B - Referente à ' + computeReferenceMonth(),
+    subtitle: 'Examine cada transação, garantindo precisão e integridade nas vendas.' });
+}
+
+setInfoPage();
+
 </script>
 
 <template>
   <div class="audit__container" v-if="page === 'list'">
-    <div class="title__container">
-      <h1>Auditoria de vendas B2B - Referente à {{ computeReferenceMonth() }}</h1>
-      <p>Examine cada transação, garantindo precisão e integridade nas vendas.</p>
-    </div>
+<!--    <div class="title__container">-->
+<!--      <h1>Auditoria de vendas B2B - Referente à {{ computeReferenceMonth() }}</h1>-->
+<!--      <p>Examine cada transação, garantindo precisão e integridade nas vendas.</p>-->
+<!--    </div>-->
     <div class="options">
       <select @change="getData" v-model="selectedPeriod" :disabled="statusReq">
         <option v-for="option in periodOptions" :value="option.value" :key="option.value">{{ option.label }}</option>
@@ -107,7 +121,7 @@ const computeReferenceMonth = () => {
 
 .audit__container {
   @include flex(column, flex-start, initial, 3vh);
-  @include container(100%, 100%, 6vh 4vw 4vh 2vw);
+  @include container(100%, 100%);
 
   .title__container {
     h1 {

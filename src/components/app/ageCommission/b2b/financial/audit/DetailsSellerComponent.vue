@@ -28,10 +28,6 @@ const page = ref('details');
     <div class="return">
       <button @click="returnPage">Voltar</button>
     </div>
-    <div class="title__container">
-      <h1>Detalhes do Executivo</h1>
-      <p>Vendas, meta, comissionamento, contratos e faturas vinculadas.</p>
-    </div>
 
     <div class="content__details">
       <GridOne
@@ -57,13 +53,13 @@ const page = ref('details');
 <style lang="scss">
 
 .details__container {
-  @include container(100%, 100%, 6vh 4vw 4vh 2vw);
+  @include container(100%, 100%);
   position: relative;
 
   .return {
     position: absolute;
-    top: 6vh;
-    right: 5vw;
+    top: -6vh;
+    right: 1vw;
 
     button {
       cursor: pointer;
@@ -97,8 +93,7 @@ const page = ref('details');
 
   .content__details {
     @include flex(row, flex-start, center, 1vw);
-    padding: 1vh 0;
-    height: 90%;
+    height: 100%;
 
     .grid__container {
       width: calc((100% / 3) - 1vw);

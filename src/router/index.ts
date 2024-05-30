@@ -26,6 +26,22 @@ const router = createRouter({
       }
     },
     {
+      path: '/ageCommissiona/b2b/dasboard/executivo',
+      name: 'DashboardExecutivePage',
+      component: () => import('@/views/app/ageCommission/b2b/executive/DashboardExecutivePage.vue'),
+      meta: {
+        auth: true
+      }
+    },
+    {
+      path: '/ageComunica/relatorio-envio',
+      name: 'DashboardReportSendings',
+      component: () => import('@/views/app/ageCommunicate/reports/DashboardReportSendings.vue'),
+      meta: {
+        auth: true
+      }
+    },
+    {
       path: '/:catchAll(.*)', // Captura qualquer rota não definida
       redirect: '/' // Redireciona para a página inicial se tentar acessar qualquer outra rota
     },
