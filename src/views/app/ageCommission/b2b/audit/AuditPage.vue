@@ -31,6 +31,7 @@ const viewDetails = (data: Object) => {
   dataSeller.value = data;
   periodRefer.value = computeReferenceMonth();
   page.value = 'details';
+  console.log(data)
 };
 
 // Função para obter dados da API

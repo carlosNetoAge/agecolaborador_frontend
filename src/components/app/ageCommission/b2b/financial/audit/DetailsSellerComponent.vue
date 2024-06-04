@@ -5,6 +5,11 @@ import GridTwo from "@/components/app/ageCommission/b2b/financial/audit/GridTwo.
 import GridThree from "@/components/app/ageCommission/b2b/financial/audit/GridThree.vue";
 import {defineEmits, ref, defineProps} from 'vue';
 import ListSalesDetails from "@/components/app/ageCommission/b2b/financial/audit/ListSalesDetails.vue";
+import SellerCard from '@/components/app/ageCommission/b2b/financial/audit/cards/SellerCard.vue'
+import CommissionsCompositionsCard from "@/components/app/ageCommission/b2b/financial/audit/cards/CommissionsCompositionsCard.vue"
+import SalesCard from "./cards/SalesCard.vue";
+import CommissionsOnlineCard from "./cards/CommissionsOnlineCard.vue";
+import PorcentageCard from "./cards/PorcentageCard.vue";
 
 const emit = defineEmits(['return']);
 
@@ -24,11 +29,36 @@ const page = ref('details');
 </script>
 
 <template>
-  <div class="details__container" v-if="page == 'details'">
+  <div>
+    <SellerCard
+      :data="seller"
+      :periodRefer="props.periodRefer"
+      cols="6" md="4"
+    >
+    </SellerCard>
+    <CommissionsCompositionsCard
+      :data="seller"
+      cols="6" md="4"
+    >
+    </CommissionsCompositionsCard>
+    <SalesCard
+      :data="seller"
+      cols="6" md="4"
+    >
+    </SalesCard>
+    <CommissionsOnlineCard
+      :data="seller"
+      cols="12" md="8"
+    ></CommissionsOnlineCard>
+    <PorcentageCard
+      :data="seller"
+      cols="6" md="4"
+    ></PorcentageCard>
+  </div>
+  <!-- <div class="details__container" v-if="page == 'details'">
     <div class="return">
       <button @click="returnPage">Voltar</button>
     </div>
-
     <div class="content__details">
       <GridOne
         :data="seller"
@@ -42,12 +72,13 @@ const page = ref('details');
         :data="seller"
       />
     </div>
-  </div>
+  </div> -->
 
   <ListSalesDetails
       @return="page = 'details'"
       :dataList="dataSeller"
-      v-if="page == 'listSales'" />
+      v-if="page == 'listSales'"
+  />
 </template>
 
 <style lang="scss">
