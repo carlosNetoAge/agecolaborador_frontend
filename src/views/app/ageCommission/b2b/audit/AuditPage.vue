@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // Importações necessárias
 import DetailsSellerComponent from "@/components/app/ageCommission/b2b/financial/audit/DetailsSellerComponent.vue";
-import { onMounted, ref, watch } from "vue";
+import { onMounted, onUpdated, ref, watch } from "vue";
 import { AXIOS } from "@api/AXIOS";
 import Cookie from "js-cookie";
 import { infoPage } from "@/stores/counter";
@@ -69,6 +69,11 @@ const computeReferenceMonth = () => {
   return `${periodDate.toLocaleDateString('pt-BR', options)}`;
 };
 
+const returning = () => {
+  setInfoPage();
+  page.value = 'list'
+};
+
 const setInfoPage = () => {
   info.setInfoPage({
     title: 'Auditoria de vendas B2B - Referente à ' + computeReferenceMonth(),
@@ -114,7 +119,7 @@ setInfoPage();
     </div>
   </div>
 
-  <DetailsSellerComponent @return="page = 'list'" v-if="page === 'details'" :dataSeller="dataSeller" :periodRefer />
+  <DetailsSellerComponent @return="returning" v-if="page === 'details'" :dataSeller="dataSeller" :periodRefer />
 </template>
 
 

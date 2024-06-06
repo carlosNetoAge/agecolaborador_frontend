@@ -89,7 +89,7 @@ const returnPage = () => {
 
     button {
       cursor: pointer;
-      font-size: 1.4rem;
+      font-size: 1rem;
       color: #fff;
       background-color: #53AEE2;
       outline: none;

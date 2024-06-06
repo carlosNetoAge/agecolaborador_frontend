@@ -1,21 +1,20 @@
 <script setup lang="ts">
-
-import GridOne from "@/components/app/ageCommission/b2b/financial/audit/GridOne.vue";
-import GridTwo from "@/components/app/ageCommission/b2b/financial/audit/GridTwo.vue";
-import GridThree from "@/components/app/ageCommission/b2b/financial/audit/GridThree.vue";
-import {defineEmits, ref, defineProps} from 'vue';
+import {defineEmits, ref, defineProps, onMounted} from 'vue';
 import ListSalesDetails from "@/components/app/ageCommission/b2b/financial/audit/ListSalesDetails.vue";
 import SellerCard from '@/components/app/ageCommission/b2b/financial/audit/cards/SellerCard.vue'
 import CommissionsCompositionsCard from "@/components/app/ageCommission/b2b/financial/audit/cards/CommissionsCompositionsCard.vue"
 import SalesCard from "./cards/SalesCard.vue";
 import CommissionsOnlineCard from "./cards/CommissionsOnlineCard.vue";
 import PorcentageCard from "./cards/PorcentageCard.vue";
+import { infoPage } from "@/stores/counter";
 
 const emit = defineEmits(['return']);
 
 const returnPage = () => {
   emit('return');
 }
+
+const info = infoPage();
 
 const props = defineProps({
   dataSeller: Object,
@@ -25,60 +24,55 @@ const props = defineProps({
 const seller = ref(props.dataSeller);
 const page = ref('details');
 
+const setInfoPage = () => {
+  info.setInfoPage({
+    title: 'Detalhes do Executivo',
+    subtitle: 'Vendas, meta, comissionamento, contratos e faturas vinculadas' });
+  }
+
+onMounted(setInfoPage);
 
 </script>
 
 <template>
-  <div>
-    <SellerCard
-      :data="seller"
-      :periodRefer="props.periodRefer"
-      cols="6" md="4"
-    >
-    </SellerCard>
-    <CommissionsCompositionsCard
-      :data="seller"
-      cols="6" md="4"
-    >
-    </CommissionsCompositionsCard>
-    <SalesCard
-      :data="seller"
-      cols="6" md="4"
-    >
-    </SalesCard>
-    <CommissionsOnlineCard
-      :data="seller"
-      cols="12" md="8"
-    ></CommissionsOnlineCard>
-    <PorcentageCard
-      :data="seller"
-      cols="6" md="4"
-    ></PorcentageCard>
-  </div>
-  <!-- <div class="details__container" v-if="page == 'details'">
+  <div class="details__container h-screen flex flex-col">
     <div class="return">
       <button @click="returnPage">Voltar</button>
     </div>
-    <div class="content__details">
-      <GridOne
+    <div class="flex-grow grid grid-cols-3 grid-rows-2 gap-4 h-max" v-if="page == 'details'">
+      <SellerCard
         :data="seller"
         :periodRefer="props.periodRefer"
+        class="bg-white p-4 rounded-large"
+      >
+      </SellerCard>
+      <CommissionsCompositionsCard
+        :data="seller"
+        class="bg-white p-4 rounded-large"
+      >
+      </CommissionsCompositionsCard>
+      <SalesCard
+        :data="seller"
+        :page="page"
         @viewSales="page = 'listSales'"
-      />
-      <GridTwo
+        class="bg-white p-4 rounded-large"
+      >
+      </SalesCard>
+      <CommissionsOnlineCard
         :data="seller"
-      />
-      <GridThree
+        class="bg-white p-4 rounded-large col-span-2"
+      ></CommissionsOnlineCard>
+      <PorcentageCard
         :data="seller"
-      />
+        class="bg-white p-4 rounded-large"
+      ></PorcentageCard>
     </div>
-  </div> -->
-
-  <ListSalesDetails
-      @return="page = 'details'"
-      :dataList="dataSeller"
-      v-if="page == 'listSales'"
-  />
+    <ListSalesDetails
+        @return="page = 'details'"
+        :dataList="dataSeller"
+        v-if="page == 'listSales'"
+    />
+  </div>
 </template>
 
 <style lang="scss">
@@ -94,7 +88,7 @@ const page = ref('details');
 
     button {
       cursor: pointer;
-      font-size: 1.4rem;
+      font-size: 1.0rem;
       color: #fff;
       background-color: #53AEE2;
       outline: none;
@@ -108,75 +102,20 @@ const page = ref('details');
       }
     }
   }
+}
 
-  .title__container {
-    h1 {
-      font-size: 2rem;
-      font-weight: 500;
-      color: #333
-    }
-    p {
-      font-size: 1.4rem;
+  .percent {
+    @include flex(row, flex-start, center, .2vw);
+    span {
+      font-size: 1rem;
       font-weight: 400;
-      color: #777;
+      color: #08C293;
+    }
+    svg {
+      fill: #08C293;
+      width: 1.5rem;
+      height: 1.5rem;
     }
   }
-
-  .content__details {
-    @include flex(row, flex-start, center, 1vw);
-    height: 100%;
-
-    .grid__container {
-      width: calc((100% / 3) - 1vw);
-      @include flex(column, flex-start, initial, 1vw);
-      height: 100%;
-
-      .grid__item {
-        background-color: #fff;
-        border-radius: 15px;
-        box-shadow: $global-box-shadow;
-        padding: 2vh 1vw;
-        position: relative;
-
-        .showDetails {
-          position: absolute;
-          top: 1vh;
-          right: 1vw;
-          color: #666;
-          font-size: 1.2rem;
-          cursor: pointer;
-          font-weight: 500;
-
-          &:hover {
-            color: #333;
-          }
-        }
-
-        h2 {
-          font-size: 1.2rem;
-          font-weight: 400;
-          color: #666666;
-        }
-
-      }
-
-
-    }
-  }
-}
-
-.percent {
-  @include flex(row, flex-start, center, .2vw);
-  span {
-    font-size: 1rem;
-    font-weight: 400;
-    color: #08C293;
-  }
-  svg {
-    fill: #08C293;
-    width: 1.5rem;
-    height: 1.5rem;
-  }
-}
 
 </style>
