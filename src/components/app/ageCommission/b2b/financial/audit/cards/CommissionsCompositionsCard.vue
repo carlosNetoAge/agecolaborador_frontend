@@ -42,18 +42,14 @@ const chartOptions = ref({
     legend: {
       show: false,
     },
+    tooltip:{
+      enabled: false
+    },
     plotOptions: {
       pie: {
-        startAngle: -350,
-        endAngle: 10,
+        startAngle: -360,
+        endAngle: 0,
         expandOnClick: false,
-        labels: {
-          name: {
-            formatter: function() {
-
-            }
-          }
-        }
       },
     },
       fill: {
