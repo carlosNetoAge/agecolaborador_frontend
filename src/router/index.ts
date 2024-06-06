@@ -34,6 +34,14 @@ const router = createRouter({
       }
     },
     {
+      path: '/ageIntegra/agenda-aniel',
+      name: 'ScheduleCapacity',
+      component: () => import('@/views/app/ageIntegrator/aniel/ScheduleCapacity.vue'),
+      meta: {
+        auth: true
+      }
+    },
+    {
       path: '/ageComunica/relatorio-envio',
       name: 'DashboardReportSendings',
       component: () => import('@/views/app/ageCommunicate/reports/DashboardReportSendings.vue'),

@@ -5,42 +5,54 @@ const info = infoPage();
 
 
 const rows = ref([
-  {
-    title: 'Régua de cobrança',
-    date: '29/05/2024',
-    uniqueClients: '18.726',
-    whatsapp: '1.847',
-    sms: '11.584',
-    email: '14.674',
-    status: 'Enviado'
-  },
-  {
-    title: 'Régua de cobrança',
-    date: '29/05/2024',
-    uniqueClients: '18.726',
-    whatsapp: '1.847',
-    sms: '11.584',
-    email: '14.674',
-    status: 'Em progresso'
-  },
-  {
-    title: 'Régua de cobrança',
-    date: '29/05/2024',
-    uniqueClients: '18.726',
-    whatsapp: '1.847',
-    sms: '11.584',
-    email: '14.674',
-    status: 'Cancelado'
-  },
-  {
-    title: 'Régua de cobrança',
-    date: '29/05/2024',
-    uniqueClients: '18.726',
-    whatsapp: '1.847',
-    sms: '11.584',
-    email: '14.674',
-    status: 'Enviado'
-  },
+    {
+      "title": "Régua de cobrança",
+      "date": "30/05/2024",
+      "uniqueClients": "17.342",
+      "efiency": "78%",
+      "amount": "R$ 2.993",
+      "arrecadation": "R$ 102.391,21",
+      "whatsapp": "2.159",
+      "sms": "10.451",
+      "email": "15.783",
+      "status": "Em progresso"
+    },
+    {
+      "title": "Régua de cobrança",
+      "date": "29/05/2024",
+      "uniqueClients": "19.827",
+      "efiency": "82%",
+      "amount": "R$ 2.993",
+      "arrecadation": "R$ 102.391,21",
+      "whatsapp": "1.723",
+      "sms": "12.489",
+      "email": "13.265",
+      "status": "Cancelado"
+    },
+    {
+      "title": "Régua de cobrança",
+      "date": "28/05/2024",
+      "uniqueClients": "18.572",
+      "efiency": "81%",
+      "amount": "R$ 2.993",
+      "arrecadation": "R$ 102.391,21",
+      "whatsapp": "1.965",
+      "sms": "11.384",
+      "email": "14.621",
+      "status": "Enviado"
+    },
+    {
+      "title": "Régua de cobrança",
+      "date": "27/05/2024",
+      "uniqueClients": "16.984",
+      "efiency": "79%",
+      "amount": "R$ 2.993",
+      "arrecadation": "R$ 102.391,21",
+      "whatsapp": "1.834",
+      "sms": "12.647",
+      "email": "13.784",
+      "status": "Enviado"
+    }
 ])
 
 
@@ -66,6 +78,9 @@ setInfoPage();
             <div class="item" style="text-align: left;">Título</div>
             <div class="item">Data de envio</div>
             <div class="item">Clientes únicos</div>
+            <div class="item">Custo</div>
+            <div class="item">Eficiência</div>
+            <div class="item">Arrecadação</div>
             <div class="item">Whatsapp</div>
             <div class="item">Sms</div>
             <div class="item">E-mail</div>
@@ -88,6 +103,15 @@ setInfoPage();
             </div>
             <div class="item">
               {{ item.uniqueClients }}
+            </div>
+            <div class="item">
+              {{ item.amount }}
+            </div>
+            <div class="item">
+              {{ item.efiency }}
+            </div>
+            <div class="item">
+              {{ item.arrecadation }}
             </div>
             <div class="item">
               {{ item.whatsapp }}
@@ -138,7 +162,7 @@ setInfoPage();
 
       .badge {
         padding: 0.5vh 1vw;
-        border-radius: 5px;
+        border-radius: 20px;
         font-size: 1.2rem;
         font-weight: 500;
         color: #fff;
