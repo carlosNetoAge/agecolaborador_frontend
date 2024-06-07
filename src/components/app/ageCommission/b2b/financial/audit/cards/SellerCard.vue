@@ -43,7 +43,7 @@ onMounted(countDatas);
         <p class="font-semibold">
           {{ dataSeller.seller }}
         </p>
-        <p>Comissionamento: <span class="font-semibold">{{ props.periodRefer }}</span></p>
+        <p>Comissionamento ref. as vendas de: <span class="font-semibold">{{ props.periodRefer }}</span></p>
       </div>
     </div>
     <span class="absolute w-24 top-5 right-5 border-2 border-age-blue text-age-blue px-4 py-2 rounded-medium text-lg font-Bold text-center">B2B</span>

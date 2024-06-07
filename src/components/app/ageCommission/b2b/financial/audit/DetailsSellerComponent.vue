@@ -19,15 +19,22 @@ const statusReq = ref(false);
 
 // Opções de período para seleção
 const periodOptions = ref([
-  { label: 'Janeiro de 2024', value: '2024-01-01' },
-  { label: 'Fevereiro de 2024', value: '2024-02-01' },
-  { label: 'Março de 2024', value: '2024-03-01' },
-  { label: 'Abril de 2024', value: '2024-04-01' }
+  { label: 'Março de 2024', value: '2024-01-01', refer: 'Janeiro de 2024'},
+  { label: 'Abril de 2024', value: '2024-02-01', refer: 'Fevereiro de 2024'},
+  { label: 'Maio de 2024', value: '2024-03-01' , refer: 'Março de 2024'},
+  { label: 'Junho de 2024', value: '2024-04-01' , refer: 'Abril de 2024'},
+  { label: 'Julho de 2024', value: '2024-05-01' , refer: 'Maio de 2024'},
+  { label: 'Agosto de 2024', value: '2024-06-01' , refer: 'Junho de 2024'},
+
 ]);
 
 const info = infoPage();
+const periodRefer = ref('');
 
-const periodRefer = ref('Janeiro de 2024');
+const getPeriodRefer = () => {
+  const period = periodOptions.value.find((option) => option.value === selectedPeriod.value);
+  periodRefer.value = period.refer;
+};
 
 const seller = ref({});
 const page = ref('details');
@@ -51,6 +58,7 @@ const getData = () => {
     },
     params: { period: selectedPeriod.value }
   }).then((response) => {
+    getPeriodRefer();
     seller.value = response.data[0];
     statusReq.value = false;
     statusDashboard.value = true;
@@ -69,6 +77,7 @@ onBeforeMount(getData);
 <template>
   <div class="details__container h-screen flex flex-col">
     <div class="options" v-if="page === 'details'">
+      <span>Mês de pagamento</span>
       <select @change="getData" v-model="selectedPeriod" :disabled="statusReq">
         <option v-for="option in periodOptions" :value="option.value" :key="option.value">{{ option.label }}</option>
       </select>
@@ -135,6 +144,12 @@ onBeforeMount(getData);
   position: absolute;
   top: -7vh;
   right: 7vw;
+
+  span {
+    font-size: 1.4rem;
+    color: #333;
+    margin-right: 1vw;
+  }
 }
 select {
   cursor: pointer;
