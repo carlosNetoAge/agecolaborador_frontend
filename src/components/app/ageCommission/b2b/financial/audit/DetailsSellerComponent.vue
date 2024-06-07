@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {defineEmits, ref, defineProps, onMounted} from 'vue';
+import {defineEmits, ref, defineProps, onMounted, onBeforeMount} from 'vue';
 import ListSalesDetails from "@/components/app/ageCommission/b2b/financial/audit/ListSalesDetails.vue";
 import SellerCard from '@/components/app/ageCommission/b2b/financial/audit/cards/SellerCard.vue'
 import CommissionsCompositionsCard from "@/components/app/ageCommission/b2b/financial/audit/cards/CommissionsCompositionsCard.vue"
@@ -7,75 +7,150 @@ import SalesCard from "./cards/SalesCard.vue";
 import CommissionsOnlineCard from "./cards/CommissionsOnlineCard.vue";
 import PorcentageCard from "./cards/PorcentageCard.vue";
 import { infoPage } from "@/stores/counter";
-
+import { AXIOS } from '@api/AXIOS';
 const emit = defineEmits(['return']);
 
 const returnPage = () => {
   emit('return');
 }
 
+const selectedPeriod = ref('2024-01-01');
+const statusReq = ref(false);
+
+// Opções de período para seleção
+const periodOptions = ref([
+  { label: 'Janeiro de 2024', value: '2024-01-01' },
+  { label: 'Fevereiro de 2024', value: '2024-02-01' },
+  { label: 'Março de 2024', value: '2024-03-01' },
+  { label: 'Abril de 2024', value: '2024-04-01' }
+]);
+
 const info = infoPage();
 
-const props = defineProps({
-  dataSeller: Object,
-  periodRefer: String
-});
+const periodRefer = ref('Janeiro de 2024');
 
-const seller = ref(props.dataSeller);
+const seller = ref({});
 const page = ref('details');
+const statusDashboard = ref(false);
 
 const setInfoPage = () => {
   info.setInfoPage({
     title: 'Detalhes do Executivo',
     subtitle: 'Vendas, meta, comissionamento, contratos e faturas vinculadas' });
-  }
+}
 
-onMounted(setInfoPage);
+// Função para obter dados da API
+const getData = () => {
+  statusReq.value = true;
+  statusDashboard.value = false;
+  AXIOS({
+    method: 'get',
+    url: 'agerv/b2b/commission/financial/builder/seller',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    params: { period: selectedPeriod.value }
+  }).then((response) => {
+    seller.value = response.data[0];
+    statusReq.value = false;
+    statusDashboard.value = true;
+    setInfoPage();
+  }).catch((error) => {
+    console.log(error)
+  });
+};
+
+
+onBeforeMount(getData);
+
 
 </script>
 
 <template>
   <div class="details__container h-screen flex flex-col">
-    <div class="return">
+    <div class="options" v-if="page === 'details'">
+      <select @change="getData" v-model="selectedPeriod" :disabled="statusReq">
+        <option v-for="option in periodOptions" :value="option.value" :key="option.value">{{ option.label }}</option>
+      </select>
+    </div>
+    <div class="return" v-if="page === 'listSales'">
       <button @click="returnPage">Voltar</button>
     </div>
-    <div class="flex-grow grid grid-cols-3 grid-rows-2 gap-4 h-max" v-if="page == 'details'">
-      <SellerCard
-        :data="seller"
-        :periodRefer="props.periodRefer"
-        class="bg-white p-4 rounded-large"
-      >
-      </SellerCard>
-      <CommissionsCompositionsCard
-        :data="seller"
-        class="bg-white p-4 rounded-large"
-      >
-      </CommissionsCompositionsCard>
-      <SalesCard
-        :data="seller"
-        :page="page"
-        @viewSales="page = 'listSales'"
-        class="bg-white p-4 rounded-large"
-      >
-      </SalesCard>
-      <CommissionsOnlineCard
-        :data="seller"
-        class="bg-white p-4 rounded-large col-span-2"
-      ></CommissionsOnlineCard>
-      <PorcentageCard
-        :data="seller"
-        class="bg-white p-4 rounded-large"
-      ></PorcentageCard>
+    <template v-if="seller != null">
+      <div class="flex-grow grid grid-cols-3 grid-rows-2 gap-4 h-max" v-if="page == 'details' && statusDashboard">
+        <SellerCard
+            :data="seller"
+            :periodRefer="periodRefer"
+            class="bg-white p-4 rounded-large"
+        >
+        </SellerCard>
+        <CommissionsCompositionsCard
+            :data="seller"
+            class="bg-white p-4 rounded-large"
+        >
+        </CommissionsCompositionsCard>
+        <SalesCard
+            :data="seller"
+            :page="page"
+            @viewSales="page = 'listSales'"
+            class="bg-white p-4 rounded-large"
+        >
+        </SalesCard>
+        <CommissionsOnlineCard
+            :data="seller"
+            class="bg-white p-4 rounded-large col-span-2"
+        ></CommissionsOnlineCard>
+        <PorcentageCard
+            :data="seller"
+            class="bg-white p-4 rounded-large"
+        ></PorcentageCard>
+      </div>
+      <ListSalesDetails
+          @return="page = 'details'"
+          :dataList="seller"
+          v-if="page == 'listSales'"
+      />
+    </template>
+    <div class="alert" v-else>
+      <h1>
+        Nenhuma venda registrada no período selecionado, escolha outro período.
+      </h1>
     </div>
-    <ListSalesDetails
-        @return="page = 'details'"
-        :dataList="dataSeller"
-        v-if="page == 'listSales'"
-    />
   </div>
 </template>
 
 <style lang="scss">
+
+.alert {
+  @include flex(column, center, center, 3vh);
+  height: 80%;
+  h1 {
+    font-size: 2.4rem;
+    color: #666;
+  }
+
+}
+
+.options {
+  position: absolute;
+  top: -7vh;
+  right: 7vw;
+}
+select {
+  cursor: pointer;
+  font-size: 1.4rem;
+  color: #333;
+  padding: 1vh 1vw;
+  border-radius: 5px;
+  border: 1px solid #f4f4f4;
+  outline: none;
+  transition: border-color ease-in-out .2s;
+  box-shadow: $global-box-shadow;
+
+  &:hover {
+    border-color: #53AEE2;
+  }
+}
 
 .details__container {
   @include container(100%, 100%);

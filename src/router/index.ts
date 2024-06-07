@@ -27,8 +27,8 @@ const router = createRouter({
     },
     {
       path: '/ageCommissiona/b2b/dasboard/executivo',
-      name: 'DashboardExecutivePage',
-      component: () => import('@/views/app/ageCommission/b2b/executive/DashboardExecutivePage.vue'),
+      name: 'DetailsSellerComponent',
+      component: () => import('@/components/app/ageCommission/b2b/financial/audit/DetailsSellerComponent.vue'),
       meta: {
         auth: true
       }
