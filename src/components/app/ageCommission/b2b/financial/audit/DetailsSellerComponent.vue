@@ -1,14 +1,26 @@
 <script setup lang="ts">
-import {defineEmits, ref, defineProps, onMounted, onBeforeMount} from 'vue';
-import ListSalesDetails from "@/components/app/ageCommission/b2b/financial/audit/ListSalesDetails.vue";
+import {defineEmits, ref, defineProps,onMounted, onBeforeMount} from 'vue';
+import ListSalesDetails from "@/components/app/ageCommission/b2b/financial/audit/cards/ListSalesDetails.vue";
 import SellerCard from '@/components/app/ageCommission/b2b/financial/audit/cards/SellerCard.vue'
 import CommissionsCompositionsCard from "@/components/app/ageCommission/b2b/financial/audit/cards/CommissionsCompositionsCard.vue"
 import SalesCard from "./cards/SalesCard.vue";
 import CommissionsOnlineCard from "./cards/CommissionsOnlineCard.vue";
 import PorcentageCard from "./cards/PorcentageCard.vue";
+import ListExtracts from "./cards/ListExtracts.vue";
 import { infoPage } from "@/stores/counter";
 import { AXIOS } from '@api/AXIOS';
+
+interface InvoiceItem {
+  invoice: any;
+}
+
+interface DataSeller {
+  invoices?: { [key: string]: InvoiceItem };
+}
+
 const emit = defineEmits(['return']);
+const props = defineProps<{ dataSeller: DataSeller }>()
+const dataSeller = props.dataSeller;
 
 const returnPage = () => {
   emit('return');
@@ -16,6 +28,7 @@ const returnPage = () => {
 
 const selectedPeriod = ref('2024-01-01');
 const statusReq = ref(false);
+
 
 // Opções de período para seleção
 const periodOptions = ref([
@@ -68,8 +81,13 @@ const getData = () => {
   });
 };
 
+const verifyData = () => {
+  dataSeller.length == 0 ? getData() : seller.value = dataSeller;
+  statusReq.value = false;
+  statusDashboard.value = true;
+}
 
-onBeforeMount(getData);
+onBeforeMount(verifyData);
 
 
 </script>
@@ -96,6 +114,7 @@ onBeforeMount(getData);
         <CommissionsCompositionsCard
             :data="seller"
             class="bg-white p-4 rounded-large"
+            @viewExtract="page = 'extract'"
         >
         </CommissionsCompositionsCard>
         <SalesCard
@@ -118,6 +137,11 @@ onBeforeMount(getData);
           @return="page = 'details'"
           :dataList="seller"
           v-if="page == 'listSales'"
+      />
+      <ListExtracts
+      @return="page = 'details'"
+      :data="seller"
+      v-if="page == 'extract'"
       />
     </template>
     <div class="alert" v-else>

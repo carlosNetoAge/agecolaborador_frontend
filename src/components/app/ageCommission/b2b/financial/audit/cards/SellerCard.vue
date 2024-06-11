@@ -39,7 +39,7 @@ onMounted(countDatas);
   <div class="relative flex flex-col justify-evenly pl-10">
     <div class="flex flex-row">
       <img :src="userSvg" class="w-40">
-      <div class="flex flex-col justify-evenly text-left text-nowrap text-xl w-16 pl-24 lg:pl-10 lg:text-base">
+      <div class="flex flex-col justify-evenly text-left text-nowrap text-2xl w-16 pl-24 lg:pl-10">
         <p class="font-semibold">
           {{ dataSeller.seller }}
         </p>
