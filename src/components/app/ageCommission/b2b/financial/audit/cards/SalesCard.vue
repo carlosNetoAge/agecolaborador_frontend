@@ -28,7 +28,7 @@ const viewSales = () => {
       <h2 class="text-nowrap text-lg pl-10 pt-5">
         Composição das vendas
       </h2>
-      <button class="absolute top-5 right-5 bg-age-blue text-white py-2 px-4 rounded pr-4 " @click="viewSales">visualizar</button>
+      <button class="absolute top-5 right-5 bg-age-blue text-white py-2 px-4 rounded pr-4 " @click="viewSales">Visualizar</button>
     </div>
     <div class="composition__sales">
       <div class="composition">

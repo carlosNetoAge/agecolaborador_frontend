@@ -13,6 +13,7 @@ const props = defineProps<{ data: DataSeller }>();
 const dataSeller = props.data;
 const linkSeries = ref([0]);
 const businessSeries = ref([0]);
+const mocValue = ref([400, 300, 700])
 
 const dataOptionsLink = ref({
   chart: {
@@ -58,6 +59,39 @@ const dataOptionsBusiness = ref({
   },
 })
 
+const chartOptions = ref({
+    chart: {
+      width: 200,
+      type: 'donut',
+    },
+    labels: ['Pago', 'A ser pago', 'Previsão de ganhos'],
+    colors: ['#FF8B3D', '#53AEE2','#FFD8BE'],
+    dataLabels: {
+      enabled: false
+    },
+    legend: {
+      show: false,
+    },
+    tooltip:{
+      enabled: false
+    },
+    plotOptions: {
+      pie: {
+        startAngle: -360,
+        endAngle: 0,
+        expandOnClick: false,
+        donut: {
+          size: "80%"
+        }
+      },
+    },
+    color: ['#53AEE2', '#FF8B3D', '#FFD8BE'],
+    stroke: {
+      curve: "straight",
+      width: 0
+    }
+  });
+
 const calculateSeries = () => {
   dataOptionsBusiness.value.labels = [(dataSeller.percentInvoiceBusiness * 100) + "%"];
   businessSeries.value = [dataSeller.percentInvoiceBusiness * 100];
@@ -74,19 +108,81 @@ onMounted(calculateSeries)
   <div class="flex flex-col justify-around">
     <div class="flex flex-col pl-10 pt-5">
       <h2 class="text-nowrap text-lg">
-        Percentual à receber sob a fatura paga
+        Contagem de pagamentos
       </h2>
     </div>
     <div class="flex flex-row"> 
-      <div id="linkChart">
-        <apexchart type="radialBar" width="200" height="200" :options="dataOptionsLink" :series="linkSeries"></apexchart>
+      <div id="chart">
+        <apexchart type="donut" width="200" height="200" :options="chartOptions" :series="mocValue"></apexchart>
       </div>
-      <div id="businessChart">
-        <apexchart type="radialBar" width="200" height="200" :options="dataOptionsBusiness" :series="businessSeries"></apexchart>
+      <div class="items__container flex text-nowrap w-3/5">
+        <div class="items__composition">
+          <div class="item">
+            <div style="background-color: #FF8B3D">
+            </div>
+            <span>Pago</span>
+          </div>
+          <div class="composition">
+            <span>R$ {{ mocValue[0].toFixed(2) }}</span>
+          </div>
+        </div>
+        <div class="items__composition flex">
+          <div class="item">
+            <div style="background-color: #53AEE2">
+            </div>
+            <span>A ser pago</span>
+          </div>
+          <div class="composition">
+            <span>R$ {{ mocValue[1].toFixed(2) }}</span>
+          </div>
+        </div>
+        <div class="items__composition flex">
+          <div class="item">
+            <div style="background-color: #FFD8BE">
+            </div>
+            <span>Previsão de ganhos</span>
+          </div>
+          <div class="composition">
+            <span>R$ {{ mocValue[2].toFixed(2) }}</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss" scoped>.items__container {
+  @include flex(column, flex-start, initial, 1vh);
+  .items__composition {
+    @include flex(row, space-between, center);
+    width: 100%;    
+
+    .item {
+      @include flex(row, flex-start, center, .5vw);
+      div {
+        width: .5vw;
+        height: .5vw;
+        border-radius: 50%;
+      }
+
+
+      span {
+        font-size: 1.2rem;
+        font-weight: 400;
+        color: #333;
+      }
+    }
+
+    .composition {
+      padding-left: 40px;
+
+      span {
+        font-size: 1.2rem;
+        font-weight: 500;
+        color: #333;
+      }
+    }
+
+  }
+}
 </style>

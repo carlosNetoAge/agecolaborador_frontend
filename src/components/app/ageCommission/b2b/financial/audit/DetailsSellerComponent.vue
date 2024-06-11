@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import {defineEmits, ref, defineProps, onMounted} from 'vue';
-import ListSalesDetails from "@/components/app/ageCommission/b2b/financial/audit/ListSalesDetails.vue";
+import ListSalesDetails from "@/components/app/ageCommission/b2b/financial/audit/cards/ListSalesDetails.vue";
 import SellerCard from '@/components/app/ageCommission/b2b/financial/audit/cards/SellerCard.vue'
 import CommissionsCompositionsCard from "@/components/app/ageCommission/b2b/financial/audit/cards/CommissionsCompositionsCard.vue"
 import SalesCard from "./cards/SalesCard.vue";
 import CommissionsOnlineCard from "./cards/CommissionsOnlineCard.vue";
 import PorcentageCard from "./cards/PorcentageCard.vue";
+import ListExtracts from "./cards/ListExtracts.vue";
 import { infoPage } from "@/stores/counter";
 
 const emit = defineEmits(['return']);
@@ -49,6 +50,7 @@ onMounted(setInfoPage);
       <CommissionsCompositionsCard
         :data="seller"
         class="bg-white p-4 rounded-large"
+        @viewExtract="page = 'extract'"
       >
       </CommissionsCompositionsCard>
       <SalesCard
@@ -69,8 +71,13 @@ onMounted(setInfoPage);
     </div>
     <ListSalesDetails
         @return="page = 'details'"
-        :dataList="dataSeller"
+        :dataList="seller"
         v-if="page == 'listSales'"
+    />
+    <ListExtracts
+      @return="page = 'details'"
+      :data="seller"
+      v-if="page == 'extract'"
     />
   </div>
 </template>

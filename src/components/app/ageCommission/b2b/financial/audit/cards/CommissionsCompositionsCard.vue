@@ -50,28 +50,38 @@ const chartOptions = ref({
         startAngle: -360,
         endAngle: 0,
         expandOnClick: false,
+        donut: {
+          size: "80%"
+        }
       },
     },
       fill: {
-      type: 'gradient',
+      // type: 'gradient',
     },
     color: ['#53AEE2', '#FF8B3D', '#BAE6FF', '#FFD8BE'],
     stroke: {
-      curve: "smooth",
-      width: 5
+      curve: "straight",
+      width: 0
     }
   });
+
+const emit = defineEmits(['viewExtract']);
+
+const viewExtract = () => {
+  emit('viewExtract');
+}
 
 onMounted(countPercentages)
 </script>
 
 <template>
   <div class="flex flex-col justify-between">
-    <div class="flex flex-col pl-10 pt-5">
+    <div class="relative flex flex-col pl-10 pt-5">
       <h2 class="text-nowrap text-lg">
         Composição do comissionamento
       </h2>
       <span class="text-nowrap font-semiBold text-3xl pt-5">R$ {{ sumCommissions }}</span>
+      <button class="absolute top-5 right-5 bg-age-blue text-white py-2 px-4 rounded pr-4 " @click="viewExtract">Extrato</button>
     </div>
     <div class="flex flex-row items-center justify-between h-4/5 lg:text-sm">
       <apexchart type="donut" width="150" height="150" :options="chartOptions" :series="series"></apexchart>
