@@ -34,6 +34,7 @@ const chartOptions = ref({
     chart: {
       width: 150,
       type: 'donut',
+      offsetX: -10,
     },
     labels: ['Empresarial', 'Link dedicado', 'Meta alcançada', 'Contrato fidelizado 36 meses'],
     colors: ['#FF8B3D', '#53AEE2','#FFD8BE', '#BAE6FF'],

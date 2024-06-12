@@ -13,7 +13,7 @@ const props = defineProps<{ data: DataSeller }>();
 const dataSeller = props.data;
 const linkSeries = ref([0]);
 const businessSeries = ref([0]);
-const mocValue = ref([400, 300, 700])
+const mocValue = ref([1,2,3])
 
 const dataOptionsLink = ref({
   chart: {
