@@ -18,16 +18,14 @@ const setInfoPage = () => {
 setInfoPage();
 
 
-
 const panel = ref('operational');
 
 </script>
 
 <template>
   <div class="options">
-    <button :class="{select: panel === 'operational'}">Operacional</button>
-    <button :class="{select: panel === 'dashboard'}">Dashboard</button>
-    <button :class="{select: panel === 'management'}">Gerenciamento</button>
+    <router-link exact-active-class="select" to="/ageIntegra/agenda-aniel" @click="panel = 'operational'">Operacional</router-link>
+    <router-link exact-active-class="select" to="/ageIntegra/agenda-aniel/aprovacao" @click="panel = 'approbation'">Aprovação</router-link>
   </div>
   <CalendarOperational />
   <div class="container_content">
@@ -155,7 +153,7 @@ const panel = ref('operational');
   @include flex(row, flex-start, center, 1vw);
 
 
-  button {
+  a {
     background-color: #fff;
     border-radius: 10px;
     border:  1px solid #cccccc50;
