@@ -83,7 +83,10 @@ const rows = ref([
       <router-link exact-active-class="select" to="/ageIntegra/agenda-aniel" @click="panel = 'operational'">Operacional</router-link>
       <router-link exact-active-class="select" to="/ageIntegra/agenda-aniel/aprovacao" @click="panel = 'approbation'">Aprovação</router-link>
     </div>
-    <button>Aprovar</button>
+    <div class="actions">
+      <button>Aprovar</button>
+      <button>Rejeitar</button>
+    </div>
   </div>
   <div class="table">
     <div class="header">
@@ -99,7 +102,6 @@ const rows = ref([
         <div class="item">Colaborador</div>
         <div class="item">Contrato</div>
         <div class="item">Contato</div>
-        <div class="item">Nome</div>
         <div class="item">Solicitou aprovação</div>
         <div class="item" style="text-align: center;">Status</div>
 
@@ -162,6 +164,11 @@ const rows = ref([
 
   .navbar {
     @include flex(row, flex-start, center, 1vw);
+  }
+
+  .actions {
+    @include flex(row, flex-start, center, 1vw);
+
   }
 
   a, button {
