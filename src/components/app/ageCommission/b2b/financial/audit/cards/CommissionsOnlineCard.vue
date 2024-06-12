@@ -15,22 +15,22 @@ const dataSeller = props.data;
 </script>
 
 <template>
-  <div class="">
+  <div class="flex flex-col justify-between">
     <div class="flex flex-col pl-10 pt-5">
       <h2 class="text-xl ">Níveis de comissionamento vigente</h2>
     </div>
     <div id="links-dedicados" class="my-5">
-      <h4 class="text-xl flex flex-col pl-10 pb-5">Links dedicados</h4>
-      <div class="max-w-full h-24 mx-auto pb-4">	
+      <h4 class="min-[1600px]:text-xl text-lg flex flex-col pl-10 pb-4">Links dedicados</h4>
+      <div class="max-w-full min-[1600px]:h-24 h-16 mx-auto">	
         <div class="flex pb-1">
           <div class="flex-1">
           </div>
           <div class="flex-1">
             <div 
-              class="w-20 h-20 mx-auto border-age-blue border-4 rounded-full text-lg text-white flex items-center"
+              class="min-[1600px]:size-20 size-14 mx-auto border-age-blue border-4 rounded-full min-[1600px]:text-lg text-base text-white flex items-center"
               :class="{'bg-age-blue' : dataSeller.contracts.dedicated >= 1, 'bg-age-lightBlue' : dataSeller.contracts.dedicated < 1}"
               > 
-              <span class="text-white text-center text-2xl w-full">
+              <span class="text-white text-center min-[1600px]:text-2xl text-xl w-full">
                 40%
               </span>
             </div>
@@ -45,10 +45,10 @@ const dataSeller = props.data;
           </div>
           <div class="flex-1">
             <div 
-              class="w-20 h-20 mx-auto border-age-blue border-4 rounded-full text-lg text-white flex items-center"
+              class="min-[1600px]:size-20 size-14 mx-auto border-age-blue border-4 rounded-full min-[1600px]:text-lg text-base text-white flex items-center"
               :class="{'bg-age-blue' : dataSeller.contracts.dedicated >= 3, 'bg-age-lightBlue' : dataSeller.contracts.dedicated < 3}"
               > 
-              <span class="text-white text-center text-2xl w-full">
+              <span class="text-white text-center min-[1600px]:text-2xl text-xl w-full">
                 50%
               </span>
             </div>
@@ -63,10 +63,10 @@ const dataSeller = props.data;
           </div>     
           <div class="flex-1">
             <div 
-              class="w-20 h-20 mx-auto border-age-blue border-4 rounded-full text-lg text-white flex items-center"
+              class="min-[1600px]:size-20 size-14 mx-auto border-age-blue border-4 rounded-full min-[1600px]:text-lg text-base text-white flex items-center"
               :class="{'bg-age-blue' : dataSeller.contracts.dedicated >= 5, 'bg-age-lightBlue' : dataSeller.contracts.dedicated < 5}"
               > 
-              <span class="text-white text-center text-2xl w-full">
+              <span class="text-white text-center min-[1600px]:text-2xl text-xl w-full">
                 60%
               </span>
             </div>
@@ -81,10 +81,10 @@ const dataSeller = props.data;
           </div>
           <div class="flex-1">
             <div 
-              class="w-20 h-20 mx-auto border-age-blue border-4 rounded-full text-lg text-white flex items-center"
+              class="min-[1600px]:size-20 size-14 mx-auto border-age-blue border-4 rounded-full min-[1600px]:text-lg text-base text-white flex items-center"
               :class="{'bg-age-blue' : dataSeller.contracts.dedicated >= 10, 'bg-age-lightBlue' : dataSeller.contracts.dedicated < 10}"
               > 
-              <span class="text-white text-center text-2xl w-full">
+              <span class="text-white text-center min-[1600px]:text-2xl text-xl w-full">
                 70%
               </span>
             </div>
@@ -94,32 +94,32 @@ const dataSeller = props.data;
         </div>
       </div>
       <div class="flex text-xs content-center text-center">
-        <div class="w-1/4 text-lg text-nowrap flex flex-col">
+        <div class="w-1/4 min-[1600px]:text-lg text-base text-nowrap flex flex-col">
           <span>1 à 2 links dedicados</span>
         </div>      
-        <div class="w-1/4 text-lg text-nowrap flex flex-col">
+        <div class="w-1/4 min-[1600px]:text-lg text-base text-nowrap flex flex-col">
           <span>3 à 4 links dedicados</span>
         </div>      
-        <div class="w-1/4 text-lg text-nowrap flex flex-col">
+        <div class="w-1/4 min-[1600px]:text-lg text-base text-nowrap flex flex-col">
           <span>5 à 9 links dedicados</span>
         </div>
-        <div class="w-1/4 text-lg text-nowrap flex flex-col">
+        <div class="w-1/4 min-[1600px]:text-lg text-base text-nowrap flex flex-col">
           <span>10 ou mais links dedicados</span>
         </div>
       </div>
     </div>
     <div id="links-empresariais" class="my-5">
-      <h4 class="text-xl flex flex-col pl-10 pb-5">Link empresariais</h4>
-      <div class="max-w-full h-24 mx-auto pb-4">	
+      <h4 class="min-[1600px]:text-xl text-lg flex flex-col pl-10 pb-4">Link empresariais</h4>
+      <div class="max-w-full min-[1600px]:h-24 h-16 mx-auto pb-4">	
         <div class="flex pb-1">
           <div class="flex-1">
           </div>
           <div class="flex-1">
             <div 
-              class="w-20 h-20 mx-auto border-age-orange border-4 rounded-full text-lg text-white flex items-center"
+              class="min-[1600px]:size-20 size-14 mx-auto border-age-orange border-4 rounded-full min-[1600px]:text-lg text-base text-white flex items-center"
               :class="{'bg-age-orange' : dataSeller.contracts.business >= 1, 'bg-age-lightOrange' : dataSeller.contracts.business < 1}"
               > 
-              <span class="text-white text-center text-2xl w-full">
+              <span class="text-white text-center min-[1600px]:text-2xl text-xl w-full">
                 30%
               </span>
             </div>
@@ -134,10 +134,10 @@ const dataSeller = props.data;
           </div>
           <div class="flex-1">
             <div 
-              class="w-20 h-20 mx-auto border-age-orange border-4 rounded-full text-lg text-white flex items-center"
+              class="min-[1600px]:size-20 size-14 mx-auto border-age-orange border-4 rounded-full min-[1600px]:text-lg text-base text-white flex items-center"
               :class="{'bg-age-orange' : dataSeller.contracts.business >= 11, 'bg-age-lightOrange' : dataSeller.contracts.business < 11}"
               > 
-              <span class="text-white text-center text-2xl w-full">
+              <span class="text-white text-center min-[1600px]:text-2xl text-xl w-full">
                 50%
               </span>
             </div>
@@ -152,10 +152,10 @@ const dataSeller = props.data;
           </div>     
           <div class="flex-1">
             <div 
-              class="w-20 h-20 mx-auto border-age-orange border-4 rounded-full text-lg text-white flex items-center"
+              class="min-[1600px]:size-20 size-14 mx-auto border-age-orange border-4 rounded-full min-[1600px]:text-lg text-base text-white flex items-center"
               :class="{'bg-age-orange' : dataSeller.contracts.business >= 25, 'bg-age-lightOrange' : dataSeller.contracts.business < 25}"
               > 
-              <span class="text-white text-center text-2xl w-full">
+              <span class="text-white text-center min-[1600px]:text-2xl text-xl w-full">
                 60%
               </span>
             </div>
@@ -165,13 +165,13 @@ const dataSeller = props.data;
         </div>
       </div>
       <div class="flex text-xs content-center text-center justify-evenly px-10">
-        <div class="w-1/4 text-lg text-nowrap flex flex-col">
+        <div class="w-1/4 min-[1600px]:text-lg text-base text-nowrap flex flex-col">
           <span>1 à 10 empresariais</span>
         </div>      
-        <div class="w-1/4 text-lg text-nowrap flex flex-col">
+        <div class="w-1/4 min-[1600px]:text-lg text-base text-nowrap flex flex-col">
           <span>11 à 24 empresariais</span>
         </div>      
-        <div class="w-1/4 text-lg text-nowrap flex flex-col">
+        <div class="w-1/4 min-[1600px]:text-lg text-base text-nowrap flex flex-col">
           <span>25 ou mais empresariais</span>
         </div>
       </div>

@@ -15,6 +15,7 @@ interface DataSeller {
 
 const props = defineProps<{ data: DataSeller, periodRefer: String }>();
 
+const periodRefer = ref(props.periodRefer)
 const dataSeller = ref(props.data);
 let totalContracts = ref(0);
 let totalInvoices = ref(0);
@@ -26,7 +27,7 @@ const countDatas = () => {
       totalInvoices.value++;
     }
   }
-
+  console.log(periodRefer.value)
   totalContracts.value = dataSeller.value.contracts.business + dataSeller.value.contracts.dedicated;
   totalSells.value = totalContracts.value;
 }
@@ -36,28 +37,28 @@ onMounted(countDatas);
 </script>
 
 <template>
-  <div class="relative flex flex-col justify-evenly pl-10">
-    <div class="flex flex-row">
-      <img :src="userSvg" class="w-40">
-      <div class="flex flex-col justify-evenly text-left text-nowrap text-2xl w-16 pl-24 lg:pl-10">
-        <p class="font-semibold">
+  <div class="relative flex flex-col justify-evenly pl-12">
+    <div class="flex flex-row pt-5">
+      <img :src="userSvg" class="w-32 min-[1600px]:w-40">
+      <div class="flex flex-col justify-evenly min-[1600px]:text-2xl min-[1600px]:m-24 lg:m-10 p-2 md:text-lg w-full text-center gap-2">
+        <p class="font-semibold text-nowrap">
           {{ dataSeller.seller }}
         </p>
-        <p>Comissionamento ref. as vendas de: <span class="font-semibold">{{ props.periodRefer }}</span></p>
+        <p class="flex flex-col text-nowrap">Comissionamento ref. as vendas de: <span class="font-semibold">{{ periodRefer }}</span></p>
       </div>
     </div>
-    <span class="absolute w-24 top-5 right-5 border-2 border-age-blue text-age-blue px-4 py-2 rounded-medium text-lg font-Bold text-center">B2B</span>
-    <div class="flex flex-row">
-      <div class="flex flex-col items-center flex-1">
-        <img class="object-cover mb-6 size-24" :src="icon$" alt="">
+    <span class="absolute w-24 top-8 right-10 border border-age-blue text-age-blue px-2 py-2 rounded-medium text-base font-Bold text-center">B2B</span>
+    <div class="flex flex-row justify-evenly">
+      <div class="flex flex-col items-center">
+        <img class="object-cover mb-4 min-[1600px]:size-24 size-20" :src="icon$" alt="">
         <p>{{ totalContracts }} vendas</p>
       </div>
-      <div class="flex flex-col items-center flex-1">
-        <img class="object-cover mb-6 size-24" :src="iconDoc" alt="">
+      <div class="flex flex-col items-center">
+        <img class="object-cover mb-4 min-[1600px]:size-24 size-20" :src="iconDoc" alt="">
         <p>{{ totalContracts }} contratos</p>
       </div>
-      <div class="flex flex-col items-center flex-1">
-        <img class="object-cover mb-6 size-24" :src="iconInvoice" alt="">
+      <div class="flex flex-col items-center">
+        <img class="object-cover mb-4 min-[1600px]:size-24 size-20" :src="iconInvoice" alt="">
         <p>{{ totalInvoices }} faturas</p>
       </div>
     </div>

@@ -61,8 +61,10 @@ const dataOptionsBusiness = ref({
 
 const chartOptions = ref({
     chart: {
-      width: 200,
+      height: "auto",
+      width: "auto",
       type: 'donut',
+      offsetX: -20,
     },
     labels: ['Pago', 'A ser pago', 'Previsão de ganhos'],
     colors: ['#FF8B3D', '#53AEE2','#FFD8BE'],
@@ -89,6 +91,14 @@ const chartOptions = ref({
     stroke: {
       curve: "straight",
       width: 0
+    },
+    responive: {
+      brakpoints: 1600,
+      options: {
+        chart: {
+          width: 200,
+        },
+      },
     }
   });
 
@@ -111,11 +121,11 @@ onMounted(calculateSeries)
         Contagem de pagamentos
       </h2>
     </div>
-    <div class="flex flex-row"> 
+    <div class="flex flex-row justify-between"> 
       <div id="chart">
-        <apexchart type="donut" width="200" height="200" :options="chartOptions" :series="mocValue"></apexchart>
+        <apexchart type="donut" :options="chartOptions" :series="mocValue"></apexchart>
       </div>
-      <div class="items__container flex text-nowrap w-3/5">
+      <div class="items__container flex flex-col gap-2 md:justify-center md:w-3/5 text-nowrap min-[1600px]:w-3/6">
         <div class="items__composition">
           <div class="item">
             <div style="background-color: #FF8B3D">
@@ -151,10 +161,10 @@ onMounted(calculateSeries)
   </div>
 </template>
 
-<style lang="scss" scoped>.items__container {
-  @include flex(column, flex-start, initial, 1vh);
+<style lang="scss" scoped>
+.items__container {
   .items__composition {
-    @include flex(row, space-between, center);
+    @include flex(row, space-between, center, 1vw);
     width: 100%;    
 
     .item {
@@ -174,8 +184,6 @@ onMounted(calculateSeries)
     }
 
     .composition {
-      padding-left: 40px;
-
       span {
         font-size: 1.2rem;
         font-weight: 500;

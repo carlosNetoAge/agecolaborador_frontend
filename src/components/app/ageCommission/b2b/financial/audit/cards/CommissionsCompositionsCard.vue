@@ -23,6 +23,7 @@ const countPercentages = () =>{
     loyalty: 0,
   };
   sumCommissions.value = Object.values(commissions).reduce((acc, current) => acc + current, 0);
+  sumCommissions.value = parseFloat(sumCommissions.value.toFixed(2));
   for (let item in commissions) {
     let partial = commissions[item] / sumCommissions.value * 100 
     series.value.push(parseFloat(partial.toFixed(2)))
@@ -76,16 +77,16 @@ onMounted(countPercentages)
 
 <template>
   <div class="flex flex-col justify-between">
-    <div class="relative flex flex-col pl-10 pt-5">
+    <div class="relative flex flex-col  min-[1600px]:pl-16 md:pl-8 pt-5">
       <h2 class="text-nowrap text-lg">
         Composição do comissionamento
       </h2>
       <span class="text-nowrap font-semiBold text-3xl pt-5">R$ {{ sumCommissions }}</span>
-      <button class="absolute top-5 right-5 bg-age-blue text-white py-2 px-4 rounded pr-4 " @click="viewExtract">Extrato</button>
+      <button class="absolute top-5  min-[1600px]:right-16 md:right-5 bg-age-blue text-white py-2 px-4 rounded pr-4" @click="viewExtract">Extrato</button>
     </div>
-    <div class="flex flex-row items-center justify-between h-4/5 lg:text-sm">
+    <div class="flex flex-row items-center  min-[1600px]:justify-between md:justify-center h-4/5 md:text-xs  min-[1600px]:text-lg px-16 md:px-8">
       <apexchart type="donut" width="150" height="150" :options="chartOptions" :series="series"></apexchart>
-      <div class="items__container flex text-nowrap w-3/5">
+      <div class="items__container flex md:justify-between md:w-4/6 text-nowrap  min-[1600px]:w-3/6">
         <div class="items__composition">
           <div class="item">
             <div style="background-color: #FF8B3D">
@@ -93,7 +94,7 @@ onMounted(countPercentages)
             <span>Empresarial</span>
           </div>
           <div class="composition">
-            <span>R$ {{ dataSeller.commissionBusiness.toFixed(2) }}</span>
+            <span>R$ {{ dataSeller.commissionBusiness ? dataSeller.commissionBusiness.toFixed(2) : 0 }}</span>
           </div>
         </div>
         <div class="items__composition flex">
@@ -103,7 +104,7 @@ onMounted(countPercentages)
             <span>Link dedicado</span>
           </div>
           <div class="composition">
-            <span>R$ {{ dataSeller.commissionDedicated.toFixed(2) }}</span>
+            <span>R$ {{ dataSeller.commissionDedicated ? dataSeller.commissionDedicated.toFixed(2) : 0 }}</span>
           </div>
         </div>
         <div class="items__composition flex">
@@ -155,8 +156,6 @@ onMounted(countPercentages)
     }
 
     .composition {
-      padding-left: 40px;
-
       span {
         font-size: 1.2rem;
         font-weight: 500;

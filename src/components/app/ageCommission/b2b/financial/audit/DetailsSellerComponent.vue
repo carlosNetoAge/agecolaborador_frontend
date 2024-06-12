@@ -47,6 +47,7 @@ const periodRefer = ref('');
 const getPeriodRefer = () => {
   const period = periodOptions.value.find((option) => option.value === selectedPeriod.value);
   periodRefer.value = period.refer;
+  console.log(period.refer)
 };
 
 const seller = ref({});
@@ -82,6 +83,7 @@ const getData = () => {
 };
 
 const verifyData = () => {
+  getPeriodRefer();
   dataSeller.length == 0 ? getData() : seller.value = dataSeller;
   statusReq.value = false;
   statusDashboard.value = true;
@@ -93,7 +95,7 @@ onBeforeMount(verifyData);
 </script>
 
 <template>
-  <div class="details__container h-screen flex flex-col">
+  <div class="details__container h-screen flex flex-col overflow-hidden">
     <div class="options" v-if="page === 'details'">
       <span>Mês de pagamento</span>
       <select @change="getData" v-model="selectedPeriod" :disabled="statusReq">
@@ -104,7 +106,7 @@ onBeforeMount(verifyData);
       <button @click="returnPage">Voltar</button>
     </div>
     <template v-if="seller != null">
-      <div class="flex-grow grid grid-cols-3 grid-rows-2 gap-4 h-max" v-if="page == 'details' && statusDashboard">
+      <div class="flex-grow grid grid-cols-3 grid-rows-2 gap-4 h-4/5" v-if="page == 'details' && statusDashboard">
         <SellerCard
             :data="seller"
             :periodRefer="periodRefer"
