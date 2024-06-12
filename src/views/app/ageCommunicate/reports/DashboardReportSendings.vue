@@ -222,17 +222,6 @@ setInfoPage();
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
 .cbx {
   position: relative;
   top: 1px;
