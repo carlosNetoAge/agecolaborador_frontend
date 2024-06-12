@@ -70,46 +70,7 @@ const rows = ref([
     "contact": "6196666-6666",
     "nameClient": "Maria Oliveira",
     "request": "Sul",
-    "status": "Pré-Aprovado"
-  },
-  {
-    "title": "Ativação Plano Combo",
-    "type": "Ativação",
-    "segment": "B2C",
-    "schedule": "12/06/2024 09:00",
-    "period": "Manhã",
-    "collaborator": "Carlos Mendes",
-    "contract": "219825",
-    "contact": "6195555-5555",
-    "nameClient": "José Santos",
-    "request": "Matheus",
-    "status": "Aprovado"
-  },
-  {
-    "title": "Ativação Plano Combo",
-    "type": "Ativação",
-    "segment": "B2C",
-    "schedule": "12/06/2024 13:00",
-    "period": "Tarde",
-    "collaborator": "Paula Castro",
-    "contract": "219826",
-    "contact": "6194444-4444",
-    "nameClient": "Pedro Costa",
-    "request": "Betania",
     "status": "Rejeitado"
-  },
-  {
-    "title": "Ativação Plano Combo",
-    "type": "Ativação",
-    "segment": "B2C",
-    "schedule": "12/06/2024 15:00",
-    "period": "Tarde",
-    "collaborator": "Rafael Almeida",
-    "contract": "219827",
-    "contact": "6193333-3333",
-    "nameClient": "Lucia Martins",
-    "request": "Thainá",
-    "status": "Pré-Aprovado"
   }
 ])
 
@@ -133,7 +94,6 @@ const rows = ref([
         </div>
         <div class="item" style="text-align: left;">Serviço</div>
         <div class="item">Tipo</div>
-        <div class="item">Segmento</div>
         <div class="item">Data/Hora agendada</div>
         <div class="item">Período</div>
         <div class="item">Colaborador</div>
@@ -159,9 +119,6 @@ const rows = ref([
           {{ item.type }}
         </div>
         <div class="item">
-          {{ item.segment }}
-        </div>
-        <div class="item">
           {{ item.schedule }}
         </div>
         <div class="item">
@@ -175,9 +132,6 @@ const rows = ref([
         </div>
         <div class="item">
           {{ item.contact }}
-        </div>
-        <div class="item">
-          {{ item.nameClient }}
         </div>
         <div class="item">
           {{ item.request }}
