@@ -58,6 +58,11 @@ const alterStateMenu = () => {
                        class="item__submenu" :class="{'active__submenu' : actualSubMenu == 'AgeCommissionCommission'}" @click="actualSubMenu = 'AgeCommissionCommission'">
                      <p>Minha Comissão</p>
                    </router-link>
+                   <router-link
+                       to="/ageCommissiona/b2b/financeiro"
+                       class="item__submenu" :class="{'active__submenu' : actualSubMenu == 'AgeCommissionFinancial'}" @click="actualSubMenu = 'AgeCommissionFinancial'">
+                     <p>Financeiro</p>
+                   </router-link>
                  </ul>
                </transition>
              </li>
