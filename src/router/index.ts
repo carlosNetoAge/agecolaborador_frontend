@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginPage from "@/views/web/login/LoginPage.vue";
+import { useAuthStore } from '@/stores/counter';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -7,7 +8,16 @@ const router = createRouter({
     {
       path: '/',
       name: 'login',
-      component: LoginPage
+      component: LoginPage,
+      beforeEnter: (to, from, next) => {
+        const authStore = useAuthStore()
+
+        if (authStore.isAuthenticated) {
+          next('/inicio')
+        } else {
+          next()
+        }
+      }
     },
     {
       path: '/inicio',
@@ -59,9 +69,17 @@ const router = createRouter({
     },
     {
       path: '/:catchAll(.*)', // Captura qualquer rota não definida
-      redirect: '/' // Redireciona para a página inicial se tentar acessar qualquer outra rota
+      redirect: '/inicio' // Redireciona para a página inicial se tentar acessar qualquer outra rota
     },
   ]
 })
 
+
+router.beforeEach((to, from, next) => {
+  const authStore = useAuthStore()
+  to.meta.auth && !authStore.isAuthenticated ? next('/') : next();
+});
+
+
 export default router
+  

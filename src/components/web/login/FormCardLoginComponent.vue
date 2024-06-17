@@ -2,9 +2,10 @@
 
 import {reactive, ref} from 'vue';
 import {AXIOS} from "@api/AXIOS";
-import Cookie from 'js-cookie';
 import Router from "@/router";
-import {stateLoading} from "@/stores/counter";
+import {stateLoading, useAuthStore} from "@/stores/counter";
+import { nextTick } from 'process';
+
 
 interface Payload {
   username: string;
@@ -102,8 +103,9 @@ const validatePassword = (): void => {
 
 const statusSubmit = ref(false);
 const loading = stateLoading();
+const authStore = useAuthStore();
 
-const submit = (): void => {
+const submit = async (): Promise<void> => {
   const validate = (): boolean => {
     validateUserName();
     validatePassword();
@@ -117,50 +119,41 @@ const submit = (): void => {
   }
 
   statusSubmit.value = true;
-
-
-  setTimeout(() => {
-    AXIOS({
-      method: 'post',
-      url: 'auth/login',
-      data: {
-        user: payload.username,
-        password: payload.pass,
-        keepConnected: payload.keepConnected,
-      },
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    }).then((response) => {
-
-      Cookie.set('token', response.data.access_token, { expires: payload.keepConnected ? 30 : 1 });
-
-      loading.alternateState(true);
-
-
-      setTimeout(() => {
-        Router.replace('inicio');
-        loading.alternateState(false);
-        statusSubmit.value = false;
-
-
-
-      }, 2500);
-
-    }).catch((error) => {
-      validateForm.form.errors = true;
-
-      if (error.response && error.response.status === 401) {
-        validateForm.form.responseMsg = "Usuário ou senha inválidos.";
-      } else {
-        validateForm.form.responseMsg = "Erro ao tentar se conectar. <br> Tente novamente mais tarde.";
-      }
-      statusSubmit.value = false;
-    }).finally(() => {
-      validateForm.form.step++;
-    });
-  }, 1000);
+  loading.alternateState(true);
+  setTimeout(() => login(), 2000)
 };
+
+const login = async () => {
+  await AXIOS({
+    method: 'post',
+    url: 'auth/login',
+    data: {
+      user: payload.username,
+      password: payload.pass,
+      keepConnected: payload.keepConnected,
+    },
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }).then((response) => {
+    authStore.login(response.data.access_token, payload)
+  }).catch((error) => {
+    validateForm.form.errors = true;
+
+    if (error.response && error.response.status === 401) {
+      validateForm.form.responseMsg = "Usuário ou senha inválidos.";
+    } else {
+      validateForm.form.responseMsg = "Erro ao tentar se conectar. <br> Tente novamente mais tarde.";
+    }
+    statusSubmit.value = false;
+  }).finally(() => {
+    Router.replace('inicio');
+    loading.alternateState(false);
+    statusSubmit.value = false;
+    validateForm.form.step++;
+    loading.alternateState(false);
+  });
+}
 
 
 </script>
