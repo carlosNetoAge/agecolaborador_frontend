@@ -20,10 +20,12 @@ const info = infoPage();
 
 // Opções de período para seleção
 const periodOptions = ref([
-  { label: 'Janeiro de 2024', value: '2024-01-01' },
-  { label: 'Fevereiro de 2024', value: '2024-02-01' },
-  { label: 'Março de 2024', value: '2024-03-01' },
-  { label: 'Abril de 2024', value: '2024-04-01' }
+  { label: 'Março de 2024', value: '2024-01-01', refer: 'Janeiro de 2024'},
+  { label: 'Abril de 2024', value: '2024-02-01', refer: 'Fevereiro de 2024'},
+  { label: 'Maio de 2024', value: '2024-03-01' , refer: 'Março de 2024'},
+  { label: 'Junho de 2024', value: '2024-04-01' , refer: 'Abril de 2024'},
+  { label: 'Julho de 2024', value: '2024-05-01' , refer: 'Maio de 2024'},
+  { label: 'Agosto de 2024', value: '2024-06-01' , refer: 'Junho de 2024'},
 ]);
 
 // Função para visualizar detalhes do vendedor
@@ -47,6 +49,7 @@ const getData = () => {
     },
     params: { period: selectedPeriod.value }
   }).then((response) => {
+    computeReferenceMonth();
     data.value = response.data;
     statusDashboard.value = true;
     statusReq.value = false;
@@ -64,33 +67,25 @@ watch(selectedPeriod, (newVal, oldVal) => {
 
 // Computar o mês referência dinamicamente
 const computeReferenceMonth = () => {
-  const periodDate = new Date(selectedPeriod.value + 1);
-  const options = { month: 'long', year: 'numeric' };
-  return `${periodDate.toLocaleDateString('pt-BR', options)}`;
+  periodRefer.value = periodOptions.value.find((option) => option.value === selectedPeriod.value).refer;
 };
 
 const returning = () => {
-  setInfoPage();
   page.value = 'list'
 };
 
 const setInfoPage = () => {
   info.setInfoPage({
-    title: 'Auditoria de vendas B2B - Referente à ' + computeReferenceMonth(),
+    title: 'Auditoria de vendas B2B - Referente à ' + periodRefer.value,
     subtitle: 'Examine cada transação, garantindo precisão e integridade nas vendas.' });
 }
 
-setInfoPage();
 
 </script>
 
 <template>
   <div class="audit__container" v-if="page === 'list'">
-<!--    <div class="title__container">-->
-<!--      <h1>Auditoria de vendas B2B - Referente à {{ computeReferenceMonth() }}</h1>-->
-<!--      <p>Examine cada transação, garantindo precisão e integridade nas vendas.</p>-->
-<!--    </div>-->
-    <div class="options">
+    <div class="period">
       <select @change="getData" v-model="selectedPeriod" :disabled="statusReq">
         <option v-for="option in periodOptions" :value="option.value" :key="option.value">{{ option.label }}</option>
       </select>
@@ -119,11 +114,12 @@ setInfoPage();
     </div>
   </div>
 
-  <DetailsSellerComponent @return="returning" v-if="page === 'details'" :dataSeller="dataSeller" :periodRefer />
+  <DetailsSellerComponent @return="returning" v-if="page === 'details'" :dataSeller="dataSeller" :periodRefer="periodRefer" />
 </template>
 
 
 <style scoped lang="scss">
+
 
 .audit__container {
   @include flex(column, flex-start, initial, 3vh);

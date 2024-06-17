@@ -12,8 +12,11 @@ interface InvoiceItem {
 interface DataSeller {
   invoices?: { [key: string]: InvoiceItem };
 }
+interface PeriodRefer {
+  refer: any;
+}
 
-const props = defineProps<{ data: DataSeller, periodRefer: String }>();
+const props = defineProps<{ data: DataSeller, periodRefer: PeriodRefer }>();
 
 const periodRefer = ref(props.periodRefer)
 const dataSeller = ref(props.data);
@@ -44,7 +47,7 @@ onMounted(countDatas);
         <p class="font-semibold text-nowrap">
           {{ dataSeller.seller }}
         </p>
-        <p class="flex flex-col text-nowrap">Comissionamento ref. as vendas de: <span class="font-semibold">{{ periodRefer }}</span></p>
+<!--        <p class="flex flex-col text-nowrap">Comissionamento ref. as vendas de: <span class="font-semibold">{{ periodRefer }}</span></p>-->
       </div>
     </div>
     <span class="absolute w-24 top-8 right-10 border border-age-blue text-age-blue px-2 py-2 rounded-medium text-base font-Bold text-center">B2B</span>

@@ -18,9 +18,14 @@ interface DataSeller {
   invoices?: { [key: string]: InvoiceItem };
 }
 
+interface PeriodRefer {
+  refer: any;
+}
+
 const emit = defineEmits(['return']);
-const props = defineProps<{ dataSeller: DataSeller }>()
+const props = defineProps<{ dataSeller: DataSeller, periodRefer: PeriodRefer }>()
 const dataSeller = props.dataSeller;
+const periodRefer = ref(props.periodRefer);
 
 const returnPage = () => {
   emit('return');
@@ -38,16 +43,13 @@ const periodOptions = ref([
   { label: 'Junho de 2024', value: '2024-04-01' , refer: 'Abril de 2024'},
   { label: 'Julho de 2024', value: '2024-05-01' , refer: 'Maio de 2024'},
   { label: 'Agosto de 2024', value: '2024-06-01' , refer: 'Junho de 2024'},
-
 ]);
 
 const info = infoPage();
-const periodRefer = ref('');
 
 const getPeriodRefer = () => {
   const period = periodOptions.value.find((option) => option.value === selectedPeriod.value);
   periodRefer.value = period.refer;
-  console.log(period.refer)
 };
 
 const seller = ref({});
@@ -82,12 +84,22 @@ const getData = () => {
   });
 };
 
+const propData = ref(false);
+
 const verifyData = () => {
-  getPeriodRefer();
-  dataSeller.length == 0 ? getData() : seller.value = dataSeller;
+
+  if(dataSeller.length == 0) {
+    getPeriodRefer();
+    getData();
+  } else {
+    seller.value = dataSeller;
+    propData.value = true;
+  }
   statusReq.value = false;
   statusDashboard.value = true;
 }
+
+
 
 onBeforeMount(verifyData);
 
@@ -95,15 +107,16 @@ onBeforeMount(verifyData);
 </script>
 
 <template>
+  <div class="return">
+    <button @click="returnPage">Voltar</button>
+  </div>
   <div class="details__container h-screen flex flex-col overflow-hidden">
-    <div class="options" v-if="page === 'details'">
+
+    <div class="options_extract" v-if="page === 'details' && !propData">
       <span>Mês de pagamento</span>
       <select @change="getData" v-model="selectedPeriod" :disabled="statusReq">
         <option v-for="option in periodOptions" :value="option.value" :key="option.value">{{ option.label }}</option>
       </select>
-    </div>
-    <div class="return" v-if="page === 'listSales'">
-      <button @click="returnPage">Voltar</button>
     </div>
     <template v-if="seller != null">
       <div class="flex-grow grid grid-cols-3 grid-rows-2 gap-4 h-4/5" v-if="page == 'details' && statusDashboard">
@@ -155,6 +168,27 @@ onBeforeMount(verifyData);
 </template>
 
 <style lang="scss">
+.return {
+  margin-bottom: 1vh;
+  padding-right: 2.6vw;
+  @include flex(row, flex-end, center);
+  button {
+    cursor: pointer;
+    font-size: 1.0rem;
+    color: #fff;
+
+    background-color: #53AEE2;
+    outline: none;
+    padding: 5px 20px;
+    border-radius: 3px;
+    transition: opacity 0.3s ease-in-out;
+    box-shadow: $global-box-shadow;
+
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+}
 
 .alert {
   @include flex(column, center, center, 3vh);
@@ -166,10 +200,10 @@ onBeforeMount(verifyData);
 
 }
 
-.options {
-  position: absolute;
-  top: -7vh;
-  right: 7vw;
+.options_extract {
+  @include flex(row, flex-end, center);
+  margin-bottom: 1vh;
+
 
   span {
     font-size: 1.4rem;
@@ -197,27 +231,6 @@ select {
   @include container(100%, 100%);
   position: relative;
 
-  .return {
-    position: absolute;
-    top: -6vh;
-    right: 1vw;
-
-    button {
-      cursor: pointer;
-      font-size: 1.0rem;
-      color: #fff;
-      background-color: #53AEE2;
-      outline: none;
-      padding: 5px 20px;
-      border-radius: 5px;
-      transition: opacity 0.3s ease-in-out;
-      box-shadow: $global-box-shadow;
-
-      &:hover {
-        opacity: 0.9;
-      }
-    }
-  }
 }
 
   .percent {
