@@ -48,6 +48,7 @@ const mock = ref([{
         </thead>
         <tbody>
 
+          
         </tbody>
       </table>
       </div>
@@ -59,6 +60,7 @@ const mock = ref([{
 
 .table {
     border-spacing: 0 15px;
+    border-radius: 20px;
   }
 
   .table tr {

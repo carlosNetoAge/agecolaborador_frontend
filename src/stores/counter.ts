@@ -51,7 +51,6 @@ export const useAuthStore = defineStore('auth', () => {
   const authToken = ref(null);
 
   if (Cookie.get('token')) {
-    console.log('is load')
     isAuthenticated.value = true
     authToken.value = Cookie.get('token')
   }
@@ -70,3 +69,25 @@ export const useAuthStore = defineStore('auth', () => {
 
   return { isAuthenticated, login, logout }
 });
+
+export const sellerInfoStore = defineStore('sellerInfo', () => {
+
+  const dataSeller = ref({})
+  const periodRefer = ref('')
+
+  function setInfo(seller: object, date: string) {
+    dataSeller.value = seller;
+    periodRefer.value = date;
+  }
+
+  function getInfo() {
+    return { dataSeller: dataSeller.value, periodRefer: periodRefer.value}
+  }
+
+  function removeInfo() {
+    dataSeller.value = {}
+    periodRefer.value = ''
+  }
+
+  return { setInfo, getInfo, removeInfo, dataSeller, periodRefer}
+})

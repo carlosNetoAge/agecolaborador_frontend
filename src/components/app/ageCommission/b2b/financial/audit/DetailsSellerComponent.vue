@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {defineEmits, ref, defineProps,onMounted, onBeforeMount} from 'vue';
+import { ref, onMounted } from 'vue';
 import ListSalesDetails from "@/components/app/ageCommission/b2b/financial/audit/cards/ListSalesDetails.vue";
 import SellerCard from '@/components/app/ageCommission/b2b/financial/audit/cards/SellerCard.vue'
 import CommissionsCompositionsCard from "@/components/app/ageCommission/b2b/financial/audit/cards/CommissionsCompositionsCard.vue"
@@ -7,33 +7,17 @@ import SalesCard from "./cards/SalesCard.vue";
 import CommissionsOnlineCard from "./cards/CommissionsOnlineCard.vue";
 import PorcentageCard from "./cards/PorcentageCard.vue";
 import ListExtracts from "./cards/ListExtracts.vue";
-import { infoPage } from "@/stores/counter";
+import { infoPage, sellerInfoStore } from "@/stores/counter";
 import { AXIOS } from '@api/AXIOS';
-
-interface InvoiceItem {
-  invoice: any;
-}
-
-interface DataSeller {
-  invoices?: { [key: string]: InvoiceItem };
-}
-
-interface PeriodRefer {
-  refer: any;
-}
-
-const emit = defineEmits(['return']);
-const props = defineProps<{ dataSeller: DataSeller, periodRefer: PeriodRefer }>()
-const dataSeller = props.dataSeller;
-const periodRefer = ref(props.periodRefer);
+import router from "@/router";
 
 const returnPage = () => {
-  emit('return');
+  router.push('/ageCommissiona/b2b/financeiro')
+  page.value = 'list'
 }
 
 const selectedPeriod = ref('2024-01-01');
 const statusReq = ref(false);
-
 
 // Opções de período para seleção
 const periodOptions = ref([
@@ -45,6 +29,7 @@ const periodOptions = ref([
   { label: 'Agosto de 2024', value: '2024-06-01' , refer: 'Junho de 2024'},
 ]);
 
+const store = sellerInfoStore();
 const info = infoPage();
 
 const getPeriodRefer = () => {
@@ -53,13 +38,21 @@ const getPeriodRefer = () => {
 };
 
 const seller = ref({});
-const page = ref('details');
+const page = ref('');
 const statusDashboard = ref(false);
+const periodRefer = ref('')
 
-const setInfoPage = () => {
-  info.setInfoPage({
+const setInfoPage = async () => {
+  await info.setInfoPage({
     title: 'Detalhes do Executivo',
     subtitle: 'Vendas, meta, comissionamento, contratos e faturas vinculadas' });
+  page.value = 'details'
+}
+
+const validateData = () => {
+  if(!seller.value) {
+    router.push('/home')
+  }
 }
 
 // Função para obter dados da API
@@ -79,90 +72,92 @@ const getData = () => {
     statusReq.value = false;
     statusDashboard.value = true;
     setInfoPage();
+    validateData();
   }).catch((error) => {
-    console.log(error)
+    console.error(error)
   });
 };
 
 const propData = ref(false);
 
-const verifyData = () => {
-
-  if(dataSeller.length == 0) {
+const verifyData = async () => {
+  const dataSeller = await store.getInfo();
+  if(Object.keys(dataSeller.dataSeller).length <= 0) {
     getPeriodRefer();
     getData();
   } else {
-    seller.value = dataSeller;
+    seller.value = dataSeller.dataSeller;
+    periodRefer.value = dataSeller.periodRefer
     propData.value = true;
+    setInfoPage()
   }
   statusReq.value = false;
   statusDashboard.value = true;
 }
 
-
-
-onBeforeMount(verifyData);
-
+onMounted(verifyData);
 
 </script>
 
 <template>
-  <div class="return">
-    <button @click="returnPage">Voltar</button>
-  </div>
-  <div class="details__container h-screen flex flex-col overflow-hidden">
-
-    <div class="options_extract" v-if="page === 'details' && !propData">
-      <span>Mês de pagamento</span>
-      <select @change="getData" v-model="selectedPeriod" :disabled="statusReq">
-        <option v-for="option in periodOptions" :value="option.value" :key="option.value">{{ option.label }}</option>
-      </select>
+  <div class="relative">
+    <div class="return absolute z-10 right-0 -top-24" v-if="page == 'details'">
+      <button @click="returnPage">Voltar</button>
     </div>
-    <template v-if="seller != null">
-      <div class="flex-grow grid grid-cols-3 grid-rows-2 gap-4 h-4/5" v-if="page == 'details' && statusDashboard">
-        <SellerCard
-            :data="seller"
-            :periodRefer="periodRefer"
-            class="bg-white p-4 rounded-large"
-        >
-        </SellerCard>
-        <CommissionsCompositionsCard
-            :data="seller"
-            class="bg-white p-4 rounded-large"
-            @viewExtract="page = 'extract'"
-        >
-        </CommissionsCompositionsCard>
-        <SalesCard
-            :data="seller"
-            :page="page"
-            @viewSales="page = 'listSales'"
-            class="bg-white p-4 rounded-large"
-        >
-        </SalesCard>
-        <CommissionsOnlineCard
-            :data="seller"
-            class="bg-white p-4 rounded-large col-span-2"
-        ></CommissionsOnlineCard>
-        <PorcentageCard
-            :data="seller"
-            class="bg-white p-4 rounded-large"
-        ></PorcentageCard>
+    <div class="details__container h-screen flex flex-col overflow-hidden">
+
+      <div class="options_extract" v-if="page === 'details' && !propData">
+        <span>Mês de pagamento</span>
+        <select @change="getData" v-model="selectedPeriod" :disabled="statusReq">
+          <option v-for="option in periodOptions" :value="option.value" :key="option.value">{{ option.label }}</option>
+        </select>
       </div>
-      <ListSalesDetails
-          @return="page = 'details'"
-          :dataList="seller"
-          v-if="page == 'listSales'"
-      />
-      <ListExtracts
-      @return="page = 'details'"
-      :data="seller"
-      v-if="page == 'extract'"
-      />
-    </template>
-    <div class="alert" v-else>
-      <h1>
-        Nenhuma venda registrada no período selecionado, escolha outro período.
-      </h1>
+      <template v-if="seller">
+        <div class="flex-grow grid grid-cols-3 grid-rows-2 gap-4 h-4/5" v-if="page == 'details' && statusDashboard">
+          <SellerCard
+              :data="seller"
+              :periodRefer="periodRefer"
+              class="bg-white p-4 rounded-large"
+          >
+          </SellerCard>
+          <CommissionsCompositionsCard
+              :data="seller"
+              class="bg-white p-4 rounded-large"
+              @viewExtract="page = 'extract'"
+          >
+          </CommissionsCompositionsCard>
+          <SalesCard
+              :data="seller"
+              :page="page"
+              @viewSales="page = 'listSales'"
+              class="bg-white p-4 rounded-large"
+          >
+          </SalesCard>
+          <CommissionsOnlineCard
+              :data="seller"
+              class="bg-white p-4 rounded-large col-span-2"
+          ></CommissionsOnlineCard>
+          <PorcentageCard
+              :data="seller"
+              class="bg-white p-4 rounded-large"
+          ></PorcentageCard>
+        </div>
+        <ListSalesDetails
+            @return="page = 'details'"
+            :dataList="seller"
+            v-if="page == 'listSales'"
+        />
+        <ListExtracts
+        @return="page = 'details'"
+        :data="seller"
+        v-if="page == 'extract'"
+        />
+      </template>
+      <div class="alert" v-else>
+        <h1>
+          Nenhuma venda registrada no período selecionado, escolha outro período.
+        </h1>
+      </div>
     </div>
   </div>
 </template>

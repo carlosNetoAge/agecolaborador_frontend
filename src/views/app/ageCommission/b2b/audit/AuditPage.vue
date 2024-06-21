@@ -5,11 +5,12 @@ import { onMounted, onUpdated, ref, watch } from "vue";
 import { AXIOS } from "@api/AXIOS";
 import Cookie from "js-cookie";
 import { infoPage } from "@/stores/counter";
+import { sellerInfoStore } from "@/stores/counter";
+import router from "@/router";
 
 
 
 // Referências reativas
-const dataSeller = ref({});
 const page = ref('list');
 const data = ref([]);
 const statusDashboard = ref(false);
@@ -17,6 +18,7 @@ const statusReq = ref(false);
 const selectedPeriod = ref('2024-01-01');
 const periodRefer = ref('');
 const info = infoPage();
+const store = sellerInfoStore();
 
 // Opções de período para seleção
 const periodOptions = ref([
@@ -30,10 +32,10 @@ const periodOptions = ref([
 
 // Função para visualizar detalhes do vendedor
 const viewDetails = (data: Object) => {
-  dataSeller.value = data;
-  periodRefer.value = computeReferenceMonth();
+  computeReferenceMonth()
+  store.setInfo(data, periodRefer.value);
   page.value = 'details';
-  console.log(data)
+  router.push('/ageCommissiona/b2/financeiro/seller')
 };
 
 // Função para obter dados da API
@@ -55,7 +57,6 @@ const getData = () => {
     statusReq.value = false;
     setInfoPage();
   }).catch((error) => {
-
   });
 };
 
@@ -79,7 +80,6 @@ const setInfoPage = () => {
     title: 'Auditoria de vendas B2B - Referente à ' + periodRefer.value,
     subtitle: 'Examine cada transação, garantindo precisão e integridade nas vendas.' });
 }
-
 
 </script>
 
@@ -113,8 +113,6 @@ const setInfoPage = () => {
       </table>
     </div>
   </div>
-
-  <DetailsSellerComponent @return="returning" v-if="page === 'details'" :dataSeller="dataSeller" :periodRefer="periodRefer" />
 </template>
 
 

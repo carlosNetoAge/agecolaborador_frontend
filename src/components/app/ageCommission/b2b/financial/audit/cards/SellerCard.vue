@@ -18,7 +18,6 @@ interface PeriodRefer {
 
 const props = defineProps<{ data: DataSeller, periodRefer: PeriodRefer }>();
 
-const periodRefer = ref(props.periodRefer)
 const dataSeller = ref(props.data);
 let totalContracts = ref(0);
 let totalInvoices = ref(0);
@@ -30,7 +29,6 @@ const countDatas = () => {
       totalInvoices.value++;
     }
   }
-  console.log(periodRefer.value)
   totalContracts.value = dataSeller.value.contracts.business + dataSeller.value.contracts.dedicated;
   totalSells.value = totalContracts.value;
 }
