@@ -83,7 +83,7 @@ onMounted(countPercentages)
         Composição do comissionamento
       </h2>
       <span class="text-nowrap font-semiBold text-3xl pt-5">R$ {{ sumCommissions }}</span>
-      <button class="absolute top-5  min-[1600px]:right-16 md:right-5 bg-age-blue text-white py-2 px-4 rounded pr-4" @click="viewExtract">Extrato</button>
+      <!-- <button class="absolute top-5  min-[1600px]:right-16 md:right-5 bg-age-blue text-white py-2 px-4 rounded pr-4" @click="viewExtract">Extrato</button> -->
     </div>
     <div class="flex flex-row items-center  min-[1600px]:justify-between md:justify-center h-4/5 md:text-xs  min-[1600px]:text-lg px-16 md:px-8">
       <apexchart type="donut" width="150" height="150" :options="chartOptions" :series="series"></apexchart>

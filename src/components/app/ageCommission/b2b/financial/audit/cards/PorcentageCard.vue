@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+import comingSoon from '@/assets/img/web/coming-soon.png'
 
 interface InvoiceItem {
   invoice: any;
@@ -115,48 +116,55 @@ onMounted(calculateSeries)
 </script>
 
 <template>
-  <div class="flex flex-col justify-around">
-    <div class="flex flex-col pl-10 pt-5">
-      <h2 class="text-nowrap text-lg">
-        Contagem de pagamentos
-      </h2>
+  <div class="relative">
+    <div class="flex flex-col justify-around">
+      <div class="flex flex-col pl-10 pt-5">
+        <h2 class="text-nowrap text-lg">
+          Contagem de pagamentos
+        </h2>
+      </div>
+      <div class="flex flex-row justify-between"> 
+        <div id="chart">
+          <apexchart type="donut" :options="chartOptions" :series="mocValue"></apexchart>
+        </div>
+        <div class="items__container flex flex-col gap-2 md:justify-center md:w-3/5 text-nowrap min-[1600px]:w-3/6">
+          <div class="items__composition">
+            <div class="item">
+              <div style="background-color: #FF8B3D">
+              </div>
+              <span>Pago</span>
+            </div>
+            <div class="composition">
+              <span>R$ {{ mocValue[0].toFixed(2) }}</span>
+            </div>
+          </div>
+          <div class="items__composition flex">
+            <div class="item">
+              <div style="background-color: #53AEE2">
+              </div>
+              <span>A ser pago</span>
+            </div>
+            <div class="composition">
+              <span>R$ {{ mocValue[1].toFixed(2) }}</span>
+            </div>
+          </div>
+          <div class="items__composition flex">
+            <div class="item">
+              <div style="background-color: #FFD8BE">
+              </div>
+              <span>Previsão de ganhos</span>
+            </div>
+            <div class="composition">
+              <span>R$ {{ mocValue[2].toFixed(2) }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="flex flex-row justify-between"> 
-      <div id="chart">
-        <apexchart type="donut" :options="chartOptions" :series="mocValue"></apexchart>
-      </div>
-      <div class="items__container flex flex-col gap-2 md:justify-center md:w-3/5 text-nowrap min-[1600px]:w-3/6">
-        <div class="items__composition">
-          <div class="item">
-            <div style="background-color: #FF8B3D">
-            </div>
-            <span>Pago</span>
-          </div>
-          <div class="composition">
-            <span>R$ {{ mocValue[0].toFixed(2) }}</span>
-          </div>
-        </div>
-        <div class="items__composition flex">
-          <div class="item">
-            <div style="background-color: #53AEE2">
-            </div>
-            <span>A ser pago</span>
-          </div>
-          <div class="composition">
-            <span>R$ {{ mocValue[1].toFixed(2) }}</span>
-          </div>
-        </div>
-        <div class="items__composition flex">
-          <div class="item">
-            <div style="background-color: #FFD8BE">
-            </div>
-            <span>Previsão de ganhos</span>
-          </div>
-          <div class="composition">
-            <span>R$ {{ mocValue[2].toFixed(2) }}</span>
-          </div>
-        </div>
-      </div>
+    <div class="absolute bg-[#333] opacity-35 h-full w-full top-0 left-0 rounded-large">
+    </div>
+    <div class="flex justify-center items-center absolute h-full w-full top-0 left-0">
+      <img :src="comingSoon" class="w-2/12">
     </div>
   </div>
 </template>
