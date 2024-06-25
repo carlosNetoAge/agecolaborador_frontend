@@ -36,7 +36,7 @@ const router = createRouter({
       }
     },
     {
-      path: '/ageCommissiona/b2/financeiro/seller',
+      path: '/ageCommissiona/b2b/financeiro/executivo',
       name: 'sellerDetails',
       component: () => import('@/components/app/ageCommission/b2b/financial/audit/DetailsSellerComponent.vue'),
       meta: {
@@ -44,7 +44,7 @@ const router = createRouter({
       },
     },
     {
-      path: '/ageCommissiona/b2b/dasboard/executivo',
+      path: '/ageCommissiona/b2b/dashboard/executivo',
       name: 'DetailsSellerComponent',
       component: () => import('@/components/app/ageCommission/b2b/financial/audit/DetailsSellerComponent.vue'),
       meta: {

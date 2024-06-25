@@ -55,7 +55,7 @@ const alterStateMenu = () => {
                <transition name="fade">
                  <ul class="list__submenu" v-if="actualMenu == 'AgeCommission'">
                    <router-link
-                       to="/ageCommissiona/b2b/dasboard/executivo"
+                       to="/ageCommissiona/b2b/dashboard/executivo"
                        class="item__submenu" :class="{'active__submenu' : actualSubMenu == 'AgeCommissionCommission'}" @click="actualSubMenu = 'AgeCommissionCommission'">
                      <p>Minha Comissão</p>
                    </router-link>

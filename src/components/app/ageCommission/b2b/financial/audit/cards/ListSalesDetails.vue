@@ -84,9 +84,8 @@ const returnPage = () => {
 
   .return {
     position: absolute;
-    top: -6vh;
+    top: -5vh;
     right: 1vw;
-
     button {
       cursor: pointer;
       font-size: 1rem;
@@ -108,7 +107,7 @@ const returnPage = () => {
   .table__container {
     width: 100%;
     overflow-y: auto;
-    max-height: 100%;
+    max-height: 80vh;
     border-radius: 10px;
     background-color: #fff;
     box-shadow: $global-box-shadow;
@@ -137,7 +136,6 @@ const returnPage = () => {
           animation: up .3s ease-in-out forwards;
           opacity: 0;
           transition: background-color ease-in-out .2s;
-
           &:hover {
             background-color: #F1F1F180;
           }
@@ -147,6 +145,8 @@ const returnPage = () => {
             font-size: 1.2rem;
             font-weight: 500;
             color: #333333;
+            user-select: text !important;
+
           }
         }
       }

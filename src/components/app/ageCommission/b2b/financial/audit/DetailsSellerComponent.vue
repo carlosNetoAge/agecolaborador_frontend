@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import ListSalesDetails from "@/components/app/ageCommission/b2b/financial/audit/cards/ListSalesDetails.vue";
 import SellerCard from '@/components/app/ageCommission/b2b/financial/audit/cards/SellerCard.vue'
 import CommissionsCompositionsCard from "@/components/app/ageCommission/b2b/financial/audit/cards/CommissionsCompositionsCard.vue"
@@ -9,7 +9,7 @@ import PorcentageCard from "./cards/PorcentageCard.vue";
 import ListExtracts from "./cards/ListExtracts.vue";
 import { infoPage, sellerInfoStore } from "@/stores/counter";
 import { AXIOS } from '@api/AXIOS';
-import router from "@/router";
+import { useRouter } from 'vue-router';
 
 const returnPage = () => {
   router.push('/ageCommissiona/b2b/financeiro')
@@ -99,13 +99,17 @@ const verifyData = async () => {
   statusDashboard.value = true;
 }
 
+const router = useRouter();
+const currentRoute = computed(() => router.currentRoute.value);
+
 onMounted(verifyData);
 
 </script>
 
 <template>
   <div class="relative">
-    <div class="return absolute z-10 right-0 -top-24" v-if="page == 'details'">
+    <div class="return absolute z-10 right-0 -top-24" v-if="page == 'details' &&
+        currentRoute.path !== '/ageCommissiona/b2b/dashboard/executivo'">
       <button @click="returnPage">Voltar</button>
     </div>
     <div class="details__container h-screen flex flex-col overflow-hidden">

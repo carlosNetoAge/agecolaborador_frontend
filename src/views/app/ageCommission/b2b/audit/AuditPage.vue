@@ -35,7 +35,7 @@ const viewDetails = (data: Object) => {
   computeReferenceMonth()
   store.setInfo(data, periodRefer.value);
   page.value = 'details';
-  router.push('/ageCommissiona/b2/financeiro/seller')
+  router.push('/ageCommissiona/b2b/financeiro/executivo')
 };
 
 // Função para obter dados da API
