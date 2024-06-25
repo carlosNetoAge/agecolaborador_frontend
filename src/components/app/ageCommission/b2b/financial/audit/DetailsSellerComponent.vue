@@ -51,6 +51,7 @@ const setInfoPage = async () => {
 
 const validateData = () => {
   if(!seller.value) {
+    store.removeInfo();
     router.push('/home')
   }
 }
@@ -75,6 +76,7 @@ const getData = () => {
     validateData();
   }).catch((error) => {
     console.error(error)
+    validateData();
   });
 };
 
