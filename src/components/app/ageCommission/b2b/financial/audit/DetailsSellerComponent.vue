@@ -112,7 +112,7 @@ onMounted(verifyData);
         currentRoute.path !== '/ageCommissiona/b2b/dashboard/executivo'">
       <button @click="returnPage">Voltar</button>
     </div>
-    <div class="details__container h-screen flex flex-col overflow-hidden">
+    <div class="details__container h-screen flex flex-col">
 
       <div class="options_extract" v-if="page === 'details' && !propData">
         <span>Mês de pagamento</span>
