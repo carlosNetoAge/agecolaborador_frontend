@@ -75,7 +75,9 @@ const getData = () => {
     setInfoPage();
     validateData();
   }).catch((error) => {
-    console.error(error)
+    if(error.response.status === 404 || error.response.status === 401 || error.response.status === 500) {
+      router.push('/home')
+    }
     validateData();
   });
 };
