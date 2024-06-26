@@ -1,5 +1,60 @@
 <script setup lang="ts">
-import {onBeforeUnmount, onMounted, ref} from "vue";
+import {onBeforeUnmount, onMounted, ref, defineEmits, defineProps} from "vue";
+import {AXIOS} from "@api/AXIOS";
+
+const props = defineProps({
+  statusCalendar: Boolean
+});
+
+const statusCalendar = props.statusCalendar;
+
+const dateCalendar = ref({})
+
+const emit = defineEmits(['updateData']);
+
+
+
+const dateActual = new Date();
+
+const monthActual = ref(getNameMonth(dateActual));
+const dayActual = ref(dateActual.getDate());
+
+const updateData = (period?: Date) => {
+  if (!period) {
+    period = new Date();  // Usando a data atual se nenhum período for fornecido
+    const year = period.getFullYear();
+    const month = String(period.getMonth() + 1).padStart(2, '0');
+    const day = String(period.getDate()).padStart(2, '0');
+    const formattedPeriod = `${year}-${month}-${day}`;
+
+    return emit('updateData', formattedPeriod);
+  }
+
+  return emit('updateData', period);
+
+}
+
+
+const getCalendar = () => {
+  AXIOS({
+    method: 'get',
+    url: 'http://localhost:8000/integrator/aniel/capacity/calendar',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }).then((response) => {
+    dateCalendar.value = response.data;
+    updateData();
+  });
+}
+
+
+function getNameMonth(data: Date) {
+  const options = { month: 'long' };
+  const nameMonth = data.toLocaleString('pt-BR', options);
+  return nameMonth.charAt(0).toUpperCase() + nameMonth.slice(1);
+}
+
 
 const isDragging = ref(false);
 const startX = ref(0);
@@ -33,6 +88,9 @@ onMounted(() => {
     container.value.addEventListener('mouseup', stopDrag);
     container.value.addEventListener('mouseleave', stopDrag);
   }
+
+  getCalendar();
+
 });
 
 onBeforeUnmount(() => {
@@ -43,95 +101,45 @@ onBeforeUnmount(() => {
   }
 });
 
-const days = ref(0);
-
-const formatString = (str: string) => {
-  if (str.endsWith('.')) {
-    str = str.slice(0, -1);
-  }
-  return str.charAt(0).toUpperCase() + str.slice(1);
-};
-
-
-const monthActual = ref<any>((new Date().getMonth()) + 1);
-const monthActualName = ref<any>('');
-const daysName = ref<string[]>([]);
-
-const months = Array.from({ length: 12 }, (_, i) => {
-  const date = new Date(0, i);
-  const options = { month: 'long' };
-  const formatter = new Intl.DateTimeFormat('pt-BR', options);
-  return formatString(formatter.format(date));
-});
-
-const getDaysInMonth = (month: number) => {
-  daysName.value = [];
-  monthActual.value = month;
-  const yearNow = new Date().getFullYear();
-  days.value = new Date(yearNow, month, 0).getDate();
-
-  for (let i = 1; i <= days.value; i++) {
-    daysName.value.push(formatDate(month, i));
-  }
-};
-
-onMounted(() => {
-  getDaysInMonth(monthActual.value)
-
-  monthActualName.value = months.map((month, i) => {
-    if (month === months[new Date().getMonth()]) {
-      return month;
-    }
-  }).filter((month) => month)[0];
-});
-
-const formatDate = (month: number, day: number) => {
-  const options = { weekday: 'short' };
-  const formatter = new Intl.DateTimeFormat('pt-BR', options);
-  const date = new Date(new Date().getFullYear(), month - 1, day);
-  return formatString(formatter.format(date));
-};
-
-const payload = ref({});
-const monthSelected = ref(0);
-const daySelected = ref(0);
-
-const setPayload = (month:number, day:number) => {
-  monthSelected.value = month;
-  daySelected.value = day;
-  payload.value = {
-    date: new Date().getFullYear()+`-${month}-${day}`,
-  };
-};
 
 </script>
 
 <template>
   <div class="calendar">
-    <div class="months">
-      <div
-          v-for="(month, i) in months"
-          :key="month"
-          :class="{ month: true, select: month === monthActualName }"
-          @click="[monthActualName = month, getDaysInMonth(i + 1)]"
-      >
-        {{ month }}
-      </div>
-    </div>
-    <div
-        ref="container"
-        class="days"
-        @mousedown="startDrag"
-    >
-      <div class="day"
-           v-for="(name, day) in daysName" :key="day"
-           @click="setPayload(monthActual, (day+1))">
-        <div class="box"  :class="{selectedDay: daySelected === day + 1}">
-          <span class="dayName">{{ name }}</span>
-          <span class="dayNumber">{{ day + 1 }}</span>
+    <template v-if="props.statusCalendar">
+      <div class="months">
+        <div
+            v-for="(month, i) in dateCalendar"
+            :key="i"
+            :class="{ month: true, select: i === monthActual }"
+            @click="[monthActual = i, dayActual = 0]"
+        >
+          {{ i }}
         </div>
       </div>
-    </div>
+      <div
+          ref="container"
+          class="days"
+          @mousedown="startDrag"
+      >
+        <div class="day"
+             v-for="(month, day) in dateCalendar[monthActual]" :key="day">
+
+          <div class="box"  :class="{selectedDay: dayActual === month.day}"
+               @click="[dayActual = month.day, updateData(month.extense)]">
+            <span class="dayName">{{ month.name }}</span>
+            <span class="dayNumber">{{ month.day }}</span>
+          </div>
+        </div>
+      </div>
+    </template>
+    <section class="dots-container" v-else>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </section>
   </div>
 
 </template>
@@ -150,6 +158,9 @@ const setPayload = (month:number, day:number) => {
     width: 100%;
     @include flex(row, space-evenly, center, 1vh);
     margin-bottom: 1vh;
+    animation: up .3s ease-in-out forwards;
+    opacity: 0;
+
     .month {
       font-size: 1.2rem;
       font-weight: 400;
@@ -174,7 +185,8 @@ const setPayload = (month:number, day:number) => {
     white-space: nowrap;
     cursor: grab;
     @include flex(row, flex-start, center, 1vh);
-
+    animation: up .3s ease-in-out forwards;
+    opacity: 0;
     &:active {
       cursor: grabbing;
     }
@@ -235,4 +247,67 @@ const setPayload = (month:number, day:number) => {
   }
 }
 
+@keyframes up {
+  from {
+    transform: translateY(5px);
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+}
+
+.dots-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+
+.dot {
+  height: 10px;
+  width: 10px;
+  margin-right: 10px;
+  border-radius: 10px;
+  background-color: #53AEE2;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+.dot:last-child {
+  margin-right: 0;
+}
+
+.dot:nth-child(1) {
+  animation-delay: -0.3s;
+}
+
+.dot:nth-child(2) {
+  animation-delay: -0.1s;
+}
+
+.dot:nth-child(3) {
+  animation-delay: 0.1s;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.8);
+    background-color: #53AEE260;
+    box-shadow: 0 0 0 0 rgba(178, 212, 252, 0.7);
+  }
+
+  50% {
+    transform: scale(1.2);
+    background-color: #53AEE2;
+    box-shadow: 0 0 0 10px rgba(178, 212, 252, 0);
+  }
+
+  100% {
+    transform: scale(0.8);
+    background-color: #53AEE240;
+    box-shadow: 0 0 0 0 rgba(178, 212, 252, 0.7);
+  }
+}
 </style>

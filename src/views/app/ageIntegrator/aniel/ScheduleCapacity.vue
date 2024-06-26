@@ -5,6 +5,7 @@ import afternoon from '@/assets/img/app/ageIntegrator/aniel/afternoon.png'
 
 import { infoPage} from "@/stores/counter";
 import CalendarOperational from "@/components/app/ageIntegrator/aniel/CalendarOperational.vue";
+import {AXIOS} from "@api/AXIOS";
 
 const info = infoPage();
 
@@ -17,6 +18,24 @@ const setInfoPage = () => {
 
 setInfoPage();
 
+const statusRequest = ref(false);
+
+const getData = (period: Date) => {
+  statusRequest.value = false;
+
+  AXIOS({
+    url: 'http://localhost:8000/integrator/aniel/capacity',
+    params: {
+      period: period
+    },
+    method: 'GET'
+  }).then((response) => {
+    statusRequest.value = true;
+    console.log(response)
+  }).catch((error) => {
+    console.log(error);
+  });
+}
 
 const panel = ref('operational');
 
@@ -27,7 +46,10 @@ const panel = ref('operational');
     <router-link exact-active-class="select" to="/ageIntegra/agenda-aniel" @click="panel = 'operational'">Operacional</router-link>
     <router-link exact-active-class="select" to="/ageIntegra/agenda-aniel/aprovacao" @click="panel = 'approbation'">Aprovação</router-link>
   </div>
-  <CalendarOperational />
+  <CalendarOperational
+    @updateData="getData"
+    :statusCalendar="statusRequest"
+  />
   <div class="container_content">
     <div class="capacity">
       <div class="period">
