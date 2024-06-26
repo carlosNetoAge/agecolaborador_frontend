@@ -21,8 +21,8 @@ onBeforeMount(() => {
 
 const rows = ref([
   {
-    "title": "Ativação Plano Combo",
-    "type": "Ativação",
+    "title": "Mudança de endereço",
+    "type": "ME",
     "segment": "B2C",
     "schedule": "12/06/2024 14:00",
     "period": "Tarde",
@@ -30,6 +30,7 @@ const rows = ref([
     "contract": "219821",
     "contact": "6199999-9999",
     "nameClient": "Fulano de Souza",
+    "sector": "SAC",
     "request": "Betania",
     "status": "Aprovado"
   },
@@ -43,12 +44,13 @@ const rows = ref([
     "contract": "219822",
     "contact": "6198888-8888",
     "nameClient": "Ciclano Pereira",
+    "sector": "MCV",
     "request": "Jhefferson",
     "status": "Pré-Aprovado"
   },
   {
-    "title": "Ativação Plano Combo",
-    "type": "Ativação",
+    "title": "Mudança de Ponto",
+    "type": "MP",
     "segment": "B2C",
     "schedule": "12/06/2024 16:00",
     "period": "Tarde",
@@ -56,6 +58,7 @@ const rows = ref([
     "contract": "219823",
     "contact": "6197777-7777",
     "nameClient": "Beltrano Silva",
+    "sector": "Suporte",
     "request": "Denise",
     "status": "Aprovado"
   },
@@ -69,7 +72,8 @@ const rows = ref([
     "contract": "219824",
     "contact": "6196666-6666",
     "nameClient": "Maria Oliveira",
-    "request": "Sul",
+    "sector": "Condomínio",
+    "request": "Daiane",
     "status": "Rejeitado"
   }
 ])
@@ -102,6 +106,7 @@ const rows = ref([
         <div class="item">Colaborador</div>
         <div class="item">Contrato</div>
         <div class="item">Contato</div>
+        <div class="item">Setor</div>
         <div class="item">Solicitou aprovação</div>
         <div class="item" style="text-align: center;">Status</div>
 
@@ -134,6 +139,9 @@ const rows = ref([
         </div>
         <div class="item">
           {{ item.contact }}
+        </div>
+        <div class="item">
+          {{ item.sector }}
         </div>
         <div class="item">
           {{ item.request }}
