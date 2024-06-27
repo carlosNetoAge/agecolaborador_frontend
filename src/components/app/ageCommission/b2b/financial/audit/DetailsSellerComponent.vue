@@ -10,6 +10,7 @@ import ListExtracts from "./cards/ListExtracts.vue";
 import { infoPage, sellerInfoStore } from "@/stores/counter";
 import { AXIOS } from '@api/AXIOS';
 import { useRouter } from 'vue-router';
+import Cookie from 'js-cookie';
 
 const returnPage = () => {
   router.push('/ageCommissiona/b2b/financeiro')
@@ -62,9 +63,10 @@ const getData = () => {
   statusDashboard.value = false;
   AXIOS({
     method: 'get',
-    url: 'agerv/b2b/commission/financial/builder/seller',
+    url: 'agerv/b2b/seller/dashboard',
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + Cookie.get('token')
     },
     params: { period: selectedPeriod.value }
   }).then((response) => {
@@ -73,7 +75,6 @@ const getData = () => {
     statusReq.value = false;
     statusDashboard.value = true;
     setInfoPage();
-    validateData();
   }).catch((error) => {
     if(error.response.status === 404 || error.response.status === 401 || error.response.status === 500) {
       router.push('/home')
@@ -108,18 +109,19 @@ onMounted(verifyData);
 
 <template>
   <div class="relative">
+    <div class="options_extract" v-if="page === 'details' && !propData">
+      <span>Mês de pagamento</span>
+      <select @change="getData" v-model="selectedPeriod" :disabled="statusReq">
+        <option v-for="option in periodOptions" :value="option.value" :key="option.value">{{ option.label }}</option>
+      </select>
+    </div>
     <div class="return absolute z-10 right-0 -top-24" v-if="page == 'details' &&
         currentRoute.path !== '/ageCommissiona/b2b/dashboard/executivo'">
       <button @click="returnPage">Voltar</button>
     </div>
     <div class="details__container h-screen flex flex-col">
 
-      <div class="options_extract" v-if="page === 'details' && !propData">
-        <span>Mês de pagamento</span>
-        <select @change="getData" v-model="selectedPeriod" :disabled="statusReq">
-          <option v-for="option in periodOptions" :value="option.value" :key="option.value">{{ option.label }}</option>
-        </select>
-      </div>
+
       <template v-if="seller">
         <div class="flex-grow grid grid-cols-3 grid-rows-2 gap-4 h-4/5" v-if="page == 'details' && statusDashboard">
           <SellerCard
