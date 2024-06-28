@@ -19,6 +19,7 @@ const setInfoPage = () => {
 setInfoPage();
 
 const statusRequest = ref(false);
+const capacity = ref({});
 
 const getData = (period: Date) => {
   statusRequest.value = false;
@@ -31,7 +32,8 @@ const getData = (period: Date) => {
     method: 'GET'
   }).then((response) => {
     statusRequest.value = true;
-    console.log(response)
+    capacity.value = response.data
+    console.log(capacity.value)
   }).catch((error) => {
     console.log(error);
   });

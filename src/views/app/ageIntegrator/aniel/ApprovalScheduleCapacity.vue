@@ -18,6 +18,19 @@ onBeforeMount(() => {
   setInfoPage();
 });
 
+const getStatus = (status: string) => {
+  const classCss = {
+    'Aprovado': 'success',
+    'Pré-Aprovado': 'progress',
+    'Rejeitado': 'warning',
+    'Inserido no Aniel': 'success',
+    'Pendente de aprovação': 'progress',
+    'Reagendado pelo cliente': 'success',
+    'Expirado': 'warning'
+  };
+  return classCss[status] || 'default';
+};
+
 
 const rows = ref([
   {
@@ -28,6 +41,7 @@ const rows = ref([
     "period": "Tarde",
     "collaborator": "Juliano Silva",
     "contract": "219821",
+    "os": "120212",
     "contact": "6199999-9999",
     "nameClient": "Fulano de Souza",
     "sector": "SAC",
@@ -42,6 +56,7 @@ const rows = ref([
     "period": "Manhã",
     "collaborator": "Ana Lima",
     "contract": "219822",
+    "os": "120212",
     "contact": "6198888-8888",
     "nameClient": "Ciclano Pereira",
     "sector": "MCV",
@@ -56,6 +71,7 @@ const rows = ref([
     "period": "Tarde",
     "collaborator": "Marcos Dias",
     "contract": "219823",
+    "os": "120212",
     "contact": "6197777-7777",
     "nameClient": "Beltrano Silva",
     "sector": "Suporte",
@@ -70,6 +86,7 @@ const rows = ref([
     "period": "Manhã",
     "collaborator": "Joana Souza",
     "contract": "219824",
+    "os": "120212",
     "contact": "6196666-6666",
     "nameClient": "Maria Oliveira",
     "sector": "Condomínio",
@@ -90,6 +107,7 @@ const rows = ref([
     <div class="actions">
       <button>Aprovar</button>
       <button>Rejeitar</button>
+      <button>Reagendar</button>
     </div>
   </div>
   <div class="table">
@@ -103,14 +121,11 @@ const rows = ref([
         <div class="item">Tipo</div>
         <div class="item">Data/Hora agendada</div>
         <div class="item">Período</div>
-        <div class="item">Colaborador</div>
         <div class="item">Contrato</div>
-        <div class="item">Contato</div>
+        <div class="item">Nº da O.S</div>
         <div class="item">Setor</div>
-        <div class="item">Solicitou aprovação</div>
+        <div class="item">Solicitante</div>
         <div class="item" style="text-align: center;">Status</div>
-
-
       </div>
     </div>
     <div class="body">
@@ -132,13 +147,10 @@ const rows = ref([
           {{ item.period }}
         </div>
         <div class="item">
-          {{ item.collaborator }}
-        </div>
-        <div class="item">
           {{ item.contract }}
         </div>
         <div class="item">
-          {{ item.contact }}
+          {{ item.os }}
         </div>
         <div class="item">
           {{ item.sector }}
@@ -147,16 +159,10 @@ const rows = ref([
           {{ item.request }}
         </div>
         <div class="item" style="text-align: center;">
-              <span class="badge"
-                    :class="{
-                'badge-success' : item.status === 'Aprovado',
-                'badge-progress' : item.status === 'Pré-Aprovado',
-                'badge-cancel' : item.status === 'Rejeitado'
-              }">
-                {{ item.status }}</span>
-
+          <span class="badge" :class="getStatus(item.status)">
+            {{ item.status }}
+          </span>
         </div>
-
       </div>
     </div>
   </div>
@@ -219,6 +225,7 @@ const rows = ref([
       width: 15%;
       text-align: center;
       font-size: 1.2rem;
+      user-select: text !important;
 
       .badge {
         padding: 0.5vh 1vw;
@@ -228,19 +235,24 @@ const rows = ref([
         color: #fff;
       }
 
-      .badge-success {
+      .success {
         background-color: #E8FBEF;
         color: #09D45B;
       }
 
-      .badge-progress {
+      .progress {
         background-color: #E6F2FE;
         color: #0A7BF5;
       }
 
-      .badge-cancel {
+      .warning {
         background-color: #dc354530;
         color: #dc3545;
+      }
+
+      .default {
+        background-color: #cccccc;
+        color: #333;
       }
 
 
