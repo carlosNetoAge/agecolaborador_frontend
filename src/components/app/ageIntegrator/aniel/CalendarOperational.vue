@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onBeforeUnmount, onMounted, ref, defineEmits, defineProps} from "vue";
+import {onBeforeUnmount, onMounted, ref, defineEmits, defineProps, watch} from "vue";
 import {AXIOS} from "@api/AXIOS";
 
 const props = defineProps({
@@ -35,7 +35,7 @@ const updateData = (period?: Date) => {
 }
 
 
-const getCalendar = () => {
+const getCalendar = async () => {
   AXIOS({
     method: 'get',
     url: 'http://localhost:8000/integrator/aniel/capacity/calendar',
@@ -45,9 +45,11 @@ const getCalendar = () => {
   }).then((response) => {
     dateCalendar.value = response.data;
     updateData();
+
+
+
   });
 }
-
 
 function getNameMonth(data: Date) {
   const options = { month: 'long' };
@@ -82,14 +84,23 @@ const stopDrag = () => {
   isDragging.value = false;
 };
 
-onMounted(() => {
+
+const activeDrag = await () => {
   if (container.value) {
     container.value.addEventListener('mousemove', onDrag);
     container.value.addEventListener('mouseup', stopDrag);
     container.value.addEventListener('mouseleave', stopDrag);
   }
+};
 
+
+
+
+
+
+onMounted(() => {
   getCalendar();
+
 
 });
 
