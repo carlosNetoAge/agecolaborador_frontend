@@ -6,8 +6,6 @@ const props = defineProps({
   statusCalendar: Boolean
 });
 
-const statusCalendar = props.statusCalendar;
-
 const dateCalendar = ref({})
 
 const emit = defineEmits(['updateData']);
@@ -45,9 +43,7 @@ const getCalendar = async () => {
   }).then((response) => {
     dateCalendar.value = response.data;
     updateData();
-
-
-
+    activeDrag();
   });
 }
 
@@ -85,7 +81,7 @@ const stopDrag = () => {
 };
 
 
-const activeDrag = await () => {
+const activeDrag = () => {
   if (container.value) {
     container.value.addEventListener('mousemove', onDrag);
     container.value.addEventListener('mouseup', stopDrag);
@@ -117,34 +113,32 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="calendar">
-    <template v-if="props.statusCalendar">
-      <div class="months">
-        <div
-            v-for="(month, i) in dateCalendar"
-            :key="i"
-            :class="{ month: true, select: i === monthActual }"
-            @click="[monthActual = i, dayActual = 0]"
-        >
-          {{ i }}
-        </div>
-      </div>
+    <div class="months">
       <div
-          ref="container"
-          class="days"
-          @mousedown="startDrag"
+          v-for="(month, i) in dateCalendar"
+          :key="i"
+          :class="{ month: true, select: i === monthActual }"
+          @click="[monthActual = i, dayActual = 0]"
       >
-        <div class="day"
-             v-for="(month, day) in dateCalendar[monthActual]" :key="day">
+        {{ i }}
+      </div>
+    </div>
+    <div
+        ref="container"
+        class="days"
+        @mousedown="startDrag"
+    >
+      <div class="day"
+           v-for="(month, day) in dateCalendar[monthActual]" :key="day">
 
-          <div class="box"  :class="{selectedDay: dayActual === month.day}"
-               @click="[dayActual = month.day, updateData(month.extense)]">
-            <span class="dayName">{{ month.name }}</span>
-            <span class="dayNumber">{{ month.day }}</span>
-          </div>
+        <div class="box"  :class="{selectedDay: dayActual === month.day}"
+             @click="[dayActual = month.day, updateData(month.extense)]">
+          <span class="dayName">{{ month.name }}</span>
+          <span class="dayNumber">{{ month.day }}</span>
         </div>
       </div>
-    </template>
-    <section class="dots-container" v-else>
+    </div>
+    <section class="dots-container" v-if="!props.statusCalendar">
       <div class="dot"></div>
       <div class="dot"></div>
       <div class="dot"></div>
@@ -164,7 +158,7 @@ onBeforeUnmount(() => {
   border-radius: 15px;
   border:  1px solid #cccccc50;
   @include flex(column, center, initial, 0);
-
+  position: relative;
   .months {
     width: 100%;
     @include flex(row, space-evenly, center, 1vh);
@@ -275,6 +269,8 @@ onBeforeUnmount(() => {
   justify-content: center;
   height: 100%;
   width: 100%;
+  position: absolute;
+  background-color: #FFFFFF;
 }
 
 .dot {

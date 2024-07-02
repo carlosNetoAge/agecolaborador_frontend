@@ -33,9 +33,8 @@ const getData = (period: Date) => {
   }).then((response) => {
     statusRequest.value = true;
     capacity.value = response.data
-    console.log(capacity.value)
   }).catch((error) => {
-    console.log(error);
+    console.log(error)
   });
 }
 
@@ -62,47 +61,14 @@ const panel = ref('operational');
           <img :src="morning" alt="">
         </div>
         <div class="services">
-          <div class="service">
+          <div class="service" v-for="(item, turn) in capacity['manha'] || []" :key="item.id">
             <div class="title">
-              <h3>Ativações</h3>
+              <h3>{{ item.service }}</h3>
             </div>
             <div class="progress">
-              <progress value="100" max="100"></progress>
+              <progress value="50" :max="item.capacity"></progress>
               <div class="info" style="right: 0; top: -2vh">
-                <span>0 - Disponíveis</span>
-              </div>
-            </div>
-          </div>
-          <div class="service">
-            <div class="title">
-              <h3>Visitas Técnicas</h3>
-            </div>
-            <div class="progress">
-              <progress value="60" max="100"></progress>
-              <div class="info" style="right: 0; top: -2vh">
-                <span>42 - Disponíveis</span>
-              </div>
-            </div>
-          </div>
-          <div class="service">
-            <div class="title">
-              <h3>Mudança de endereço</h3>
-            </div>
-            <div class="progress">
-              <progress value="35" max="100"></progress>
-              <div class="info" style="right: 0; top: -2vh">
-                <span>65 - Disponíveis</span>
-              </div>
-            </div>
-          </div>
-          <div class="service">
-            <div class="title">
-              <h3>Mudança de ponto</h3>
-            </div>
-            <div class="progress">
-              <progress value="15" max="20"></progress>
-              <div class="info" style="right: 0; top: -2vh">
-                <span>20 - Disponíveis</span>
+                <span><b>{{ Math.abs(item.capacity - 50) }}</b> - {{ item.capacity > 50 ? 'Disponíveis' : 'Excedentes' }}</span>
               </div>
             </div>
           </div>
@@ -128,40 +94,6 @@ const panel = ref('operational');
               </div>
             </div>
           </div>
-          <div class="service">
-            <div class="title">
-              <h3>Visitas Técnicas</h3>
-            </div>
-            <div class="progress">
-              <progress value="60" max="100"></progress>
-              <div class="info" style="right: 0; top: -2vh">
-                <span>42 - Disponíveis</span>
-              </div>
-            </div>
-          </div>
-          <div class="service">
-            <div class="title">
-              <h3>Mudança de endereço</h3>
-            </div>
-            <div class="progress">
-              <progress value="35" max="100"></progress>
-              <div class="info" style="right: 0; top: -2vh">
-                <span>65 - Disponíveis</span>
-              </div>
-            </div>
-          </div>
-          <div class="service">
-            <div class="title">
-              <h3>Mudança de ponto</h3>
-            </div>
-            <div class="progress">
-              <progress value="15" max="20"></progress>
-              <div class="info" style="right: 0; top: -2vh">
-                <span>20 - Disponíveis</span>
-              </div>
-            </div>
-          </div>
-
         </div>
 
       </div>
