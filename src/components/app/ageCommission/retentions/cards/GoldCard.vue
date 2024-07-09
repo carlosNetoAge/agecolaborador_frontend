@@ -4,7 +4,7 @@
     <div >
       <img class="banners" :src="goldBanner">
     </div>
-    <div class="border-age-lightBlue border h-full w-full rounded-large flex flex-col justify-evenly">
+    <div class="border-age-lightBlue border h-full w-full rounded-large flex flex-col justify-around">
       <div class="flex flex-row justify-between px-6 text-4xl font-semibold">
         <p>Valor</p>
         <p>R$ 7,00</p>

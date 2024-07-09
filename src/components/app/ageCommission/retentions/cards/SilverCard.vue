@@ -4,7 +4,7 @@
     <div >
       <img class="banners" :src="silverBanner">
     </div>
-    <div class="border-age-lightBlue border h-full w-full rounded-large flex flex-col justify-evenly">
+    <div class="border-age-lightBlue border h-full w-full rounded-large flex flex-col justify-around">
       <div class="flex flex-row justify-between px-6 text-4xl font-semibold">
         <p>Valor</p>
         <p>R$ 5,00</p>
@@ -21,7 +21,7 @@
             ></div>
         </div>
       </div>
-      <div class="border border-age-lightBlue rounded-large h-2/4 mx-3 flex justify-center items-center">
+      <div class="border border-age-lightBlue rounded-large h-2/4 mx-3 flex justify-center items-center justify-self-end">
         <p class="text-4xl text-gray-600">Demais regiões</p>
       </div>
     </div>

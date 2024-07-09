@@ -8,7 +8,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import GoldCard from './cards/GoldCard.vue';
 import SilverCard from './cards/SilverCard.vue';
 import DataCard from './cards/DataCard.vue';

@@ -2,7 +2,7 @@
   <div class="flex justify-between items-center flex-col border-age-lightBlue border rounded-large">
     <div class="h-full flex flex-col justify-evenly items-center">
       <div><p class="text-xl font-semibold text-gray-400">Acelerador/Deflator</p></div>
-      <div><p class="text-2xl font-semibold text-gray-600">10%</p></div>
+      <div><p class="text-3xl font-semibold text-gray-600">10%</p></div>
       <div>
         <div v-if="mulitplyer">
           <img :src="accelerator">

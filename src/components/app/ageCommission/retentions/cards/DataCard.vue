@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col h-full border-age-lightBlue border rounded-large">
-    <div class="text-xl flex flex-row text-left font-semibold my-10 pl-10">
+    <div class="text-xl flex flex-row text-left font-semibold my-4 pl-10">
       <div class="w-1/2">Dados</div>
       <div class="w-1/2">Médias</div>
     </div>

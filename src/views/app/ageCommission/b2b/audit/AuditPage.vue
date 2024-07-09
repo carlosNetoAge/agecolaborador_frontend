@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // Importações necessárias
-import DetailsSellerComponent from "@/components/app/ageCommission/b2b/financial/audit/DetailsSellerComponent.vue";
+import DetailsSellerComponent from "@/components/app/ageComission/b2b/financial/audit/DetailsSellerComponent.vue";
 import { onMounted, onUpdated, ref, watch } from "vue";
 import { AXIOS } from "@api/AXIOS";
 import Cookie from "js-cookie";
@@ -35,7 +35,7 @@ const viewDetails = (data: Object) => {
   computeReferenceMonth()
   store.setInfo(data, periodRefer.value);
   page.value = 'details';
-  router.push('/ageCommissiona/b2b/financeiro/executivo')
+  router.push('/ageComissiona/b2b/financeiro/executivo')
 };
 
 // Função para obter dados da API

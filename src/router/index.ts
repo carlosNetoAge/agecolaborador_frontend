@@ -76,8 +76,16 @@ const router = createRouter({
       }
     },
     {
-      path: '/ageComissiona/retencao/colaborador',
+      path: '/ageComissiona/retencao',
       name: 'auditPage',
+      component: () => import('@/views/app/ageCommission/retentions/audit/AuditPage.vue'),
+      meta: {
+        auth: true
+      }
+    },
+    {
+      path: '/ageComissiona/retencao/colaborador',
+      name: 'DetailsColaboratorView',
       component: () => import('@/components/app/ageCommission/retentions/DetailsColaboratorView.vue'),
       meta: {
         auth: true
