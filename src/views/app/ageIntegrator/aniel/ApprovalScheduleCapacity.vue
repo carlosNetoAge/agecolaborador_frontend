@@ -143,7 +143,7 @@ const rows = ref([
         <div class="item">
           {{ item.schedule }}
         </div>
-        <div class="item">
+        <div class="it  em">
           {{ item.period }}
         </div>
         <div class="item">

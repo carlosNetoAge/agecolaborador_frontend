@@ -63,7 +63,8 @@ const jsonMock = [
     "cidades_prata": 70,
     "media_atual": 85.5,
     "media_anterior": 82.3,
-    "valor_rv": 1200
+    "valor_rv": 1200,
+    "status": "Não pago"
   },
   {
     "atendente": "Atendente B",
@@ -96,7 +97,8 @@ const jsonMock = [
     "cidades_prata": 55,
     "media_atual": 80.2,
     "media_anterior": 78.4,
-    "valor_rv": 1100
+    "valor_rv": 1100,
+    "status": "Pago"
   },
   {
     "atendente": "Atendente C",
@@ -129,7 +131,8 @@ const jsonMock = [
     "cidades_prata": 70,
     "media_atual": 88.7,
     "media_anterior": 85.5,
-    "valor_rv": 1300
+    "valor_rv": 1300,
+    "status": "Pago"
   },
   {
     "atendente": "Atendente D",
@@ -162,7 +165,8 @@ const jsonMock = [
     "cidades_prata": 62,
     "media_atual": 83.4,
     "media_anterior": 81.7,
-    "valor_rv": 1150
+    "valor_rv": 1150,
+    "status": "Não pago"
   }
 ]
 
@@ -224,37 +228,52 @@ const computeReferenceMonth = () => {
         <option v-for="option in periodOptions" :value="option.value" :key="option.value">{{ option.label }}</option>
       </select>
     </div>
-    <div class="table__container">
-      <table>
-        <thead>
-        <tr>
-          <th>Colaborador</th>
-          <th>Solicitações</th>
-          <th>Retenções</th>
-          <th>Taxa de retenção</th>
-          <th class="gold">Ouro</th>
-          <th class="silver">Prata</th>
-          <th>Média anterior</th>
-          <th>Média atual</th>
-          <th>Valor R.V</th>
-        </tr>
-        </thead>
-        <transition name="fade">
-          <tbody>
-          <tr v-for="(colaboratorData, idx) in jsonMock" :key="idx" @click="viewDetails(colaboratorData)">
-            <td>{{ colaboratorData.atendente }}</td>
-            <td>{{ colaboratorData.solicitacoes_recebidas_total }} </td>
-            <td>{{ colaboratorData.retencoes_realizadas_total }} </td>
-            <td>{{ parseInt((colaboratorData.retencoes_realizadas_total / colaboratorData.solicitacoes_recebidas_total) * 100)}}% </td>
-            <td class="gold">{{ colaboratorData.cidade_ouros }} </td>
-            <td class="silver">{{ colaboratorData.cidades_prata }} </td>
+    <div class="table">
+      <div class="header">
+        <div class="row">
+          <div class="item" style="text-align: left;">Colaborador</div>
+          <div class="item">Solicitações</div>
+          <div class="item">Retenções</div>
+          <div class="item">Taxa de retenção</div>
+          <div class="item">Média anterior</div>
+          <div class="item">Média atual</div>
+          <div class="item">Valor R.V</div>
+          <div class="item" style="text-align: center;">Status</div>
+        </div>
+      </div>
+      <div class="body">
+        <div class="row" v-for="(colaboratorData, index) in jsonMock" :key="index">
+          <div class="item first_item">
+            {{ colaboratorData.atendente }}
+          </div>
+          <div class="item">
+            {{ colaboratorData.solicitacoes_recebidas_total }}
+          </div>
+          <div class="item">
+            {{ colaboratorData.retencoes_realizadas_total }}
+          </div>
+          <div class="item">
+            {{ parseInt((colaboratorData.retencoes_realizadas_total / colaboratorData.solicitacoes_recebidas_total) * 100) }}%
+          </div>
+          <div class="item">
             <td>R${{ colaboratorData.media_anterior }} </td>
+          </div>
+          <div class="item">
             <td>R${{ colaboratorData.media_atual }} </td>
+          </div>
+          <div class="item">
             <td>R${{ colaboratorData.valor_rv  }} </td>
-          </tr>
-          </tbody>
-        </transition>
-      </table>
+          </div>
+          <div class="item">
+            <span class="badge"
+                    :class="{
+                'badge-success' : colaboratorData.status === 'Pago',
+                'badge-cancel' : colaboratorData.status === 'Não pago'
+              }">
+                {{ colaboratorData.status }}</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -296,58 +315,80 @@ const computeReferenceMonth = () => {
       border-color: #53AEE2;
     }
   }
-
-  .table__container {
+}
+.table {
+  width: 100%;
+  height: 100%;
+  .row {
     width: 100%;
-    overflow-y: auto;
-    max-height: 90%;
-    border-radius: 10px;
+    height: 100%;
     background-color: #fff;
-    box-shadow: $global-box-shadow;
-    table {
-      border-collapse: collapse;
-      width: 100%;
+    border-radius: 5px;
+    @include flex(row, flex-start, center, 1vw);
+    padding: 2vh 1vw;
+    border: 1px solid #cccccc50;
+
+
+
+    .item {
+      max-width: 15%;
+      width: 15%;
       text-align: center;
-      thead {
-        tr {
-          background-color: #F6F6F6;
+      font-size: 1.2rem;
+      user-select: text !important;
 
-          th {
-            padding: 2vh 1vw;
-            font-size: 1.3rem;
-            font-weight: 500;
-            color: #333333;
-            
-          }
-        }
+      .badge {
+        padding: 0.5vh 1vw;
+        border-radius: 20px;
+        font-size: 1.2rem;
+        font-weight: 500;
+        color: #fff;
       }
-      tbody {
-        tr {
-          background-color: #ffffff;
-          border-bottom: 1px solid #f4f4f4;
-          -webkit-animation: up .3s ease-in-out forwards;
-          -o-animation: up .3s ease-in-out forwards;
-          animation: up .3s ease-in-out forwards;
-          opacity: 0;
-          cursor: pointer;
-          transition: background-color ease-in-out .2s;
-
-          
-          &:hover {
-            background-color: #F1F1F180;
-          }
-
-          td {
-            padding: 2vh 1vw;
-            font-size: 1.2rem;
-            font-weight: 500;
-            color: #333333;
-          }
-        }
+      
+      .badge-success {
+        background-color: #E8FBEF;
+        color: #09D45B;
       }
+      
+      .badge-progress {
+        background-color: #E6F2FE;
+        color: #0A7BF5;
+      }
+      
+      .badge-cancel {
+        background-color: #dc354530;
+        color: #dc3545;
+      }
+    }
+  }
 
-      th:nth-child(1), td:nth-child(1) {
-        text-align: left;
+  .header {
+    margin: 1vh 0;
+    .row {
+      background-color: #F9FCFF;
+      .item {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #333;
+      }
+    }
+  }
+
+  .body {
+    @include flex(column, flex-start, initial, 1vh);
+
+    .row {
+      &:hover {
+        border-color: #cccccc80;
+      }
+      .item {
+        display: flex;
+        justify-content: center;
+        text-align: center;
+        color: #444;
+      }
+      .first_item {
+        justify-content: flex-start;
       }
     }
   }
@@ -372,6 +413,4 @@ const computeReferenceMonth = () => {
     transform: translateY(0);
   }
 }
-
-
 </style>

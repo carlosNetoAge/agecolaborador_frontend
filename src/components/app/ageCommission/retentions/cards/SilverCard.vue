@@ -1,10 +1,10 @@
 <template>
   <div class="relative flex flex-col border-age-lightBlue border h-full w-full rounded-large">
-    <p class="text-2xl font-semibold pl-4 pt-2">Prata</p>
+    <p class="text-2xl font-semibold pl-6 pt-2">Prata</p>
     <div >
       <img class="banners" :src="silverBanner">
     </div>
-    <div class="border-age-lightBlue border h-full w-full rounded-large flex flex-col justify-around">
+    <div class="h-full w-full flex flex-col justify-around">
       <div class="flex flex-row justify-between px-6 text-4xl font-semibold">
         <p>Valor</p>
         <p>R$ 5,00</p>
