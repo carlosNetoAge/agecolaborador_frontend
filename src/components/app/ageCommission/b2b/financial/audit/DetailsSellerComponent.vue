@@ -13,7 +13,7 @@ import { useRouter } from 'vue-router';
 import Cookie from 'js-cookie';
 
 const returnPage = () => {
-  router.push('/ageCommissiona/b2b/financeiro')
+  router.push('/ageComissiona/b2b/financeiro')
   page.value = 'list'
 }
 
@@ -116,7 +116,7 @@ onMounted(verifyData);
       </select>
     </div>
     <div class="return absolute z-10 right-0 -top-24" v-if="page == 'details' &&
-        currentRoute.path !== '/ageCommissiona/b2b/dashboard/executivo'">
+        currentRoute.path !== '/ageComissiona/b2b/dashboard/executivo'">
       <button @click="returnPage">Voltar</button>
     </div>
     <div class="details__container h-screen flex flex-col">

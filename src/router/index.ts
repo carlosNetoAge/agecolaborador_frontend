@@ -75,6 +75,7 @@ const router = createRouter({
         auth: true
       }
     },
+<<<<<<< HEAD
     // {
     //   path: '/ageComissiona/retencao/colaborador',
     //   name: 'auditPageRt',
@@ -83,6 +84,24 @@ const router = createRouter({
     //     auth: true
     //   }
     // },
+=======
+    {
+      path: '/ageComissiona/retencao',
+      name: 'auditPage',
+      component: () => import('@/views/app/ageCommission/retentions/audit/AuditPage.vue'),
+      meta: {
+        auth: true
+      }
+    },
+    {
+      path: '/ageComissiona/retencao/colaborador',
+      name: 'DetailsColaboratorView',
+      component: () => import('@/components/app/ageCommission/retentions/DetailsColaboratorView.vue'),
+      meta: {
+        auth: true
+      }
+    },
+>>>>>>> 5246a89775f074afba410e5995903aca8012b6ec
     {
       path: '/:catchAll(.*)', // Captura qualquer rota não definida
       redirect: '/inicio' // Redireciona para a página inicial se tentar acessar qualquer outra rota

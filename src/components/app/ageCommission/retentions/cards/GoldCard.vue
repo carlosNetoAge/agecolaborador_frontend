@@ -1,10 +1,10 @@
 <template>
   <div class="relative flex flex-col border-age-lightBlue border h-full w-full rounded-large">
-    <p class="text-2xl font-semibold pl-4 pt-2">Ouro</p>
+    <p class="text-2xl font-semibold pl-6 pt-2">Ouro</p>
     <div >
       <img class="banners" :src="goldBanner">
     </div>
-    <div class="border-age-lightBlue border h-full w-full rounded-large flex flex-col justify-evenly">
+    <div class="h-full w-full flex flex-col justify-around">
       <div class="flex flex-row justify-between px-6 text-4xl font-semibold">
         <p>Valor</p>
         <p>R$ 7,00</p>
@@ -21,7 +21,7 @@
             ></div>
         </div>
       </div>
-      <div class="border border-age-lightBlue rounded-large h-2/4 mx-3 grid grid-cols-2 grid-rows-3 gap-1">
+      <div class="h-2/4 mx-3 grid grid-cols-2 grid-rows-3 gap-1">
         <div class="border border-age-lightBlue rounded-large m-1 flex justify-center items-center text-xl text-gray-600"><p>Santa Maria</p></div>
         <div class="border border-age-lightBlue rounded-large m-1 flex justify-center items-center text-xl text-gray-600"><p>Ceilândia</p></div>
         <div class="border border-age-lightBlue rounded-large m-1 flex justify-center items-center text-xl text-gray-600"><p>Riacho fundo 1</p></div>

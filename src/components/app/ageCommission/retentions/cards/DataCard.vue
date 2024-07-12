@@ -1,10 +1,10 @@
 <template>
   <div class="flex flex-col h-full border-age-lightBlue border rounded-large">
-    <div class="text-xl flex flex-row text-left font-semibold my-10 pl-10">
+    <div class="text-xl flex flex-row text-left font-semibold my-4 pl-10">
       <div class="w-1/2">Dados</div>
       <div class="w-1/2">Médias</div>
     </div>
-    <div class="border-age-lightBlue border grid grid-cols-2 grid-row-3 h-full w-full rounded-large">
+    <div class="grid grid-cols-2 grid-row-3 h-full w-full">
       <div class="border-age-lightBlue flex flex-col justify-between border m-3 text-center pt-3 text-gray-600 rounded-large">
         <p class="text-xl">Solicitações recebidas</p>
         <p class="text-3xl font-semibold pb-14">100</p>

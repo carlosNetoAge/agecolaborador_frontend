@@ -1,8 +1,8 @@
 <script setup lang="ts">
 
 import { infoPage } from "@/stores/counter";
-import CardsGraphComponent from "@/components/app/ageCommission/b2b/dashboard/executive/CardsGraphComponent.vue";
-import CardTotalSales from "@/components/app/ageCommission/b2b/dashboard/executive/CardTotalSales.vue";
+import CardsGraphComponent from "@/components/app/ageComission/b2b/dashboard/executive/CardsGraphComponent.vue";
+import CardTotalSales from "@/components/app/ageComission/b2b/dashboard/executive/CardTotalSales.vue";
 
 const info = () => { infoPage()
             .setInfoPage(

@@ -1,221 +1,264 @@
 <template>
-  <div>
+  <div class="h-full w-full" v-if="vshow">
     <div>
-      <apexchart type="bar" height="200" width="100%" :options="chartOptions" :series="series"></apexchart>
+      <apexchart type="bar" height="175px" width="100%" :options="chartOptions" :series="series"></apexchart>
     </div>
   </div>
 </template>
 
 <script setup>
+import { onMounted, ref, nextTick } from 'vue';
+
+const vshow = ref(false)
+
+const jsonMock = {
+    "1": {
+      "solicitacoes_recebidas": 5,
+      "retencoes_realizadas": 3,
+      "retencoes_nao_realizadas": 2
+    },
+    "2": {
+      "solicitacoes_recebidas": 8,
+      "retencoes_realizadas": 6,
+      "retencoes_nao_realizadas": 1
+    },
+    "3": {
+      "solicitacoes_recebidas": 7,
+      "retencoes_realizadas": 5,
+      "retencoes_nao_realizadas": 3
+    },
+    "4": {
+      "solicitacoes_recebidas": 6,
+      "retencoes_realizadas": 4,
+      "retencoes_nao_realizadas": 2
+    },
+    "5": {
+      "solicitacoes_recebidas": 9,
+      "retencoes_realizadas": 7,
+      "retencoes_nao_realizadas": 3
+    },
+    "6": {
+      "solicitacoes_recebidas": 4,
+      "retencoes_realizadas": 2,
+      "retencoes_nao_realizadas": 1
+    },
+    "7": {
+      "solicitacoes_recebidas": 10,
+      "retencoes_realizadas": 8,
+      "retencoes_nao_realizadas": 4
+    },
+    "8": {
+      "solicitacoes_recebidas": 3,
+      "retencoes_realizadas": 1,
+      "retencoes_nao_realizadas": 2
+    },
+    "9": {
+      "solicitacoes_recebidas": 6,
+      "retencoes_realizadas": 5,
+      "retencoes_nao_realizadas": 2
+    },
+    "10": {
+      "solicitacoes_recebidas": 7,
+      "retencoes_realizadas": 6,
+      "retencoes_nao_realizadas": 1
+    },
+    "11": {
+      "solicitacoes_recebidas": 5,
+      "retencoes_realizadas": 3,
+      "retencoes_nao_realizadas": 1
+    },
+    "12": {
+      "solicitacoes_recebidas": 8,
+      "retencoes_realizadas": 7,
+      "retencoes_nao_realizadas": 3
+    },
+    "13": {
+      "solicitacoes_recebidas": 4,
+      "retencoes_realizadas": 2,
+      "retencoes_nao_realizadas": 1
+    },
+    "14": {
+      "solicitacoes_recebidas": 9,
+      "retencoes_realizadas": 6,
+      "retencoes_nao_realizadas": 3
+    },
+    "15": {
+      "solicitacoes_recebidas": 7,
+      "retencoes_realizadas": 4,
+      "retencoes_nao_realizadas": 2
+    },
+    "16": {
+      "solicitacoes_recebidas": 6,
+      "retencoes_realizadas": 5,
+      "retencoes_nao_realizadas": 1
+    },
+    "17": {
+      "solicitacoes_recebidas": 8,
+      "retencoes_realizadas": 6,
+      "retencoes_nao_realizadas": 2
+    },
+    "18": {
+      "solicitacoes_recebidas": 5,
+      "retencoes_realizadas": 3,
+      "retencoes_nao_realizadas": 1
+    },
+    "19": {
+      "solicitacoes_recebidas": 10,
+      "retencoes_realizadas": 7,
+      "retencoes_nao_realizadas": 3
+    },
+    "20": {
+      "solicitacoes_recebidas": 4,
+      "retencoes_realizadas": 2,
+      "retencoes_nao_realizadas": 1
+    },
+    "21": {
+      "solicitacoes_recebidas": 7,
+      "retencoes_realizadas": 5,
+      "retencoes_nao_realizadas": 2
+    },
+    "22": {
+      "solicitacoes_recebidas": 6,
+      "retencoes_realizadas": 4,
+      "retencoes_nao_realizadas": 1
+    },
+    "23": {
+      "solicitacoes_recebidas": 9,
+      "retencoes_realizadas": 7,
+      "retencoes_nao_realizadas": 3
+    },
+    "24": {
+      "solicitacoes_recebidas": 5,
+      "retencoes_realizadas": 3,
+      "retencoes_nao_realizadas": 2
+    },
+    "25": {
+      "solicitacoes_recebidas": 8,
+      "retencoes_realizadas": 6,
+      "retencoes_nao_realizadas": 1
+    },
+    "26": {
+      "solicitacoes_recebidas": 7,
+      "retencoes_realizadas": 5,
+      "retencoes_nao_realizadas": 3
+    },
+    "27": {
+      "solicitacoes_recebidas": 6,
+      "retencoes_realizadas": 4,
+      "retencoes_nao_realizadas": 2
+    },
+    "28": {
+      "solicitacoes_recebidas": 9,
+      "retencoes_realizadas": 7,
+      "retencoes_nao_realizadas": 3
+    },
+    "29": {
+      "solicitacoes_recebidas": 4,
+      "retencoes_realizadas": 2,
+      "retencoes_nao_realizadas": 1
+    },
+    "30": {
+      "solicitacoes_recebidas": 10,
+      "retencoes_realizadas": 8,
+      "retencoes_nao_realizadas": 4
+    },
+    "31": {
+      "solicitacoes_recebidas": 5,
+      "retencoes_realizadas": 3,
+      "retencoes_nao_realizadas": 2
+    }
+}
+
 const chartOptions = {
   chart: {
     type: 'bar',
-    height: 200,
+    height: "175px",
     width: "100%",
     stacked: true,
     toolbar: {
-      show: true
+      show: false
     },
-    zoom: {
-      enabled: true
-    }
   },
-  colors: ['#53AEE2', '#BAE6FF', '#FF8B3D'],
+  dataLabels: {
+    enabled: false
+  },
+  colors: ['#FF8B3D', '#53AEE2', '#BAE6FF'],
   plotOptions: {
     bar: {
       horizontal: false,
-      borderRadius: 10,
-      borderRadiusApplication: 'end',
-      borderRadiusWhenStacked: 'last',
+      borderRadius: 5,
+      colors: {
+        backgroundBarOpacity: 0,
+      },
       dataLabels: {
         total: {
-          enabled: true,
-          style: {
-            fontSize: '13px',
-            fontWeight: 900
-          }
+          enabled: false,
         }
       }
     },
   },
   xaxis: {
-    type: 'datetime',
-    categories: [
-      '01/01/2024 GMT', '01/02/2024 GMT', '01/03/2024 GMT', '01/04/2024 GMT', '01/05/2024 GMT', 
-      '01/06/2024 GMT', '01/07/2024 GMT', '01/08/2024 GMT', '01/09/2024 GMT', '01/11/2024 GMT', 
-      '01/12/2024 GMT', '01/13/2024 GMT', '01/14/2024 GMT', '01/15/2024 GMT', '01/16/2024 GMT', 
-      '01/17/2024 GMT', '01/18/2024 GMT', '01/19/2024 GMT', '01/20/2024 GMT', '01/21/2024 GMT', 
-      '01/22/2024 GMT', '01/23/2024 GMT', '01/24/2024 GMT', '01/25/2024 GMT', '01/26/2024 GMT', 
-      '01/27/2024 GMT', '01/28/2024 GMT', '01/29/2024 GMT', '01/30/2024 GMT', '01/31/2024 GMT',
-    ],
+    type: 'category',
+    categories: []
+  },
+  yaxis: {
+    labels: {
+      show: false,
+    }
   },
   legend: {
     position: 'top',
-    offsetY: 40
+    offsetY: 0
   },
   fill: {
     opacity: 1
-  }
+  },
+  grid: {
+    show: false,
+  },
 }
 
-const series = {
-    "1": {
-      "solicitacoes_recebidas": 3,
-      "retencoes_realizadas": 2,
-      "retencoes_perdidas": 1
-    },
-    "2": {
-      "solicitacoes_recebidas": 3,
-      "retencoes_realizadas": 2,
-      "retencoes_perdidas": 1
-    },
-    "3": {
-      "solicitacoes_recebidas": 3,
-      "retencoes_realizadas": 2,
-      "retencoes_perdidas": 1
-    },
-    "4": {
-      "solicitacoes_recebidas": 3,
-      "retencoes_realizadas": 2,
-      "retencoes_perdidas": 1
-    },
-    "5": {
-      "solicitacoes_recebidas": 3,
-      "retencoes_realizadas": 2,
-      "retencoes_perdidas": 1
-    },
-    "6": {
-      "solicitacoes_recebidas": 3,
-      "retencoes_realizadas": 2,
-      "retencoes_perdidas": 1
-    },
-    "7": {
-      "solicitacoes_recebidas": 3,
-      "retencoes_realizadas": 2,
-      "retencoes_perdidas": 1
-    },
-    "8": {
-      "solicitacoes_recebidas": 3,
-      "retencoes_realizadas": 2,
-      "retencoes_perdidas": 1
-    },
-    "9": {
-      "solicitacoes_recebidas": 3,
-      "retencoes_realizadas": 2,
-      "retencoes_perdidas": 1
-    },
-    "10": {
-      "solicitacoes_recebidas": 3,
-      "retencoes_realizadas": 2,
-      "retencoes_perdidas": 1
-    },
-    "11": {
-      "solicitacoes_recebidas": 3,
-      "retencoes_realizadas": 2,
-      "retencoes_perdidas": 1
-    },
-    "12": {
-      "solicitacoes_recebidas": 3,
-      "retencoes_realizadas": 2,
-      "retencoes_perdidas": 1
-    },
-    "13": {
-      "solicitacoes_recebidas": 3,
-      "retencoes_realizadas": 2,
-      "retencoes_perdidas": 1
-    },
-    "14": {
-      "solicitacoes_recebidas": 3,
-      "retencoes_realizadas": 2,
-      "retencoes_perdidas": 1
-    },
-    "15": {
-      "solicitacoes_recebidas": 3,
-      "retencoes_realizadas": 2,
-      "retencoes_perdidas": 1
-    },
-    "16": {
-      "solicitacoes_recebidas": 3,
-      "retencoes_realizadas": 2,
-      "retencoes_perdidas": 1
-    },
-    "17": {
-      "solicitacoes_recebidas": 3,
-      "retencoes_realizadas": 2,
-      "retencoes_perdidas": 1
-    },
-    "18": {
-      "solicitacoes_recebidas": 3,
-      "retencoes_realizadas": 2,
-      "retencoes_perdidas": 1
-    },
-    "19": {
-      "solicitacoes_recebidas": 3,
-      "retencoes_realizadas": 2,
-      "retencoes_perdidas": 1
-    },
-    "20": {
-      "solicitacoes_recebidas": 3,
-      "retencoes_realizadas": 2,
-      "retencoes_perdidas": 1
-    },
-    "21": {
-      "solicitacoes_recebidas": 3,
-      "retencoes_realizadas": 2,
-      "retencoes_perdidas": 1
-    },
-    "22": {
-      "solicitacoes_recebidas": 3,
-      "retencoes_realizadas": 2,
-      "retencoes_perdidas": 1
-    },
-    "23": {
-      "solicitacoes_recebidas": 3,
-      "retencoes_realizadas": 2,
-      "retencoes_perdidas": 1
-    },
-    "24": {
-      "solicitacoes_recebidas": 3,
-      "retencoes_realizadas": 2,
-      "retencoes_perdidas": 1
-    },
-    "25": {
-      "solicitacoes_recebidas": 3,
-      "retencoes_realizadas": 2,
-      "retencoes_perdidas": 1
-    },
-    "26": {
-      "solicitacoes_recebidas": 3,
-      "retencoes_realizadas": 2,
-      "retencoes_perdidas": 1
-    },
-    "27": {
-      "solicitacoes_recebidas": 3,
-      "retencoes_realizadas": 2,
-      "retencoes_perdidas": 1
-    },
-    "28": {
-      "solicitacoes_recebidas": 3,
-      "retencoes_realizadas": 2,
-      "retencoes_perdidas": 1
-    },
-    "29": {
-      "solicitacoes_recebidas": 3,
-      "retencoes_realizadas": 2,
-      "retencoes_perdidas": 1
-    },
-    "30": {
-      "solicitacoes_recebidas": 3,
-      "retencoes_realizadas": 2,
-      "retencoes_perdidas": 1
-    },
-    "31": {
-      "solicitacoes_recebidas": 3,
-      "retencoes_realizadas": 2,
-      "retencoes_perdidas": 1
-    }
+const series = ref([])
+
+const populateChart = (data) => {
+  const categories = [];
+  const solicitacoesRecebidas = [];
+  const retencoesRealizadas = [];
+  const retencoesNaoRealizadas = [];
+
+  for (const [day, values] of Object.entries(data)) {
+    categories.push(day);
+    solicitacoesRecebidas.push(values.solicitacoes_recebidas);
+    retencoesRealizadas.push(values.retencoes_realizadas);
+    retencoesNaoRealizadas.push(values.retencoes_nao_realizadas);
   }
 
+  series.value = [
+    {
+      name: "Não retidos",
+      data: solicitacoesRecebidas,
+    },
+    {
+      name: "Retidos",
+      data: retencoesRealizadas,
+    },
+    {
+      name: "Total",
+      data: retencoesNaoRealizadas,
+    },
+  ];
+  console.log(chartOptions, series)
+
+  chartOptions.xaxis.categories = categories;
+
+  nextTick(() => {
+    vshow.value = true;
+  })
+}
+
+onMounted(() => {
+  populateChart(jsonMock)
+})
 </script>
 
 <style lang="scss" scoped>
