@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // Importações necessárias
-import DetailsSellerComponent from "@/components/app/ageComission/b2b/financial/audit/DetailsSellerComponent.vue";
+import DetailsSellerComponent from "@/components/app/ageCommission/b2b/financial/audit/DetailsSellerComponent.vue";
 import { onMounted, onUpdated, ref, watch } from "vue";
 import { AXIOS } from "@api/AXIOS";
 import Cookie from "js-cookie";
