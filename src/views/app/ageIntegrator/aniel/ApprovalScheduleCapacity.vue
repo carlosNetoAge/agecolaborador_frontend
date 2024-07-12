@@ -194,7 +194,7 @@ const rows = ref([
     color: #333;
     cursor: pointer;
     transition: all ease-in-out .1s;
-    padding: 10px 25px;
+    padding: 5px 15px;
 
     &:hover {
       background-color: #53aee2;

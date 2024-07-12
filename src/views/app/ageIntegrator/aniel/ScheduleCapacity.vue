@@ -45,7 +45,7 @@ const panel = ref('operational');
 <template>
   <div class="options">
     <router-link exact-active-class="select" to="/ageIntegra/agenda-aniel" @click="panel = 'operational'">Operacional</router-link>
-    <router-link exact-active-class="select" to="/ageIntegra/agenda-aniel/aprovacao" @click="panel = 'approbation'">Aprovação</router-link>
+<!--    <router-link exact-active-class="select" to="/ageIntegra/agenda-aniel/aprovacao" @click="panel = 'approbation'">Aprovação</router-link>-->
   </div>
   <CalendarOperational
     @updateData="getData"
@@ -61,14 +61,14 @@ const panel = ref('operational');
           <img :src="morning" alt="">
         </div>
         <div class="services">
-          <div class="service" v-for="(item, turn) in capacity['manha'] || []" :key="item.id">
+          <div class="service" v-for="(item, service) in capacity['capacity'] || []" :key="item.id">
             <div class="title">
-              <h3>{{ item.service }}</h3>
+              <h3>{{ service }}</h3>
             </div>
             <div class="progress">
-              <progress value="50" :max="item.capacity"></progress>
-              <div class="info" style="right: 0; top: -2vh">
-                <span><b>{{ Math.abs(item.capacity - 50) }}</b> - {{ item.capacity > 50 ? 'Disponíveis' : 'Excedentes' }}</span>
+              <progress :value="item.manha.used" :max="item.manha.capacity"></progress>
+              <div class="info">
+                <span><b>{{ Math.abs(item.manha.capacity - item.manha.used ) }}</b> - {{ (item.manha.capacity - item.manha.used) >= 0 ? 'Disponíveis' : 'Excedentes' }}</span>
               </div>
             </div>
           </div>
@@ -83,19 +83,19 @@ const panel = ref('operational');
           <img :src="afternoon" alt="">
         </div>
         <div class="services">
-          <div class="service">
+          <div class="service" v-for="(item, service) in capacity['capacity'] || []" :key="item.id">
             <div class="title">
-              <h3>Ativações</h3>
+              <h3>{{ service }}</h3>
             </div>
             <div class="progress">
-              <progress value="100" max="100"></progress>
-              <div class="info" style="right: 0; top: -2vh">
-                <span>0 - Disponíveis</span>
+              <progress :value="item.tarde.used" :max="item.tarde.capacity"></progress>
+              <div class="info">
+                <span><b>{{ Math.abs(item.tarde.capacity - item.tarde.used ) }}</b> - {{ (item.tarde.capacity - item.tarde.used) >= 0 ? 'Disponíveis' : 'Excedentes' }}</span>
               </div>
             </div>
           </div>
-        </div>
 
+        </div>
       </div>
     </div>
   </div>
@@ -197,6 +197,7 @@ const panel = ref('operational');
 
             .info {
               position: absolute;
+              right: 0; top: -3vh;
 
               span {
                 font-size: 1.1rem;
@@ -207,7 +208,7 @@ const panel = ref('operational');
 
             progress {
               width: 100%;
-              height: 1.5vh;
+              height: 3vh;
               border-radius: 10px;
               background-color: #E6F2FE;
               appearance: none;
@@ -224,6 +225,15 @@ const panel = ref('operational');
 
         }
       }
+    }
+  }
+}
+
+@media (max-width: 1400px) {
+
+  .options {
+    a {
+      padding: 5px 15px;
     }
   }
 }

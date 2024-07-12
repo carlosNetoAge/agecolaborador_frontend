@@ -252,6 +252,31 @@ onBeforeUnmount(() => {
   }
 }
 
+@media (max-width: 1400px) {
+
+  .calendar {
+    height: 17%;
+    .months {
+      .month {
+        font-size: 1rem;
+      }
+    }
+
+    .days {
+      .day {
+
+        .dayName {
+          font-size: 1rem;
+        }
+
+        .dayNumber {
+          font-size: 1.2rem;
+        }
+      }
+    }
+  }
+}
+
 @keyframes up {
   from {
     transform: translateY(5px);
@@ -271,6 +296,7 @@ onBeforeUnmount(() => {
   width: 100%;
   position: absolute;
   background-color: #FFFFFF;
+  border-radius: 15px;
 }
 
 .dot {
