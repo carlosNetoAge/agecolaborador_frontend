@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {onBeforeUnmount, onMounted, ref, defineEmits, defineProps, watch} from "vue";
 import {AXIOS} from "@api/AXIOS";
+import Cookie from "js-cookie";
 
 const props = defineProps({
   statusCalendar: Boolean
@@ -39,6 +40,7 @@ const getCalendar = async () => {
     url: 'https://v2.ageportal.agetelecom.com.br/integrator/aniel/capacity/calendar',
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + Cookie.get('token')
     },
   }).then((response) => {
     dateCalendar.value = response.data;
