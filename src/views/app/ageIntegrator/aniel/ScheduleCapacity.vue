@@ -21,9 +21,10 @@ setInfoPage();
 
 const statusRequest = ref(false);
 const capacity = ref({});
-
+const dateSelected = ref();
 const getData = (period: Date) => {
   statusRequest.value = false;
+  dateSelected.value = period;
 
   AXIOS({
     url: 'https://v2.ageportal.agetelecom.com.br/integrator/aniel/capacity',
@@ -43,6 +44,11 @@ const getData = (period: Date) => {
 }
 
 const panel = ref('operational');
+
+
+setInterval(() => {
+  getData(dateSelected.value);
+}, 10000);
 
 </script>
 
