@@ -6,6 +6,7 @@ import afternoon from '@/assets/img/app/ageIntegrator/aniel/afternoon.png'
 import { infoPage} from "@/stores/counter";
 import CalendarOperational from "@/components/app/ageIntegrator/aniel/CalendarOperational.vue";
 import {AXIOS} from "@api/AXIOS";
+import Cookie from "js-cookie";
 
 const info = infoPage();
 
@@ -29,7 +30,10 @@ const getData = (period: Date) => {
     params: {
       period: period
     },
-    method: 'GET'
+    method: 'GET',
+    headers: {
+      'Authorization': 'Bearer ' + Cookie.get('token')
+    }
   }).then((response) => {
     statusRequest.value = true;
     capacity.value = response.data
