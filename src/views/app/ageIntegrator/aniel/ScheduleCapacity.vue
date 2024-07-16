@@ -46,10 +46,6 @@ const getData = (period: Date) => {
 const panel = ref('operational');
 
 
-setInterval(() => {
-  getData(dateSelected.value);
-}, 10000);
-
 </script>
 
 <template>
@@ -71,18 +67,17 @@ setInterval(() => {
           <img :src="morning" alt="">
         </div>
         <div class="services">
-          <div class="service" v-for="(item, service) in capacity['capacity'] || []" :key="item.id">
+          <div class="service" v-for="(item, service) in capacity.manha || []" :key="service">
             <div class="title">
-              <h3>{{ service }}</h3>
+              <h3>{{ item.servico }}</h3>
             </div>
             <div class="progress">
-              <progress :value="item.manha.used" :max="item.manha.capacity"></progress>
+              <progress :value="item.utilizado" :max="item.capacidade"></progress>
               <div class="info">
-                <span><b>{{ Math.abs(item.manha.capacity - item.manha.used ) }}</b> - {{ (item.manha.capacity - item.manha.used) >= 0 ? 'Disponíveis' : 'Excedentes' }}</span>
+                <span><b>{{ Math.abs(item.capacidade - item.utilizado ) }}</b> - {{ (item.capacidade - item.utilizado) >= 0 ? 'Disponíveis' : 'Excedentes' }}</span>
               </div>
             </div>
           </div>
-
         </div>
       </div>
       <div class="period">
@@ -93,14 +88,14 @@ setInterval(() => {
           <img :src="afternoon" alt="">
         </div>
         <div class="services">
-          <div class="service" v-for="(item, service) in capacity['capacity'] || []" :key="item.id">
+          <div class="service" v-for="(item, service) in capacity.tarde || []" :key="service">
             <div class="title">
-              <h3>{{ service }}</h3>
+              <h3>{{ item.servico }}</h3>
             </div>
             <div class="progress">
-              <progress :value="item.tarde.used" :max="item.tarde.capacity"></progress>
+              <progress :value="item.utilizado" :max="item.capacidade"></progress>
               <div class="info">
-                <span><b>{{ Math.abs(item.tarde.capacity - item.tarde.used ) }}</b> - {{ (item.tarde.capacity - item.tarde.used) >= 0 ? 'Disponíveis' : 'Excedentes' }}</span>
+                <span><b>{{ Math.abs(item.capacidade - item.utilizado ) }}</b> - {{ (item.capacidade - item.utilizado) >= 0 ? 'Disponíveis' : 'Excedentes' }}</span>
               </div>
             </div>
           </div>
