@@ -27,7 +27,7 @@ const getData = (period: Date) => {
   dateSelected.value = period;
 
   AXIOS({
-    url: 'https://v2.ageportal.agetelecom.com.br/integrator/aniel/capacity',
+    url: 'http://localhost:8000/integrator/aniel/capacity',
     params: {
       period: period
     },
