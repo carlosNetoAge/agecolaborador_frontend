@@ -143,7 +143,7 @@ const rows = ref([
         <div class="item">
           {{ item.schedule }}
         </div>
-        <div class="it  em">
+        <div class="item">
           {{ item.period }}
         </div>
         <div class="item">
@@ -194,7 +194,7 @@ const rows = ref([
     color: #333;
     cursor: pointer;
     transition: all ease-in-out .1s;
-    padding: 5px 15px;
+    padding: 10px 25px;
 
     &:hover {
       background-color: #53aee2;
@@ -292,6 +292,15 @@ const rows = ref([
   }
 }
 
+
+@media (max-width: 1400px) {
+
+  .options {
+    a, button {
+      padding: 5px 15px;
+    }
+  }
+}
 
 .cbx {
   position: relative;

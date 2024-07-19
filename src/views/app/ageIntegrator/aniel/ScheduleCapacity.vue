@@ -51,7 +51,7 @@ const panel = ref('operational');
 <template>
   <div class="options">
     <router-link exact-active-class="select" to="/ageIntegra/agenda-aniel" @click="panel = 'operational'">Operacional</router-link>
-<!--    <router-link exact-active-class="select" to="/ageIntegra/agenda-aniel/aprovacao" @click="panel = 'approbation'">Aprovação</router-link>-->
+<!--    <router-link exact-active-class="select" to="/ageIntegra/agenda-aniel/dashboard" @click="panel = 'dashboard'">Dashboard</router-link>-->
   </div>
   <CalendarOperational
     @updateData="getData"
