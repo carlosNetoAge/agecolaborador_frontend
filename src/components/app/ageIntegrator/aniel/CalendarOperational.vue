@@ -37,7 +37,7 @@ const updateData = (period?: Date) => {
 const getCalendar = async () => {
   AXIOS({
     method: 'get',
-    url: 'http://localhost:8000/integrator/aniel/capacity/calendar',
+    url: 'https://v2.ageportal.agetelecom.com.br/integrator/aniel/capacity/calendar',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + Cookie.get('token')
