@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import { ref } from 'vue';
+import {computed, ref} from 'vue';
 import {infoPage} from "@/stores/counter";
 import {onBeforeMount} from "vue";
 
@@ -10,6 +10,8 @@ import approval from '@/assets/img/app/ageIntegrator/aniel/order_approval.png';
 import surplus from '@/assets/img/app/ageIntegrator/aniel/order_surplus.png';
 import all from '@/assets/img/app/ageIntegrator/aniel/order_all.png';
 import rescheduled from '@/assets/img/app/ageIntegrator/aniel/order_rescheduled.png';
+import {AXIOS} from "@api/AXIOS";
+import Cookie from "js-cookie";
 
 
 
@@ -23,256 +25,78 @@ const setInfoPage = () => {
   });
 };
 
-onBeforeMount(() => {
-  setInfoPage();
-});
+const filterSelected = ref('all');
+const data = ref([]);
 
-const getStatus = (status: string) => {
-  const classCss = {
-    'Aprovado': 'success',
-    'Pré-Aprovado': 'progress',
-    'Rejeitado': 'warning',
-    'Inserido no Aniel': 'success',
-    'Pendente de aprovação': 'progress',
-    'Reagendado pelo cliente': 'success',
-    'Expirado': 'warning'
-  };
-  return classCss[status] || 'default';
+const today = new Date();
+const year = today.getFullYear();
+const month = String(today.getMonth() + 1).padStart(2, '0');
+const day = String(today.getDate()).padStart(2, '0');
+const formattedDate = `${year}-${month}-${day}`;
+
+const dateFilter = ref(formattedDate);
+const search = ref('');
+const status = ref('all');
+
+
+
+const getDashboard = () => {
+  AXIOS({
+    url: 'https://v2.ageportal.agetelecom.com.br/integrator/aniel/management-schedule/dashboard',
+    method: 'GET',
+    params: {
+      period: dateFilter.value
+    },
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + Cookie.get('token')
+    }
+  })
+      .then((response) => {
+        data.value = response.data;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
 };
 
+const countStatusApproved = computed(() => {
+  return data.value.reduce((count, service) => {
+    const statusCount = service.status_order.filter(status => status.id === 15).length;
+    return count + statusCount;
+  }, 0);
+});
 
-const rows = ref([
-  {
-    "title": "Mudança de endereço",
-    "type": "ME",
-    "segment": "B2C",
-    "schedule": "12/06/2024 14:00",
-    "period": "Tarde",
-    "collaborator": "Juliano Silva",
-    "contract": "219821",
-    "os": "120212",
-    "contact": "6199999-9999",
-    "nameClient": "Fulano de Souza",
-    "sector": "SAC",
-    "request": "Betania",
-    "status": "Aprovado"
-  },
-  {
-    "title": "Ativação Plano Combo",
-    "type": "Ativação",
-    "segment": "B2C",
-    "schedule": "12/06/2024 10:00",
-    "period": "Manhã",
-    "collaborator": "Ana Lima",
-    "contract": "219822",
-    "os": "120212",
-    "contact": "6198888-8888",
-    "nameClient": "Ciclano Pereira",
-    "sector": "MCV",
-    "request": "Jhefferson",
-    "status": "Pré-Aprovado"
-  },
-  {
-    "title": "Mudança de Ponto",
-    "type": "MP",
-    "segment": "B2C",
-    "schedule": "12/06/2024 16:00",
-    "period": "Tarde",
-    "collaborator": "Marcos Dias",
-    "contract": "219823",
-    "os": "120212",
-    "contact": "6197777-7777",
-    "nameClient": "Beltrano Silva",
-    "sector": "Suporte",
-    "request": "Denise",
-    "status": "Aprovado"
-  },
-  {
-    "title": "Ativação Plano Combo",
-    "type": "Ativação",
-    "segment": "B2C",
-    "schedule": "12/06/2024 11:00",
-    "period": "Manhã",
-    "collaborator": "Joana Souza",
-    "contract": "219824",
-    "os": "120212",
-    "contact": "6196666-6666",
-    "nameClient": "Maria Oliveira",
-    "sector": "Condomínio",
-    "request": "Daiane",
-    "status": "Rejeitado"
-  }
-])
+const countStatusReSchedule = computed(() => {
+  return data.value.reduce((count, service) => {
+    const statusCount = service.status_order.filter(status => status.id === 16).length;
+    return count + statusCount;
+  }, 0);
+});
 
-const filterSelected = ref('all');
+const dataFiltered = computed(() => {
+  const searchValue = search.value.toString().toLowerCase();
 
-const defineOptionsOs = (color:string) => {
-  const options = {
-    chart: {
-      type: 'area',
-      toolbar: {
-        show: false, // Esconde a barra de ferramentas
-      },
-      zoom: {
-        enable: false,
-      },
-      brush: {
-        enabled: false
-      },
-      offsetY: 20,
-    },
-    stroke: {
-      curve: 'straight', // Opcional: Define o tipo de curva das linhas
-      width: 2 // Opcional: Define a largura da linha
-    },
-    colors: [color],
-    grid: {
-      show: false, // Desabilita a grade
-    },
-    xaxis: {
-      labels: {
-        show: false, // Esconde os rótulos do eixo X
-      },
-      axisBorder: {
-        show: false, // Esconde a borda do eixo X
-      },
-      axisTicks: {
-        show: false, // Esconde os ticks (marcadores) do eixo X
-      },
-    },
-    yaxis: {
-      labels: {
-        show: false, // Esconde os rótulos do eixo Y
-      },
-      axisBorder: {
-        show: false, // Esconde a borda do eixo Y
-      },
-      axisTicks: {
-        show: false, // Esconde os ticks (marcadores) do eixo Y
-      },
-    },
-    dataLabels: {
-      enabled: false // Desabilita os rótulos de dados
-    },
-    markers: {
-      size: 0 // Esconde os marcadores de ponto
-    },
-    tooltip: {
-      enabled: true,
-      x: {
-        show: false
-      }
+  return data.value.filter((value) => {
+    const matchesSearch = value.protocolo.toLowerCase().includes(searchValue);
+
+    let matchesStatus = true;
+    if (status.value === 'approved') {
+      matchesStatus = value.status_order[0]['id'] === 15;
+    } else if (status.value === 'rescheduled') {
+      matchesStatus = value.status_order[0]['id'] === 16;
+    } else if (status.value === 'pending') {
+      matchesStatus = value.status_order[0]['id'] !== 15 && value.status_order[0]['id'] !== 16;
     }
-  };
-  return options;
-}
 
-const defineOptionsStatus = () => {
-  const options = {
-    chart: {
-      type: 'bar',
-      toolbar: {
-        show: false, // Esconde a barra de ferramentas
-      },
-      zoom: {
-        enable: false,
-      },
-      brush: {
-        enabled: false
-      },
-      offsetY: 20,
-    },
-    stroke: {
-      curve: 'straight', // Opcional: Define o tipo de curva das linhas
-      width: 2 // Opcional: Define a largura da linha
-    },
-    plotOptions: {
-      bar: {
-        distributed: true, // Permite que cada barra tenha uma cor diferente
-      }
-    },
-    colors: ['#53AEE2', '#FF9A42', '#008200', '#848284', '#00FFFF', '#ED1C24'],
-    grid: {
-      show: false, // Desabilita a grade
-    },
-    xaxis: {
-      labels: {
-        show: false, // Esconde os rótulos do eixo X
-      },
-      axisBorder: {
-        show: false, // Esconde a borda do eixo X
-      },
-      axisTicks: {
-        show: false, // Esconde os ticks (marcadores) do eixo X
-      },
-    },
-    yaxis: {
-      labels: {
-        show: false, // Esconde os rótulos do eixo Y
-      },
-      axisBorder: {
-        show: false, // Esconde a borda do eixo Y
-      },
-      axisTicks: {
-        show: false, // Esconde os ticks (marcadores) do eixo Y
-      },
-    },
-    dataLabels: {
-      enabled: true,
-      offsetY: 20,
-      style: {
-        fontSize: '12px',
-        colors: ['#333']
-      }
-    },
-    markers: {
-      size: 0 // Esconde os marcadores de ponto
-    },
-    tooltip: {
-      enabled: true,
-      x: {
-        show: true
-      }
-    },
-    legend: {
-      show: false
-    }
-  };
-  return options;
-}
+    return matchesSearch && matchesStatus;
+  });
+});
 
-const defineSeriesOs = () => {
-  return [
-    {
-      name: 'Agendadas',
-      data: [
-        { x: '08:00 - 10:00', y: 10 },
-        { x: '10:00 - 12:00', y: 40 },
-        { x: '12:00 - 14:00', y: 30 },
-        { x: '14:00 - 16:00', y: 42 },
-        { x: '16:00 - 18:00', y: 10 }
-      ]
-    }
-  ];
 
-}
+getDashboard();
+setInfoPage();
 
-const defineSeriesStatus = () => {
-  return [
-    {
-      name: 'Status',
-      data: [
-        {x: 'Aberta Aguardando Atendimento', y: 20},
-        {x: 'Fechada Improdutiva', y: 30 },
-        {x: 'Fechada Produtiva', y: 40 },
-        {x: 'Aberta Aguardando Agendamento', y: 25 },
-        {x: 'Atendimento Iniciado', y: 10 },
-        {x: 'Cancelado', y: 15 },
-      ]
-    }
-  ];
-
-}
 
 
 </script>
@@ -285,28 +109,28 @@ const defineSeriesStatus = () => {
         <router-link exact-active-class="select" to="/ageIntegra/agenda-aniel/dashboard" @click="panel = 'dashboard'">Dashboard</router-link>
       </div>
     </div>
-    <div class="filters">
-      <div class="filter" @click="filterSelected = 'all'" :class="{'selected' : filterSelected === 'all'}">
-        <button>Todas</button>
-        <div class="effect-select"></div>
-      </div>
-      <div class="filter" @click="filterSelected = 'atv'" :class="{'selected' : filterSelected === 'atv'}">
-        <button>Ativações</button>
-        <div class="effect-select"></div>
-      </div>
-      <div class="filter" @click="filterSelected = 'vt'" :class="{'selected' : filterSelected === 'vt'}">
-        <button>Visíta técnica</button>
-        <div class="effect-select"></div>
-      </div>
-      <div class="filter" @click="filterSelected = 'me'" :class="{'selected' : filterSelected === 'me'}">
-        <button>Mudança de endereço</button>
-        <div class="effect-select"></div>
-      </div>
-      <div class="filter" @click="filterSelected = 'rt'" :class="{'selected' : filterSelected === 'rt'}">
-        <button>Retenção</button>
-        <div class="effect-select"></div>
-      </div>
-    </div>
+<!--    <div class="filters">-->
+<!--      <div class="filter" @click="filterSelected = 'all'" :class="{'selected' : filterSelected === 'all'}">-->
+<!--        <button>Todas</button>-->
+<!--        <div class="effect-select"></div>-->
+<!--      </div>-->
+<!--      <div class="filter" @click="filterSelected = 'atv'" :class="{'selected' : filterSelected === 'atv'}">-->
+<!--        <button>Ativações</button>-->
+<!--        <div class="effect-select"></div>-->
+<!--      </div>-->
+<!--      <div class="filter" @click="filterSelected = 'vt'" :class="{'selected' : filterSelected === 'vt'}">-->
+<!--        <button>Visíta técnica</button>-->
+<!--        <div class="effect-select"></div>-->
+<!--      </div>-->
+<!--      <div class="filter" @click="filterSelected = 'me'" :class="{'selected' : filterSelected === 'me'}">-->
+<!--        <button>Mudança de endereço</button>-->
+<!--        <div class="effect-select"></div>-->
+<!--      </div>-->
+<!--      <div class="filter" @click="filterSelected = 'rt'" :class="{'selected' : filterSelected === 'rt'}">-->
+<!--        <button>Retenção</button>-->
+<!--        <div class="effect-select"></div>-->
+<!--      </div>-->
+<!--    </div>-->
     <div class="cards">
       <div class="card">
         <div class="info">
@@ -314,7 +138,7 @@ const defineSeriesStatus = () => {
             <p>Ordens do dia</p>
           </div>
           <div class="value">
-            <span>385</span>
+            <span> - </span>
             <span></span>
           </div>
         </div>
@@ -328,7 +152,7 @@ const defineSeriesStatus = () => {
             <p>Ordens excedentes</p>
           </div>
           <div class="value">
-            <span>33</span>
+            <span>{{ data.length }}</span>
             <span></span>
           </div>
         </div>
@@ -342,7 +166,7 @@ const defineSeriesStatus = () => {
             <p>Ordens aprovadas</p>
           </div>
           <div class="value">
-            <span>13</span>
+            <span>{{ countStatusApproved }}</span>
             <span></span>
           </div>
         </div>
@@ -356,7 +180,7 @@ const defineSeriesStatus = () => {
             <p>Ordens reagendadas</p>
           </div>
           <div class="value">
-            <span>8</span>
+            <span>{{countStatusReSchedule}}</span>
             <span></span>
           </div>
         </div>
@@ -370,7 +194,7 @@ const defineSeriesStatus = () => {
             <p>Ordens pendentes</p>
           </div>
           <div class="value">
-            <span>12</span>
+            <span>{{ data.length - countStatusApproved - countStatusReSchedule }}</span>
             <span></span>
           </div>
         </div>
@@ -387,13 +211,13 @@ const defineSeriesStatus = () => {
           <path d="M504.352,459.061l-99.435-99.477c74.402-99.427,54.115-240.344-45.312-314.746S119.261-9.277,44.859,90.15   S-9.256,330.494,90.171,404.896c79.868,59.766,189.565,59.766,269.434,0l99.477,99.477c12.501,12.501,32.769,12.501,45.269,0   c12.501-12.501,12.501-32.769,0-45.269L504.352,459.061z M225.717,385.696c-88.366,0-160-71.634-160-160s71.634-160,160-160   s160,71.634,160,160C385.623,314.022,314.044,385.602,225.717,385.696z"/>
         </g>
         </svg>
-        <input type="number" placeholder="Pesquisar (Protocolo)" />
+        <input type="number" placeholder="Pesquisar (Protocolo)" v-model="search" />
       </div>
       <div class="period">
-        <input type="date" name="period">
+        <input type="date" name="period" v-model="dateFilter" @change="getDashboard">
       </div>
       <div class="status">
-        <select name="status" id="status">
+        <select name="status" id="status" v-model="status">
           <option value="all">Todos</option>
           <option value="surplus">Excedentes</option>
           <option value="approved">Aprovado</option>
@@ -414,175 +238,43 @@ const defineSeriesStatus = () => {
     <div class="table_orders">
       <table>
         <thead>
-          <tr>
-            <th style="text-align: left">Protocolo</th>
-            <th>Tipo</th>
-            <th style="text-align: left">Serviço</th>
-            <th>Agendamento</th>
-            <th>Período</th>
-            <th style="text-align: left">Status</th>
-            <th>Setor</th>
-            <th>Solicitante</th>
-            <th>Ações</th>
-          </tr>
+        <tr>
+          <th style="text-align: left">Protocolo</th>
+          <th>Tipo</th>
+          <th style="text-align: left">Serviço</th>
+          <th>Agendamento</th>
+          <th>Período</th>
+          <th style="text-align: left">Status</th>
+          <th>Aberta por</th>
+          <th>Setor</th>
+          <th>Solicitante</th>
+          <th>Aprovado por</th>
+          <th>Ações</th>
+        </tr>
         </thead>
         <tbody>
-          <tr>
-            <td style="text-align: left">#120212</td>
-            <td>Ativação</td>
-            <td style="text-align: left">Ativação Internet</td>
-            <td>10:35</td>
-            <td>Manhã</td>
-            <td>
-              <div class="status">
-                <div class="badge success"></div>
-                <span>Aprovado</span>
-              </div>
-            </td>
-            <td>MCV</td>
-            <td>Jhefferson</td>
-            <td>
-            </td>
-          </tr>
-          <tr>
-            <td style="text-align: left">#120213</td>
-            <td>VT</td>
-            <td style="text-align: left">Visita técnica</td>
-            <td>10:35</td>
-            <td>Manhã</td>
-            <td>
-              <div class="status">
-                <div class="badge rescheduled"></div>
-                <span>Reagendado</span>
-              </div>
-            </td>
-            <td>SAC</td>
-            <td>Betânia</td>
-            <td>
-            </td>
-          </tr>
-          <tr>
-            <td style="text-align: left">#120213</td>
-            <td>VT</td>
-            <td style="text-align: left">Visita técnica Rede Mesh</td>
-            <td>13:10</td>
-            <td>Manhã</td>
-            <td>
-              <div class="status">
-                <div class="badge pending"></div>
-                <span>Pendente</span>
-              </div>
-            </td>
-            <td>SAC</td>
-            <td>Betânia</td>
-            <td>
-              <svg class="actions_order" xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24" width="512" height="512"><circle cx="12" cy="2" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="22" r="2"/></svg>
-            </td>
-          </tr>
-          <tr>
-            <td style="text-align: left">#120212</td>
-            <td>Ativação</td>
-            <td style="text-align: left">Ativação Internet</td>
-            <td>10:35</td>
-            <td>Manhã</td>
-            <td>
-              <div class="status">
-                <div class="badge success"></div>
-                <span>Aprovado</span>
-              </div>
-            </td>
-            <td>MCV</td>
-            <td>Jhefferson</td>
-            <td>
-            </td>
-          </tr>
-          <tr>
-            <td style="text-align: left">#120213</td>
-            <td>VT</td>
-            <td style="text-align: left">Visita técnica</td>
-            <td>10:35</td>
-            <td>Manhã</td>
-            <td>
-              <div class="status">
-                <div class="badge rescheduled"></div>
-                <span>Reagendado</span>
-              </div>
-            </td>
-            <td>SAC</td>
-            <td>Betânia</td>
-            <td>
-            </td>
-          </tr>
-          <tr>
-            <td style="text-align: left">#120213</td>
-            <td>VT</td>
-            <td style="text-align: left">Visita técnica Rede Mesh</td>
-            <td>13:10</td>
-            <td>Manhã</td>
-            <td>
-              <div class="status">
-                <div class="badge pending"></div>
-                <span>Pendente</span>
-              </div>
-            </td>
-            <td>SAC</td>
-            <td>Betânia</td>
-            <td>
-              <svg class="actions_order" xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24" width="512" height="512"><circle cx="12" cy="2" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="22" r="2"/></svg>
-            </td>
-          </tr>
-          <tr>
-            <td style="text-align: left">#120212</td>
-            <td>Ativação</td>
-            <td style="text-align: left">Ativação Internet</td>
-            <td>10:35</td>
-            <td>Manhã</td>
-            <td>
-              <div class="status">
-                <div class="badge success"></div>
-                <span>Aprovado</span>
-              </div>
-            </td>
-            <td>MCV</td>
-            <td>Jhefferson</td>
-            <td>
-            </td>
-          </tr>
-          <tr>
-            <td style="text-align: left">#120213</td>
-            <td>VT</td>
-            <td style="text-align: left">Visita técnica</td>
-            <td>10:35</td>
-            <td>Manhã</td>
-            <td>
-              <div class="status">
-                <div class="badge rescheduled"></div>
-                <span>Reagendado</span>
-              </div>
-            </td>
-            <td>SAC</td>
-            <td>Betânia</td>
-            <td>
-            </td>
-          </tr>
-          <tr>
-            <td style="text-align: left">#120213</td>
-            <td>VT</td>
-            <td style="text-align: left">Visita técnica Rede Mesh</td>
-            <td>13:10</td>
-            <td>Manhã</td>
-            <td>
-              <div class="status">
-                <div class="badge pending"></div>
-                <span>Pendente</span>
-              </div>
-            </td>
-            <td>SAC</td>
-            <td>Betânia</td>
-            <td>
-              <svg class="actions_order" xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24" width="512" height="512"><circle cx="12" cy="2" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="22" r="2"/></svg>
-            </td>
-          </tr>
+        <tr v-for="(item, index) in dataFiltered" :key="index">
+          <td style="text-align: left"># {{ item.protocolo }}</td>
+          <td>{{ item.servico }}</td>
+          <td style="text-align: left">{{ item.subservico }}</td>
+          <td>{{ item.hora_agendamento }}</td>
+          <td>{{ item.periodo }}</td>
+          <td>
+            <div class="status">
+              <div class="badge" :style="{backgroundColor: item.status_order[0]['cor_indicativa']}"></div>
+              <span>{{ item.status_order[0]['titulo'] }}</span>
+            </div>
+          </td>
+          <td>{{ item.aberta_por }}</td>
+          <td>{{ item.setor }}</td>
+          <td></td>
+          <td>
+            {{ item.aprovador }}
+          </td>
+          <td>
+            <svg v-if="item.status_order[0]['id'] != 15" class="actions_order" xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24" width="512" height="512"><circle cx="12" cy="2" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="22" r="2"/></svg>
+          </td>
+        </tr>
         </tbody>
       </table>
     </div>
@@ -885,7 +577,7 @@ const defineSeriesStatus = () => {
             color: #333;
             height: 7vh;
             text-align: center;
-
+            user-select: text;
 
             .status {
               @include flex(row, flex-start, center, .5vw);

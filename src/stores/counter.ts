@@ -40,7 +40,6 @@ export const infoPage = defineStore('infoPage', () => {
     subtitle.value = payload.subtitle
   }
 
-''
 
     return { title, subtitle, setInfoPage }
 })
