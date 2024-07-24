@@ -44,7 +44,7 @@ const modalStatus = ref(false);
 
 const getDashboard = () => {
   AXIOS({
-    url: 'http://localhost:8000/integrator/aniel/management-schedule/dashboard',
+    url: 'https://v2.ageportal.agetelecom.com.br/integrator/aniel/management-schedule/dashboard',
     method: 'GET',
     params: {
       period: dateFilter.value
