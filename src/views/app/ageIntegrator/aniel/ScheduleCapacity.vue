@@ -6,6 +6,7 @@ import afternoon from '@/assets/img/app/ageIntegrator/aniel/afternoon.png'
 import { infoPage} from "@/stores/counter";
 import CalendarOperational from "@/components/app/ageIntegrator/aniel/CalendarOperational.vue";
 import {AXIOS} from "@api/AXIOS";
+import Cookie from "js-cookie";
 
 const info = infoPage();
 
@@ -20,16 +21,20 @@ setInfoPage();
 
 const statusRequest = ref(false);
 const capacity = ref({});
-
+const dateSelected = ref();
 const getData = (period: Date) => {
   statusRequest.value = false;
+  dateSelected.value = period;
 
   AXIOS({
-    url: 'http://localhost:8000/integrator/aniel/capacity',
+    url: 'https://v2.ageportal.agetelecom.com.br/integrator/aniel/capacity',
     params: {
       period: period
     },
-    method: 'GET'
+    method: 'GET',
+    headers: {
+      'Authorization': 'Bearer ' + Cookie.get('token')
+    }
   }).then((response) => {
     statusRequest.value = true;
     capacity.value = response.data
@@ -40,12 +45,13 @@ const getData = (period: Date) => {
 
 const panel = ref('operational');
 
+
 </script>
 
 <template>
   <div class="options">
     <router-link exact-active-class="select" to="/ageIntegra/agenda-aniel" @click="panel = 'operational'">Operacional</router-link>
-    <router-link exact-active-class="select" to="/ageIntegra/agenda-aniel/aprovacao" @click="panel = 'approbation'">Aprovação</router-link>
+<!--    <router-link exact-active-class="select" to="/ageIntegra/agenda-aniel/dashboard" @click="panel = 'dashboard'">Dashboard</router-link>-->
   </div>
   <CalendarOperational
     @updateData="getData"
@@ -61,18 +67,17 @@ const panel = ref('operational');
           <img :src="morning" alt="">
         </div>
         <div class="services">
-          <div class="service" v-for="(item, turn) in capacity['manha'] || []" :key="item.id">
+          <div class="service" v-for="(item, service) in capacity.manha || []" :key="service">
             <div class="title">
-              <h3>{{ item.service }}</h3>
+              <h3>{{ item.servico }}</h3>
             </div>
             <div class="progress">
-              <progress value="50" :max="item.capacity"></progress>
-              <div class="info" style="right: 0; top: -2vh">
-                <span><b>{{ Math.abs(item.capacity - 50) }}</b> - {{ item.capacity > 50 ? 'Disponíveis' : 'Excedentes' }}</span>
+              <progress :value="item.utilizado" :max="item.capacidade"></progress>
+              <div class="info">
+                <span><b>{{ Math.abs(item.capacidade - item.utilizado ) }}</b> - {{ (item.capacidade - item.utilizado) >= 0 ? 'Disponíveis' : 'Excedentes' }}</span>
               </div>
             </div>
           </div>
-
         </div>
       </div>
       <div class="period">
@@ -83,19 +88,19 @@ const panel = ref('operational');
           <img :src="afternoon" alt="">
         </div>
         <div class="services">
-          <div class="service">
+          <div class="service" v-for="(item, service) in capacity.tarde || []" :key="service">
             <div class="title">
-              <h3>Ativações</h3>
+              <h3>{{ item.servico }}</h3>
             </div>
             <div class="progress">
-              <progress value="100" max="100"></progress>
-              <div class="info" style="right: 0; top: -2vh">
-                <span>0 - Disponíveis</span>
+              <progress :value="item.utilizado" :max="item.capacidade"></progress>
+              <div class="info">
+                <span><b>{{ Math.abs(item.capacidade - item.utilizado ) }}</b> - {{ (item.capacidade - item.utilizado) >= 0 ? 'Disponíveis' : 'Excedentes' }}</span>
               </div>
             </div>
           </div>
-        </div>
 
+        </div>
       </div>
     </div>
   </div>
@@ -197,6 +202,7 @@ const panel = ref('operational');
 
             .info {
               position: absolute;
+              right: 0; top: -3vh;
 
               span {
                 font-size: 1.1rem;
@@ -207,7 +213,7 @@ const panel = ref('operational');
 
             progress {
               width: 100%;
-              height: 1.5vh;
+              height: 3vh;
               border-radius: 10px;
               background-color: #E6F2FE;
               appearance: none;
@@ -224,6 +230,15 @@ const panel = ref('operational');
 
         }
       }
+    }
+  }
+}
+
+@media (max-width: 1400px) {
+
+  .options {
+    a {
+      padding: 5px 15px;
     }
   }
 }

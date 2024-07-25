@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {onBeforeUnmount, onMounted, ref, defineEmits, defineProps, watch} from "vue";
 import {AXIOS} from "@api/AXIOS";
+import Cookie from "js-cookie";
 
 const props = defineProps({
   statusCalendar: Boolean
@@ -36,9 +37,10 @@ const updateData = (period?: Date) => {
 const getCalendar = async () => {
   AXIOS({
     method: 'get',
-    url: 'http://localhost:8000/integrator/aniel/capacity/calendar',
+    url: 'https://v2.ageportal.agetelecom.com.br/integrator/aniel/capacity/calendar',
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + Cookie.get('token')
     },
   }).then((response) => {
     dateCalendar.value = response.data;
@@ -252,6 +254,31 @@ onBeforeUnmount(() => {
   }
 }
 
+@media (max-width: 1400px) {
+
+  .calendar {
+    height: 17%;
+    .months {
+      .month {
+        font-size: 1rem;
+      }
+    }
+
+    .days {
+      .day {
+
+        .dayName {
+          font-size: 1rem;
+        }
+
+        .dayNumber {
+          font-size: 1.2rem;
+        }
+      }
+    }
+  }
+}
+
 @keyframes up {
   from {
     transform: translateY(5px);
@@ -271,6 +298,7 @@ onBeforeUnmount(() => {
   width: 100%;
   position: absolute;
   background-color: #FFFFFF;
+  border-radius: 15px;
 }
 
 .dot {

@@ -55,7 +55,7 @@ const menu = stateMenu();
     position: relative;
 
     .page {
-      @include container(98%,100%);
+      @include container(100%,100%);
 
     }
 
@@ -69,12 +69,12 @@ const menu = stateMenu();
   .app {
     display: grid;
     grid-template-columns: 15% 83%;
-    grid-template-rows: 15% 83%;
+    grid-template-rows: 10% 88%;
     gap: 2%;
     grid-template-areas: 'menu header'
                       'menu content';
     transition: grid-template-columns 0.3s ease-in-out;
-
+    padding-right: 2%;
   }
 
   .menu__retract {

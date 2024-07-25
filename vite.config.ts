@@ -8,7 +8,7 @@ import VueDevTools from 'vite-plugin-vue-devtools'
 export default defineConfig({
   plugins: [
     vue(),
-    VueDevTools(),
+    VueDevTools({launchEditor: 'phpstorm'}),
   ],
   resolve: {
     alias: {

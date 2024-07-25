@@ -143,7 +143,7 @@ const rows = ref([
         <div class="item">
           {{ item.schedule }}
         </div>
-        <div class="it  em">
+        <div class="item">
           {{ item.period }}
         </div>
         <div class="item">
@@ -292,6 +292,15 @@ const rows = ref([
   }
 }
 
+
+@media (max-width: 1400px) {
+
+  .options {
+    a, button {
+      padding: 5px 15px;
+    }
+  }
+}
 
 .cbx {
   position: relative;

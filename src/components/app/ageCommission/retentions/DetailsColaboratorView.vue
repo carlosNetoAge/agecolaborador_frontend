@@ -25,7 +25,7 @@ const router = useRouter();
 const info = infoPage();
 
 const setInfoPage = async () => {
-  await info.setInfoPage({
+    info.setInfoPage({
     title: 'Dashboard',
     subtitle: 'Confira sua produtividade no mês de junho abaixo.' });
 }

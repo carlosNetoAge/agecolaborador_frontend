@@ -54,7 +54,7 @@ const validateForm: ValidateForm = reactive({
   },
   pass: {
     required: true,
-    minLength: 8,
+    minLength: 5,
     maxLength: 100,
     errors: [],
   },
@@ -95,7 +95,7 @@ const validatePassword = (): void => {
   if (pass.length === 0) {
     validateForm.pass.errors.push("Para sua segurança, precisamos da sua senha.");
   } else if (pass.length < validateForm.pass.minLength) {
-    validateForm.pass.errors.push("Sua senha precisa ter pelo menos 8 caracteres.");
+    validateForm.pass.errors.push("Sua senha precisa conter ao menos 5 caracteres.");
   } else if (pass.length > validateForm.pass.maxLength) {
     validateForm.pass.errors.push("Número de caracteres excedido. Tente uma senha mais curta.");
   }
