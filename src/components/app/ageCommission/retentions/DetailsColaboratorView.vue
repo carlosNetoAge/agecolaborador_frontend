@@ -32,7 +32,6 @@ const setInfoPage = async () => {
 
 const returnPage = () => {
   router.push('/inicio')
-  page.value = 'list'
 }
 
 

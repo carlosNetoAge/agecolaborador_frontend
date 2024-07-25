@@ -91,3 +91,26 @@ export const sellerInfoStore = defineStore('sellerInfo', () => {
 
   return { setInfo, getInfo, removeInfo, dataSeller, periodRefer}
 })
+
+
+export const colaboratorInfoStore = defineStore('colaboratorInfo', () => {
+
+  const colaboratorData = ref({})
+  const periodRefer = ref('')
+
+  function setInfo(seller: object, date: string) {
+    colaboratorData.value = seller;
+    periodRefer.value = date;
+  }
+
+  function getInfo() {
+    return { colaboratorData: colaboratorData.value, periodRefer: periodRefer.value}
+  }
+
+  function removeInfo() {
+    colaboratorData.value = {}
+    periodRefer.value = ''
+  }
+
+  return { setInfo, getInfo, removeInfo, colaboratorData, periodRefer}
+})
