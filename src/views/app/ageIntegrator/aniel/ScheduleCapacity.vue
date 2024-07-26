@@ -43,6 +43,10 @@ const getData = (period: Date) => {
   });
 }
 
+const formatHour = (hour: string) => {
+  return hour.split(':').slice(0, 2).join(':');
+}
+
 const panel = ref('operational');
 
 setInterval(() => {
@@ -72,7 +76,7 @@ setInterval(() => {
         <div class="services">
           <div class="service" v-for="(item, service) in capacity.manha || []" :key="service">
             <div class="title">
-              <h3>{{ item.servico }} {{ item.status == 'fechada' ? '- Fechada às ' + item.hora_fechamento : '' }}</h3>
+              <h3>{{ item.servico }} {{ item.status == 'fechada' ? '- Fechada às ' + formatHour(item.hora_fechamento) : '' }}</h3>
               <p>{{ item.motivo_fechamento }}</p>
             </div>
             <div class="progress">
@@ -98,7 +102,7 @@ setInterval(() => {
         <div class="services">
           <div class="service" v-for="(item, service) in capacity.tarde || []" :key="service">
             <div class="title">
-              <h3>{{ item.servico }} {{ item.status == 'fechada' ? '- Fechada às ' + item.hora_fechamento : '' }}</h3>
+              <h3>{{ item.servico }} {{ item.status == 'fechada' ? '- Fechada às ' + formatHour(item.hora_fechamento) : '' }}</h3>
               <p>{{ item.motivo_fechamento }}</p>
             </div>
             <div class="progress">
