@@ -57,23 +57,23 @@ const alterStateMenu = () => {
                    <router-link
                        to="/ageComissiona/b2b/dashboard/executivo"
                        class="item__submenu" :class="{'active__submenu' : actualSubMenu == 'AgeComissionCommission'}" @click="actualSubMenu = 'AgeComissionCommission'">
-                     <p>Minha Comissão - B2B</p>
+                     <p>Minha Comissão</p>
                    </router-link>
                    <router-link
                        to="/ageComissiona/b2b/financeiro"
                        class="item__submenu" :class="{'active__submenu' : actualSubMenu == 'AgeComissionFinancial'}" @click="actualSubMenu = 'AgeComissionFinancial'">
-                     <p>Dashboards B2B</p>
+                     <p>Financeiro</p>
                    </router-link>
-                   <router-link
-                       to="/ageComissiona/retencao"
-                       class="item__submenu" :class="{'active__submenu' : actualSubMenu == 'AgeComissionCommission2'}" @click="actualSubMenu = 'AgeComissionCommission2'">
-                     <p>Dashboards Retenção</p>
-                   </router-link>
-                   <router-link
-                       to="/ageComissiona/retencao/colaborador"
-                       class="item__submenu" :class="{'active__submenu' : actualSubMenu == 'AgeComissionFinancial2'}" @click="actualSubMenu = 'AgeComissionFinancial2'">
-                     <p>Minha Comissão - retenção</p>
-                   </router-link>
+<!--                   <router-link-->
+<!--                       to="/ageComissiona/retencao"-->
+<!--                       class="item__submenu" :class="{'active__submenu' : actualSubMenu == 'AgeComissionCommission2'}" @click="actualSubMenu = 'AgeComissionCommission2'">-->
+<!--                     <p>Dashboards Retenção</p>-->
+<!--                   </router-link>-->
+<!--                   <router-link-->
+<!--                       to="/ageComissiona/retencao/colaborador"-->
+<!--                       class="item__submenu" :class="{'active__submenu' : actualSubMenu == 'AgeComissionFinancial2'}" @click="actualSubMenu = 'AgeComissionFinancial2'">-->
+<!--                     <p>Minha Comissão - retenção</p>-->
+<!--                   </router-link>-->
                  </ul>
                </transition>
              </li>
