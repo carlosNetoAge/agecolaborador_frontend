@@ -4,22 +4,64 @@
 // import { onMounted, onUpdated, ref, watch } from "vue";
 // import { AXIOS } from "@api/AXIOS";
 // import Cookie from "js-cookie";
-// import { infoPage } from "@/stores/counter";
-import { ref } from "vue";
-import { sellerInfoStore } from "@/stores/counter";
+import { infoPage } from "@/stores/counter";
+import { onMounted, ref } from "vue";
 import router from "@/router";
+import { colaboratorInfoStore } from "@/stores/counter";
+import gold from "@/assets/img/web/medal gold.svg";
+import silver from "@/assets/img/web/medal silver.svg";
+import bronze from "@/assets/img/web/medal bronze.svg";
+import up from "@/assets/img/web/up.svg";
+import down from "@/assets/img/web/down.svg";
 
+interface dataColaborator {
+    "atendente": string,
+    "solicitacoes_recebidas_total": number,
+    "retencoes_realizadas_total": number,
+    "retencoes_nao_realizadas": number,
+    "retencoes_dias": {
+      "1": {
+        "solicitacoes_recebidas": number,
+        "retencoes_realizadas": number,
+        "retencoes_nao_realizadas": number
+      },
+      "10": {
+        "solicitacoes_recebidas": number,
+        "retencoes_realizadas": number,
+        "retencoes_nao_realizadas": number
+      },
+      "20": {
+        "solicitacoes_recebidas": number,
+        "retencoes_realizadas": number,
+        "retencoes_nao_realizadas": number
+      },
+      "30": {
+        "solicitacoes_recebidas": number,
+        "retencoes_realizadas": number,
+        "retencoes_nao_realizadas": number
+      }
+    },
+    "cidade_ouros": number,
+    "cidades_prata": number,
+    "media_atual": number,
+    "media_anterior": number,
+    "valor_rv": number,
+    "status": string
+}
 
-
-// Referências reativas
 const page = ref('list');
 // const data = ref([]);
 // const statusDashboard = ref(false);
 const statusReq = ref(false);
 const selectedPeriod = ref('2024-01-01');
 const periodRefer = ref('');
-// const info = infoPage();
-const store = sellerInfoStore();
+const store = colaboratorInfoStore();
+const info = infoPage();
+const medals = ref([
+  gold,
+  silver,
+  bronze
+])
 
 // Opções de período para seleção
 const periodOptions = ref([
@@ -31,7 +73,7 @@ const periodOptions = ref([
   { label: 'Agosto de 2024', value: '2024-06-01' , refer: 'Junho de 2024'},
 ]);
 
-const jsonMock = [
+const dataColaborator = [
   {
     "atendente": "Atendente A",
     "solicitacoes_recebidas_total": 145,
@@ -164,7 +206,7 @@ const jsonMock = [
     "cidade_ouros": 28,
     "cidades_prata": 62,
     "media_atual": 83.4,
-    "media_anterior": 81.7,
+    "media_anterior": 89.7,
     "valor_rv": 1150,
     "status": "Não pago"
   }
@@ -213,11 +255,16 @@ const computeReferenceMonth = () => {
 //   page.value = 'list'
 // };
 
-// const setInfoPage = () => {
-//   info.setInfoPage({
-//     title: 'Auditoria de Renteções - Referente à ' + periodRefer.value,
-//     subtitle: 'Examine cada transação, garantindo precisão e integridade nas vendas.' });
-// }
+const setInfoPage = () => {
+  info.setInfoPage({
+    title: 'Auditoria de Renteções - Referente à ' + periodRefer.value,
+    subtitle: 'Examine cada colaborador, veja rendimento e produdividade.' });
+}
+
+onMounted(() => {
+  computeReferenceMonth()
+  setInfoPage()
+})
 
 </script>
 
@@ -242,8 +289,11 @@ const computeReferenceMonth = () => {
         </div>
       </div>
       <div class="body">
-        <div class="row" v-for="(colaboratorData, index) in jsonMock" :key="index">
-          <div class="item first_item">
+        <div class="row" v-for="(colaboratorData, index) in dataColaborator" :key="index"  @click="viewDetails(colaboratorData)">
+          <div class="medal_container" v-if="index <= 2">
+            <img class="medal" :src="medals[index]">
+          </div>
+          <div class="item first_item" :class="{ 'pl-8': index <= 2 }">
             {{ colaboratorData.atendente }}
           </div>
           <div class="item">
@@ -259,6 +309,7 @@ const computeReferenceMonth = () => {
             <td>R${{ colaboratorData.media_anterior }} </td>
           </div>
           <div class="item">
+            <img :src="colaboratorData.media_atual > colaboratorData.media_anterior ? up : down" class="w-10 pr-2">
             <td>R${{ colaboratorData.media_atual }} </td>
           </div>
           <div class="item">
@@ -331,8 +382,8 @@ const computeReferenceMonth = () => {
 
 
     .item {
-      max-width: 15%;
-      width: 15%;
+      max-width: 12.5%;
+      width: 12.5%;
       text-align: center;
       font-size: 1.2rem;
       user-select: text !important;
@@ -347,17 +398,12 @@ const computeReferenceMonth = () => {
       
       .badge-success {
         background-color: #E8FBEF;
-        color: #09D45B;
-      }
-      
-      .badge-progress {
-        background-color: #E6F2FE;
-        color: #0A7BF5;
+        color: #4ef591;
       }
       
       .badge-cancel {
-        background-color: #dc354530;
-        color: #dc3545;
+        background-color: #e27a8530;
+        color: #e65a68;
       }
     }
   }
@@ -376,8 +422,9 @@ const computeReferenceMonth = () => {
 
   .body {
     @include flex(column, flex-start, initial, 1vh);
-
+    
     .row {
+      position: relative;
       &:hover {
         border-color: #cccccc80;
       }
@@ -400,6 +447,14 @@ const computeReferenceMonth = () => {
 
 .silver {
   background-color: #959595;
+}
+
+.medal_container {
+  position: absolute;
+  left: 0.2vw;
+  top: 1.5vh;
+  width: 30px;
+  height: 30px;
 }
 
 
