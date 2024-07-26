@@ -39,7 +39,8 @@ const search = ref('');
 const status = ref('all');
 const osSelected = ref([])
 const modalStatus = ref(false);
-
+const modalReschedule = ref(false);
+const rescheduleDate = ref('');
 
 
 const getDashboard = () => {
@@ -138,28 +139,6 @@ setInterval(() => {
         <router-link exact-active-class="select" to="/ageIntegra/agenda-aniel/dashboard" @click="panel = 'dashboard'">Dashboard</router-link>
       </div>
     </div>
-<!--    <div class="filters">-->
-<!--      <div class="filter" @click="filterSelected = 'all'" :class="{'selected' : filterSelected === 'all'}">-->
-<!--        <button>Todas</button>-->
-<!--        <div class="effect-select"></div>-->
-<!--      </div>-->
-<!--      <div class="filter" @click="filterSelected = 'atv'" :class="{'selected' : filterSelected === 'atv'}">-->
-<!--        <button>Ativações</button>-->
-<!--        <div class="effect-select"></div>-->
-<!--      </div>-->
-<!--      <div class="filter" @click="filterSelected = 'vt'" :class="{'selected' : filterSelected === 'vt'}">-->
-<!--        <button>Visíta técnica</button>-->
-<!--        <div class="effect-select"></div>-->
-<!--      </div>-->
-<!--      <div class="filter" @click="filterSelected = 'me'" :class="{'selected' : filterSelected === 'me'}">-->
-<!--        <button>Mudança de endereço</button>-->
-<!--        <div class="effect-select"></div>-->
-<!--      </div>-->
-<!--      <div class="filter" @click="filterSelected = 'rt'" :class="{'selected' : filterSelected === 'rt'}">-->
-<!--        <button>Retenção</button>-->
-<!--        <div class="effect-select"></div>-->
-<!--      </div>-->
-<!--    </div>-->
     <div class="cards">
       <div class="card">
         <div class="info">
@@ -333,6 +312,59 @@ setInterval(() => {
       </div>
       <div class="options">
         <button @click="approvalOrder(osSelected.protocolo)" style="background-color: #11B15B">Aprovar entrada</button>
+        <button @click="modalReschedule = true" style="background-color: #5E78FF">Reagendar OS</button>
+      </div>
+    </div>
+  </div>
+  <div class="reschedule_modal" v-if="modalStatus && modalReschedule">
+    <div class="card">
+      <div class="close__btn">
+        <svg
+            @click="modalReschedule = false"
+            xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 24 24" width="512" height="512"><path d="m12,0C5.383,0,0,5.383,0,12s5.383,12,12,12,12-5.383,12-12S18.617,0,12,0Zm3.707,14.293c.391.391.391,1.023,0,1.414-.195.195-.451.293-.707.293s-.512-.098-.707-.293l-2.293-2.293-2.293,2.293c-.195.195-.451.293-.707.293s-.512-.098-.707-.293c-.391-.391-.391-1.023,0-1.414l2.293-2.293-2.293-2.293c-.391-.391-.391-1.023,0-1.414s1.023-.391,1.414,0l2.293,2.293,2.293-2.293c.391-.391,1.023-.391,1.414,0s.391,1.023,0,1.414l-2.293,2.293,2.293,2.293Z"/></svg>
+      </div>
+
+      <h1>Reagendar Ordem de Serviço</h1>
+
+      <div class="info">
+        <div class="days">
+          <div class="day">
+            <div class="infoDay">
+              <p>Quinta-feira, 01 de agosto de 2024</p>
+            </div>
+            <div class="period">
+              <button @click="rescheduleDate = 'morning'" :class="{selected : rescheduleDate == 'morning'}">Manhã</button>
+              <button @click="rescheduleDate = 'afternoon'" :class="{selected : rescheduleDate == 'afternoon'}">Tarde</button>
+            </div>
+          </div>
+          <div class="day">
+            <div class="infoDay">
+              <p>Sexta-feira, 02 de agosto de 2024</p>
+            </div>
+            <div class="period">
+              <button @click="rescheduleDate = 'morning2'" :class="{selected : rescheduleDate == 'morning2'}">Manhã</button>
+              <button @click="rescheduleDate = 'afternoon2'" :class="{selected : rescheduleDate == 'afternoon2'}">Tarde</button>
+            </div>
+          </div>
+          <div class="day">
+            <div class="infoDay">
+              <p>Sábado, 03 de agosto de 2024</p>
+            </div>
+            <div class="period">
+              <button @click="rescheduleDate = 'morning3'" :class="{selected : rescheduleDate == 'morning3'}">Manhã</button>
+              <button @click="rescheduleDate = 'afternoon3'" :class="{selected : rescheduleDate == 'afternoon3'}">Tarde</button>
+            </div>
+          </div>
+          <div class="day">
+            <div class="infoDay">
+              <p>Segunda-feira, 05 de agosto de 2024</p>
+            </div>
+            <div class="period">
+              <button @click="rescheduleDate = 'morning4'" :class="{selected : rescheduleDate == 'morning4'}">Manhã</button>
+              <button @click="rescheduleDate = 'afternoon4'" :class="{selected : rescheduleDate == 'afternoon4'}">Tarde</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -707,7 +739,7 @@ setInterval(() => {
 
   .card {
     width: 30%;
-    height: 50%;
+    padding-bottom: 4vh;
     background-color: #fff;
     border-radius: 10px;
     box-shadow: $global-box-shadow;
@@ -752,7 +784,7 @@ setInterval(() => {
     .options {
       width: 100%;
       height: 50%;
-      @include flex(column, flex-start, center, 0);
+      @include flex(column, flex-start, center, 1vh);
       padding: 10px;
       button {
         width: 40%;
@@ -771,5 +803,110 @@ setInterval(() => {
     }
   }
 }
+
+.reschedule_modal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #00000060;
+  z-index: 99;
+  @include flex(row, center, center, 0);
+  .card {
+    width: 70%;
+    height: 80%;
+    padding-bottom: 4vh;
+    background-color: #E9F3FE;
+    border-radius: 10px;
+    box-shadow: $global-box-shadow;
+
+
+    .close__btn {
+      width: 100%;
+      @include flex(row, flex-end, center, 0);
+      padding: 10px;
+
+      svg {
+        width: 25px;
+        height: auto;
+        fill: #F23E2F;
+        cursor: pointer;
+        transition: fill ease-in-out .2s;
+
+        &:hover {
+          opacity: .9;
+        }
+      }
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 600;
+      color: #333;
+      padding: 10px;
+      text-align: center;
+    }
+
+
+    .days {
+      margin: 0 auto;
+      width: 80%;
+      padding: 2vh 2vw;
+      @include flex(column, flex-start, center, 1vh);
+      flex-wrap: wrap;
+
+      .day {
+        @include flex(row, space-between, center, 0);
+        width: 60%;
+        padding: 2vh 1vw;
+        background-color: #fff;
+        border-radius: 10px;
+        border: 2px solid #cccccc40;
+        transition: border-color ease-in-out .3s;
+
+        &:hover {
+          border-color: #5E78FF60;
+        }
+
+        .infoDay {
+          p {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            text-align: center;
+            padding: 5px 0;
+          }
+        }
+
+        .period {
+          @include flex(row, flex-start, center, 1vw);
+          button {
+            width: 100%;
+            padding: 5px 10px;
+            font-size: 1.2rem;
+            background-color: #E9F3FE;
+            box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;;
+            font-weight: 600;
+            color: #333;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all ease-in-out .2s;
+            &:hover {
+              background-color: #5E78FF;
+              color: #fff;
+            }
+          }
+
+          .selected {
+            background-color: #5E78FF;
+            color: #fff;
+          }
+        }
+      }
+    }
+  }
+
+  }
 
 </style>
