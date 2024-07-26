@@ -69,12 +69,14 @@ const panel = ref('operational');
         <div class="services">
           <div class="service" v-for="(item, service) in capacity.manha || []" :key="service">
             <div class="title">
-              <h3>{{ item.servico }}</h3>
+              <h3>{{ item.servico }} {{ item.status == 'fechada' ? '- Fechada' : '' }}</h3>
+              <p>{{ item.motivo_fechamento }}</p>
             </div>
             <div class="progress">
-              <progress :value="item.utilizado" :max="item.capacidade"></progress>
+              <progress :class="{'closed': item.status == 'fechada'}"  :value="item.utilizado" :max="item.capacidade" ></progress>
               <div class="info">
-                <span><b>{{ Math.abs(item.capacidade - item.utilizado ) }}</b> - {{ (item.capacidade - item.utilizado) >= 0 ? 'Disponíveis' : 'Excedentes' }}</span>
+                <span v-if="item.status == 'aberta'"><b>{{ Math.abs(item.capacidade - item.utilizado ) }}</b> - {{ (item.capacidade - item.utilizado) >= 0 ? 'Disponíveis' : 'Excedentes' }}</span>
+                <span v-else><b>{{ Math.abs(item.capacidade - item.utilizado ) }}</b> - {{ (item.capacidade - item.utilizado) >= 0 ? 'Disponíveis' : 'Excedentes' }}</span>
               </div>
             </div>
           </div>
@@ -90,12 +92,14 @@ const panel = ref('operational');
         <div class="services">
           <div class="service" v-for="(item, service) in capacity.tarde || []" :key="service">
             <div class="title">
-              <h3>{{ item.servico }}</h3>
+              <h3>{{ item.servico }} {{ item.status == 'fechada' ? '- Fechada' : '' }}</h3>
+              <p>{{ item.motivo_fechamento }}</p>
             </div>
             <div class="progress">
-              <progress :value="item.utilizado" :max="item.capacidade"></progress>
+              <progress :class="{'closed': item.status == 'fechada'}" :value="item.utilizado" :max="item.capacidade"></progress>
               <div class="info">
-                <span><b>{{ Math.abs(item.capacidade - item.utilizado ) }}</b> - {{ (item.capacidade - item.utilizado) >= 0 ? 'Disponíveis' : 'Excedentes' }}</span>
+                <span v-if="item.status == 'aberta'"><b>{{ Math.abs(item.capacidade - item.utilizado ) }}</b> - {{ (item.capacidade - item.utilizado) >= 0 ? 'Disponíveis' : 'Excedentes' }}</span>
+                <span v-else><b>{{ Math.abs(item.capacidade - item.utilizado ) }}</b> - {{ (item.capacidade - item.utilizado) >= 0 ? 'Disponíveis' : 'Excedentes' }}</span>
               </div>
             </div>
           </div>
@@ -192,8 +196,11 @@ const panel = ref('operational');
 
           p {
             font-size: 1rem;
-            font-weight: 400;
-            color: #666;
+            padding: 5px 0 5px 2px;
+            width: 100%;
+            font-weight: 600;
+            color: #E42B0F;
+
           }
 
           .progress {
@@ -225,6 +232,15 @@ const panel = ref('operational');
                 background-color: #53aee2;
                 border-radius: 10px;
               }
+            }
+            .closed {
+                &::-webkit-progress-bar {
+                  background-color: #FEF6F4;
+                }
+
+                &::-webkit-progress-value {
+                  background-color: #E42B0F;
+                }
             }
           }
 
