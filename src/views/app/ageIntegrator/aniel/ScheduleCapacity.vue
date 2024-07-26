@@ -109,7 +109,10 @@ setInterval(() => {
               <progress :class="{'closed': item.status == 'fechada'}" :value="item.utilizado" :max="item.capacidade"></progress>
               <div class="info">
                 <span v-if="item.status == 'aberta'"><b>{{ Math.abs(item.capacidade - item.utilizado ) }}</b> - {{ (item.capacidade - item.utilizado) >= 0 ? 'Disponíveis' : 'Excedentes' }}</span>
-                <span v-else><b>{{ Math.abs(item.capacidade - item.utilizado ) }}</b> - {{ (item.capacidade - item.utilizado) >= 0 ? 'Disponíveis' : 'Excedentes' }}</span>
+                <span v-else>
+                  <b>{{ (item.capacidade - item.utilizado) >= 0 ? 0 : Math.abs(item.capacidade - item.utilizado) }}</b> -
+                  {{ (item.capacidade - item.utilizado) >= 0 ? 'Disponíveis' : 'Excedentes' }}
+                </span>
               </div>
             </div>
           </div>
