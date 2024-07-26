@@ -124,6 +124,9 @@ getDashboard();
 setInfoPage();
 
 
+setInterval(() => {
+  getDashboard();
+}, 10000);
 
 </script>
 

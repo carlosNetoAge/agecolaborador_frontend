@@ -45,6 +45,9 @@ const getData = (period: Date) => {
 
 const panel = ref('operational');
 
+setInterval(() => {
+  getData(dateSelected.value);
+}, 10000);
 
 </script>
 
@@ -69,14 +72,17 @@ const panel = ref('operational');
         <div class="services">
           <div class="service" v-for="(item, service) in capacity.manha || []" :key="service">
             <div class="title">
-              <h3>{{ item.servico }} {{ item.status == 'fechada' ? '- Fechada' : '' }}</h3>
+              <h3>{{ item.servico }} {{ item.status == 'fechada' ? '- Fechada às ' + item.hora_fechamento : '' }}</h3>
               <p>{{ item.motivo_fechamento }}</p>
             </div>
             <div class="progress">
               <progress :class="{'closed': item.status == 'fechada'}"  :value="item.utilizado" :max="item.capacidade" ></progress>
               <div class="info">
                 <span v-if="item.status == 'aberta'"><b>{{ Math.abs(item.capacidade - item.utilizado ) }}</b> - {{ (item.capacidade - item.utilizado) >= 0 ? 'Disponíveis' : 'Excedentes' }}</span>
-                <span v-else><b>{{ Math.abs(item.capacidade - item.utilizado ) }}</b> - {{ (item.capacidade - item.utilizado) >= 0 ? 'Disponíveis' : 'Excedentes' }}</span>
+                <span v-else>
+                  <b>{{ (item.capacidade - item.utilizado) >= 0 ? 0 : Math.abs(item.capacidade - item.utilizado) }}</b> -
+                  {{ (item.capacidade - item.utilizado) >= 0 ? 'Disponíveis' : 'Excedentes' }}
+                </span>
               </div>
             </div>
           </div>
@@ -92,7 +98,7 @@ const panel = ref('operational');
         <div class="services">
           <div class="service" v-for="(item, service) in capacity.tarde || []" :key="service">
             <div class="title">
-              <h3>{{ item.servico }} {{ item.status == 'fechada' ? '- Fechada' : '' }}</h3>
+              <h3>{{ item.servico }} {{ item.status == 'fechada' ? '- Fechada às ' + item.hora_fechamento : '' }}</h3>
               <p>{{ item.motivo_fechamento }}</p>
             </div>
             <div class="progress">
@@ -257,6 +263,46 @@ const panel = ref('operational');
       padding: 5px 15px;
     }
   }
+
+  .container_content {
+    .capacity {
+      .period {
+        .header {
+          .title {
+            font-size: 1.4rem;
+          }
+          img {
+            width: 2.5vw;
+          }
+        }
+        .services {
+          padding-top: 2vh;
+
+          .service {
+            .title {
+              h3 {
+                font-size: 1.4rem;
+              }
+            }
+            p {
+              font-size: 1rem;
+            }
+            .progress {
+              .info {
+                span {
+                  font-size: 1rem;
+                }
+              }
+              progress {
+                height: 2.5vh;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
 }
 
 </style>
