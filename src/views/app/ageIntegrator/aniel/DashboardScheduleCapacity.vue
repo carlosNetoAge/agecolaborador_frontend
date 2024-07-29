@@ -64,17 +64,37 @@ const getDashboard = () => {
 
 
 const countStatusApproved = computed(() => {
-  return data.value.reduce((count, service) => {
-    const statusCount = service.status_order.filter(status => status.id === 15).length;
-    return count + statusCount;
-  }, 0);
+  // Um conjunto para armazenar IDs únicos dos itens com status "aprovado"
+  const approvedItemIds = new Set();
+
+  // Itera sobre os serviços
+  data.value.forEach(service => {
+    // Verifica se o serviço tem um status "aprovado"
+    if (service.status_order.some(status => status.id === 15)) {
+      // Adiciona o ID do serviço ao conjunto (só adiciona uma vez)
+      approvedItemIds.add(service.id); // Assume que cada serviço tem um `id` único
+    }
+  });
+
+  // O tamanho do conjunto é o número único de itens com status "aprovado"
+  return approvedItemIds.size;
 });
 
 const countStatusReSchedule = computed(() => {
-  return data.value.reduce((count, service) => {
-    const statusCount = service.status_order.filter(status => status.id === 16).length;
-    return count + statusCount;
-  }, 0);
+  // Um conjunto para armazenar IDs únicos dos itens com status "rescheduled"
+  const rescheduledItemIds = new Set();
+
+  // Itera sobre os serviços
+  data.value.forEach(service => {
+    // Verifica se o serviço tem um status "rescheduled"
+    if (service.status_order.some(status => status.id === 16)) {
+      // Adiciona o ID do serviço ao conjunto (só adiciona uma vez)
+      rescheduledItemIds.add(service.id); // Assume que cada serviço tem um `id` único
+    }
+  });
+
+  // O tamanho do conjunto é o número único de itens com status "rescheduled"
+  return rescheduledItemIds.size;
 });
 
 const dataFiltered = computed(() => {
