@@ -4,10 +4,12 @@ import { defineProps, ref, defineEmits } from 'vue';
 import RescheduleOrder from "@/components/app/ageIntegrator/aniel/dashboard/RescheduleOrder.vue";
 import {AXIOS} from "@api/AXIOS";
 import Cookie from "js-cookie";
+import LogOrder from "@/components/app/ageIntegrator/aniel/dashboard/LogOrder.vue";
 
 const { osSelected, modalStatus } = defineProps(['osSelected', 'modalStatus']);
 
 const modalReschedule = ref(false);
+const modalLog = ref(false);
 const approvalOrder = (order: any) => {
   AXIOS({
     url: 'https://v2.ageportal.agetelecom.com.br/integrator/aniel/management-schedule/approval-order',
@@ -21,7 +23,7 @@ const approvalOrder = (order: any) => {
     }
   })
       .then((response) => {
-        modalStatus.value = false;
+        close();
         osSelected.value = [];
       })
       .catch((error) => {
@@ -59,11 +61,30 @@ const close = () => {
         <p><b>Localidade:</b> {{ osSelected.localidade }}</p>
       </div>
       <div class="options">
-        <button @click="approvalOrder(osSelected.protocolo)" style="background-color: #11B15B">Aprovar entrada</button>
-        <button @click="modalReschedule = true" style="background-color: #53AEE2">Reagendar OS</button>
+        <button @click="approvalOrder(osSelected.protocolo)"
+                :disabled="osSelected.status_order[0].id == 15 || osSelected.status_order[0].id == 16"
+                :style="{
+            backgroundColor: osSelected.status_order[0].id == 15 || osSelected.status_order[0].id == 16 ? '#ccc' : '#11B15B',
+            color: osSelected.status_order[0].id == 15 || osSelected.status_order[0].id == 16 ? '#111' : '#fff',
+            cursor: osSelected.status_order[0].id == 15 || osSelected.status_order[0].id == 16 ? 'not-allowed' : 'pointer'
+        }">
+          Aprovar entrada
+        </button>
+
+        <button @click="modalReschedule = true"
+                :disabled="osSelected.status_order[0].id == 15 || osSelected.status_order[0].id == 16"
+                :style="{
+            backgroundColor: osSelected.status_order[0].id == 15 || osSelected.status_order[0].id == 16 ? '#ccc' : '#53AEE2',
+            color: osSelected.status_order[0].id == 15 || osSelected.status_order[0].id == 16 ? '#111' : '#fff',
+            cursor: osSelected.status_order[0].id == 15 || osSelected.status_order[0].id == 16 ? 'not-allowed' : 'pointer'
+        }">
+          Reagendar OS
+        </button>
+        <button @click="modalLog = true" style="background-color: #5183FF; color: #fff">Histórico da OS</button>
       </div>
     </div>
     <RescheduleOrder v-if="modalReschedule" @closeAll="[close(), modalReschedule = false]" @closeModal="modalReschedule = false" :osSelected="osSelected"/>
+    <LogOrder v-if="modalLog" @closeModal="modalLog = false" :osStatus="osSelected.status_order" />
   </div>
 
 </template>

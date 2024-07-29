@@ -255,7 +255,7 @@ setInfoPage();
             {{ item.aprovador }}
           </td>
           <td>
-            <div style="cursor: pointer" @click="[osSelected = item, modalStatus = true]" v-if="item.status_order[0]['id'] != 15">
+            <div style="cursor: pointer" @click="[osSelected = item, modalStatus = true]">
               <svg  class="actions_order" xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24" width="512" height="512"><circle cx="12" cy="2" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="22" r="2"/></svg>
             </div>
           </td>
