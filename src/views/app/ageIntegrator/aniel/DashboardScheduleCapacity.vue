@@ -41,6 +41,7 @@ const osSelected = ref([])
 const modalStatus = ref(false);
 const modalReschedule = ref(false);
 const rescheduleDate = ref('');
+const datesAvailableReschedule = ref([]);
 
 
 const getDashboard = () => {
@@ -120,14 +121,82 @@ const dataFiltered = computed(() => {
   });
 });
 
+const getCapacityReschedule = () => {
+  modalReschedule.value = true;
+
+  AXIOS({
+    url: 'https://v2.ageportal.agetelecom.com.br/integrator/aniel/capacity/reschedule',
+    method: 'get',
+    params: {
+      typeService: osSelected.value.servico
+    },
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + Cookie.get('token')
+    }
+  }).then((response) => {
+    datesAvailableReschedule.value = response.data;
+  }).catch((error) => {
+    console.log(error);
+  });
+}
+
+const months = [
+  'janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho',
+  'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'
+];
+
+const formattedDateReschedule = (dateParam: any) => {
+  const date = new Date(dateParam);
+  const day = date.getUTCDate();
+  const month = months[date.getUTCMonth()];
+  const year = date.getUTCFullYear();
+  return `${day} de ${month} de ${year}`;
+};
+
+const payloadRescheduleOrder = ref({
+  date: '',
+  period: '',
+  order: osSelected.value.protocolo
+})
+
+const updatePayloadRescheduleOrder = (date: any, period: any) => {
+  payloadRescheduleOrder.value = {
+    date: date,
+    period: period,
+    order: osSelected.value.protocolo
+  };
+
+  rescheduleDate.value = `${date} ${period}`;
+};
+
+const rescheduleOrder = () => {
+  AXIOS({
+    url: 'https://v2.ageportal.agetelecom.com.br/integrator/aniel/management-schedule/reschedule-order',
+    method: 'post',
+    data: {
+      order: payloadRescheduleOrder.value.order,
+      period: payloadRescheduleOrder.value.period,
+      date: payloadRescheduleOrder.value.date
+    },
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + Cookie.get('token')
+    }
+  }).then((response) => {
+    getDashboard();
+    modalReschedule.value = false;
+    modalStatus.value = false;
+    osSelected.value = [];
+  }).catch((error) => {
+    console.log(error);
+  });
+};
 
 getDashboard();
 setInfoPage();
 
 
-setInterval(() => {
-  getDashboard();
-}, 10000);
 
 </script>
 
@@ -312,7 +381,7 @@ setInterval(() => {
       </div>
       <div class="options">
         <button @click="approvalOrder(osSelected.protocolo)" style="background-color: #11B15B">Aprovar entrada</button>
-        <button @click="modalReschedule = true" style="background-color: #5E78FF">Reagendar OS</button>
+        <button @click="getCapacityReschedule()" style="background-color: #5E78FF">Reagendar OS</button>
       </div>
     </div>
   </div>
@@ -326,46 +395,28 @@ setInterval(() => {
 
       <h1>Reagendar Ordem de Serviço</h1>
 
-      <div class="info">
-        <div class="days">
-          <div class="day">
-            <div class="infoDay">
-              <p>Quinta-feira, 01 de agosto de 2024</p>
-            </div>
-            <div class="period">
-              <button @click="rescheduleDate = 'morning'" :class="{selected : rescheduleDate == 'morning'}">Manhã</button>
-              <button @click="rescheduleDate = 'afternoon'" :class="{selected : rescheduleDate == 'afternoon'}">Tarde</button>
-            </div>
+      <div class="days">
+        <div class="day" v-for="(date, index) in datesAvailableReschedule || []">
+          <div class="infoDay">
+            <p>{{ date.dayName }}, {{ formattedDateReschedule(index) }}</p>
           </div>
-          <div class="day">
-            <div class="infoDay">
-              <p>Sexta-feira, 02 de agosto de 2024</p>
-            </div>
-            <div class="period">
-              <button @click="rescheduleDate = 'morning2'" :class="{selected : rescheduleDate == 'morning2'}">Manhã</button>
-              <button @click="rescheduleDate = 'afternoon2'" :class="{selected : rescheduleDate == 'afternoon2'}">Tarde</button>
-            </div>
-          </div>
-          <div class="day">
-            <div class="infoDay">
-              <p>Sábado, 03 de agosto de 2024</p>
-            </div>
-            <div class="period">
-              <button @click="rescheduleDate = 'morning3'" :class="{selected : rescheduleDate == 'morning3'}">Manhã</button>
-              <button @click="rescheduleDate = 'afternoon3'" :class="{selected : rescheduleDate == 'afternoon3'}">Tarde</button>
-            </div>
-          </div>
-          <div class="day">
-            <div class="infoDay">
-              <p>Segunda-feira, 05 de agosto de 2024</p>
-            </div>
-            <div class="period">
-              <button @click="rescheduleDate = 'morning4'" :class="{selected : rescheduleDate == 'morning4'}">Manhã</button>
-              <button @click="rescheduleDate = 'afternoon4'" :class="{selected : rescheduleDate == 'afternoon4'}">Tarde</button>
-            </div>
+          <div class="period">
+            <button v-for="(item, periodName) in date.period || []"
+                    @click="updatePayloadRescheduleOrder(index, periodName)"
+                    :class="{selected : rescheduleDate == index+' '+periodName, disable : item.status != 'aberta'}">
+              {{periodName}}
+            </button>
           </div>
         </div>
       </div>
+
+      <div class="reschedule-button">
+        <button v-if="rescheduleDate != ''" @click="rescheduleOrder(index, periodName)">
+          Reagendar ordem de serviço # {{ osSelected.protocolo }}
+        </button>
+      </div>
+
+
     </div>
   </div>
 
@@ -815,7 +866,7 @@ setInterval(() => {
   @include flex(row, center, center, 0);
   .card {
     width: 70%;
-    height: 80%;
+    height: 85%;
     padding-bottom: 4vh;
     background-color: #E9F3FE;
     border-radius: 10px;
@@ -854,11 +905,12 @@ setInterval(() => {
       width: 80%;
       padding: 2vh 2vw;
       @include flex(column, flex-start, center, 1vh);
-      flex-wrap: wrap;
+      max-height: 80%;
+      overflow-y: auto;
 
       .day {
         @include flex(row, space-between, center, 0);
-        width: 60%;
+        width: 100%;
         padding: 2vh 1vw;
         background-color: #fff;
         border-radius: 10px;
@@ -902,6 +954,34 @@ setInterval(() => {
             background-color: #5E78FF;
             color: #fff;
           }
+
+          .disable {
+            background-color: #ccc;
+            color: #fff;
+            cursor: not-allowed;
+          }
+        }
+      }
+    }
+
+
+    .reschedule-button {
+      margin-top: 2vh;
+      width: 100%;
+      @include flex(row, center, center, 0);
+
+      button {
+        padding: 10px 20px;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #fff;
+        background-color: #5E78FF;
+        border: none;
+        border-radius: 15px;
+        cursor: pointer;
+        transition: all ease-in-out .2s;
+        &:hover {
+          opacity: .9;
         }
       }
     }
