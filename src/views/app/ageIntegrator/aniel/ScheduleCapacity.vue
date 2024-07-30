@@ -2,6 +2,7 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import morning from '@/assets/img/app/ageIntegrator/aniel/morning.png'
 import afternoon from '@/assets/img/app/ageIntegrator/aniel/afternoon.png'
+import infoIcon from '@/assets/img/app/ageIntegrator/aniel/info.png'
 
 import { infoPage} from "@/stores/counter";
 import CalendarOperational from "@/components/app/ageIntegrator/aniel/CalendarOperational.vue";
@@ -47,11 +48,20 @@ const formatHour = (hour: string) => {
   return hour.split(':').slice(0, 2).join(':');
 }
 
+const formatDate = (date: string) => {
+  return date.split('-').reverse().join('/');
+}
+
 const panel = ref('operational');
+const statusService = ref('')
 
 setInterval(() => {
   getData(dateSelected.value);
 }, 10000);
+
+const updateStatusService = (servico:string) => {
+  statusService.value = servico;
+};
 
 </script>
 
@@ -76,8 +86,14 @@ setInterval(() => {
         <div class="services">
           <div class="service" v-for="(item, service) in capacity.manha || []" :key="service">
             <div class="title">
-              <h3>{{ item.servico }} {{ item.status == 'fechada' ? '- Fechada às ' + formatHour(item.hora_fechamento) : '' }}</h3>
-              <p>{{ item.motivo_fechamento }}</p>
+              <img v-if="item.status == 'fechada'" @mouseover="updateStatusService(item.servico+'manha')" @mouseleave="updateStatusService('')" :src="infoIcon" alt="info">
+
+              <span>{{ item.servico }} {{ item.status == 'fechada' ? ' - Fechada': '' }}</span>
+
+              <div class="info_content" v-if="item.status == 'fechada' && statusService == item.servico+'manha'">
+                <p>Data: <b>{{ formatDate(item.data_fechamento)+' às ' + formatHour(item.hora_fechamento) + 'h' }}</b></p>
+                <p>Motivo: <b>{{ item.motivo_fechamento }}</b></p>
+              </div>
             </div>
             <div class="progress">
               <progress :class="{'closed': item.status == 'fechada'}"  :value="item.utilizado" :max="item.capacidade" ></progress>
@@ -102,8 +118,14 @@ setInterval(() => {
         <div class="services">
           <div class="service" v-for="(item, service) in capacity.tarde || []" :key="service">
             <div class="title">
-              <h3>{{ item.servico }} {{ item.status == 'fechada' ? '- Fechada às ' + formatHour(item.hora_fechamento) : '' }}</h3>
-              <p>{{ item.motivo_fechamento }}</p>
+              <img v-if="item.status == 'fechada'" @mouseover="updateStatusService(item.servico+'tarde')" @mouseleave="updateStatusService('')" :src="infoIcon" alt="info">
+
+              <span>{{ item.servico }} {{ item.status == 'fechada' ? ' - Fechada': '' }}</span>
+
+              <div class="info_content" v-if="item.status == 'fechada' && statusService == item.servico+'tarde'">
+                <p>Data: <b>{{ formatDate(item.data_fechamento)+' às ' + formatHour(item.hora_fechamento) + 'h' }}</b></p>
+                <p>Motivo: <b>{{ item.motivo_fechamento }}</b></p>
+              </div>
             </div>
             <div class="progress">
               <progress :class="{'closed': item.status == 'fechada'}" :value="item.utilizado" :max="item.capacidade"></progress>
@@ -193,28 +215,53 @@ setInterval(() => {
       }
 
       .services {
-        @include flex(column, flex-start, initial, 4vh);
-        padding-top: 5vh;
+        @include flex(column, flex-start, initial, 5vh);
+        padding-top: 4vh;
 
         .service {
           @include flex(column, flex-start, initial, .5vh);
           .title {
             width: 50%;
-            h3 {
+            position: relative;
+            @include flex(row, flex-start, center, .5vw);
+            span {
               font-size: 1.6rem;
               font-weight: 500;
               color: #333;
             }
+
+            img {
+              width: 1vw;
+              height: auto;
+
+              &:hover {
+                opacity: .9;
+              }
+            }
+
+            .info_content {
+              position: absolute;
+              background-color: #333;
+              border-radius: 5px;
+              padding: 10px 15px;
+              z-index: 3;
+              bottom: -8vh;
+
+              p {
+                font-size: 1rem;
+                padding: 5px 0 5px 2px;
+                width: 100%;
+                font-weight: 500;
+                color: #fff;
+                text-align: center;
+              }
+
+
+
+            }
+
           }
 
-          p {
-            font-size: 1rem;
-            padding: 5px 0 5px 2px;
-            width: 100%;
-            font-weight: 600;
-            color: #E42B0F;
-
-          }
 
           .progress {
             position: relative;
@@ -277,18 +324,25 @@ setInterval(() => {
         .header {
           .title {
             font-size: 1.4rem;
+
+
           }
           img {
             width: 2.5vw;
           }
         }
         .services {
-          padding-top: 2vh;
+          padding-top: 1vh;
+          gap: 4vh;
 
           .service {
             .title {
-              h3 {
+              span {
                 font-size: 1.4rem;
+              }
+
+              .info_content {
+                bottom: -12vh;
               }
             }
             p {
@@ -301,7 +355,7 @@ setInterval(() => {
                 }
               }
               progress {
-                height: 2.5vh;
+                height: 3vh;
               }
             }
           }
