@@ -60,25 +60,17 @@ const router = createRouter({
       }
     },
     {
-      path: '/ageIntegra/agenda-aniel2',
-      name: 'ScheduleCapacity2',
-      component: () => import('@/views/app/ageIntegrator/aniel/ScheduleCapacity2.vue'),
-      meta: {
-        auth: true
-      }
-    },
-    {
-      path: '/ageIntegra/agenda-aniel/aprovacao',
-      name: 'ApprovalScheduleCapacity',
-      component: () => import('@/views/app/ageIntegrator/aniel/ApprovalScheduleCapacity.vue'),
-      meta: {
-        auth: true
-      }
-    },
-    {
       path: '/ageIntegra/agenda-aniel/dashboard',
       name: 'DashboardScheduleCapacity',
       component: () => import('@/views/app/ageIntegrator/aniel/DashboardScheduleCapacity.vue'),
+      meta: {
+        auth: true
+      }
+    },
+    {
+      path: '/ageIntegra/agenda-aniel/operacional',
+      name: 'DashboardScheduleOperational',
+      component: () => import('@/views/app/ageIntegrator/aniel/OperationalSchedule.vue'),
       meta: {
         auth: true
       }

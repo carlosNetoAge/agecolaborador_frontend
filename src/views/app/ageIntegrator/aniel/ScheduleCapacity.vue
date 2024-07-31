@@ -52,7 +52,7 @@ const formatDate = (date: string) => {
   return date.split('-').reverse().join('/');
 }
 
-const panel = ref('operational');
+const panel = ref('capacity');
 const statusService = ref('')
 
 setInterval(() => {
@@ -67,7 +67,8 @@ const updateStatusService = (servico:string) => {
 
 <template>
   <div class="options">
-    <router-link exact-active-class="select" to="/ageIntegra/agenda-aniel" @click="panel = 'operational'">Operacional</router-link>
+    <router-link exact-active-class="select" to="/ageIntegra/agenda-aniel" @click="panel = 'capacity'">Capacidade</router-link>
+    <router-link exact-active-class="select" to="/ageIntegra/agenda-aniel/operacional" @click="panel = 'operational'">Operacional</router-link>
 <!--    <router-link exact-active-class="select" to="/ageIntegra/agenda-aniel/dashboard" @click="panel = 'dashboard'">Dashboard</router-link>-->
   </div>
   <CalendarOperational

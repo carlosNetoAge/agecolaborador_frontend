@@ -1,0 +1,420 @@
+<script setup lang="ts">
+
+
+import {infoPage} from "@/stores/counter";
+import {computed, ref} from "vue";
+import {AXIOS} from "@api/AXIOS";
+
+const info = infoPage();
+const data = ref([]);
+const search = ref('');
+const status = ref('all');
+const today = new Date();
+const year = today.getFullYear();
+const month = String(today.getMonth() + 1).padStart(2, '0');
+const day = String(today.getDate()).padStart(2, '0');
+const formattedDate = `${year}-${month}-${day}`;
+
+const dateFilter = ref(formattedDate);
+
+const setInfoPage = () => {
+  info.setInfoPage({
+    title: "Agenda Operacional Aniel",
+    subtitle: "Acompanhe o status de agendamento em tempo real"
+  });
+};
+
+setInfoPage();
+
+const panel = ref('operational');
+
+const getDashboard = () => {
+  AXIOS({
+    url: 'http://localhost:8000/integrator/aniel/management-schedule/dashboard-operational',
+    method: 'get',
+    params: {
+      period: dateFilter.value
+    }
+  })
+    .then((response) => {
+      data.value = response.data
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+const dataFiltered = computed(() => {
+  const searchValue = search.value.toString().toLowerCase();
+
+  return data.value.filter((value) => {
+    const matchesSearch = value.protocolo.toLowerCase().includes(searchValue);
+
+    let matchesStatus = true;
+    if (status.value === 'approved') {
+      matchesStatus = value.status_id === 15;
+    } else if (status.value === 'rescheduled') {
+      matchesStatus = value.status_id === 16;
+    } else if (status.value === 'pending') {
+      matchesStatus = value.status_id !== 15 && value.status_id !== 16;
+    }
+
+    return matchesSearch && matchesStatus;
+  });
+});
+
+getDashboard();
+
+</script>
+
+<template>
+  <div class="options">
+    <router-link exact-active-class="select" to="/ageIntegra/agenda-aniel" @click="panel = 'capacity'">Capacidade</router-link>
+    <router-link exact-active-class="select" to="/ageIntegra/agenda-aniel/operacional" @click="panel = 'operational'">Operacional</router-link>
+    <!--    <router-link exact-active-class="select" to="/ageIntegra/agenda-aniel/dashboard" @click="panel = 'dashboard'">Dashboard</router-link>-->
+  </div>
+
+  <div class="operational__dashboard">
+      <div class="filters">
+        <div class="cards">
+          <div class="card"></div>
+          <div class="card"></div>
+          <div class="card"></div>
+          <div class="card"></div>
+          <div class="card"></div>
+        </div>
+        <div class="actions">
+
+          <div class="search">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 513.749 513.749" style="enable-background:new 0 0 513.749 513.749;" xml:space="preserve" width="512" height="512">
+        <g>
+          <path d="M504.352,459.061l-99.435-99.477c74.402-99.427,54.115-240.344-45.312-314.746S119.261-9.277,44.859,90.15   S-9.256,330.494,90.171,404.896c79.868,59.766,189.565,59.766,269.434,0l99.477,99.477c12.501,12.501,32.769,12.501,45.269,0   c12.501-12.501,12.501-32.769,0-45.269L504.352,459.061z M225.717,385.696c-88.366,0-160-71.634-160-160s71.634-160,160-160   s160,71.634,160,160C385.623,314.022,314.044,385.602,225.717,385.696z"/>
+        </g>
+        </svg>
+            <input type="number" placeholder="Pesquisar (Protocolo)" v-model="search" />
+          </div>
+          <div class="period">
+            <input type="date" name="period" v-model="dateFilter">
+          </div>
+          <div class="status">
+            <select name="status" id="status" v-model="status">
+              <option value="all">Todos Status</option>
+              <option value="surplus">Excedentes</option>
+              <option value="approved">Aprovado</option>
+              <option value="rescheduled">Reagendas</option>
+              <option value="pending">Pendentes</option>
+            </select>
+          </div>
+          <div class="clear">
+            <button>
+              <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 24 24">
+                <path d="m17,0c-3.86,0-7,3.14-7,7s3.14,7,7,7,7-3.14,7-7S20.86,0,17,0Zm0,12c-2.757,0-5-2.243-5-5s2.243-5,5-5,5,2.243,5,5-2.243,5-5,5Zm2.957-6.543l-1.543,1.543,1.543,1.543-1.414,1.414-1.543-1.543-1.543,1.543-1.414-1.414,1.543-1.543-1.543-1.543,1.414-1.414,1.543,1.543,1.543-1.543,1.414,1.414Zm-7.957,9.025c.616.412,1.289.743,2,.995v8.523l-6-4.5v-5.12L0,5.38v-2.38C0,1.346,1.346,0,3,0h8.349c-.706.571-1.325,1.244-1.831,2H3c-.551,0-1,.449-1,1v1.62l8,9v4.88l2,1.5v-5.518Z"/>
+              </svg>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    <div class="table_orders">
+      <table>
+        <thead>
+        <tr>
+          <th style="text-align: left">Protocolo</th>
+          <th style="text-align: left">Serviço</th>
+          <th>Agendamento</th>
+          <th style="text-align: left">Status</th>
+          <th>Confirmação do cliente</th>
+          <th>Localidade</th>
+          <th>Solicitou aprovacao</th>
+          <th>Aprovado por</th>
+          <th>Ações</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="(item, index) in dataFiltered" :key="index">
+          <td style="text-align: left"># {{ item.protocolo }}</td>
+          <td style="text-align: left">{{ item.tipo_servico }}</td>
+          <td>{{ item.data_agendamento }}</td>
+          <td>
+            <div class="status">
+              <div class="badge" :style="{backgroundColor: item.cor_indicativa}"></div>
+              <span>{{ item.status_descricao }}</span>
+            </div>
+          </td>
+          <td>{{ item.comunicacao ? item.comunicacao : 'Não enviada' }}</td>
+          <td>{{ item.localidade }}</td>
+          <td>{{ item.solicitante ? item.solicitante : '' }}</td>
+          <td>{{item.aprovador ? item.aprovador : ''}}</td>
+          <td>
+            <div style="cursor: pointer">
+              <svg  class="actions_order" xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24" width="512" height="512"><circle cx="12" cy="2" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="22" r="2"/></svg>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</template>
+
+<style scoped lang="scss">
+
+.options  {
+  width: 100%;
+  margin-bottom: 2vh;
+  @include flex(row, flex-start, center, 1vw);
+
+
+  a {
+    background-color: #fff;
+    border-radius: 10px;
+    border:  1px solid #cccccc50;
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #333;
+    cursor: pointer;
+    transition: all ease-in-out .1s;
+    padding: 10px 25px;
+
+    &:hover {
+      background-color: #53aee2;
+      color: #fff;
+    }
+  }
+
+  .select {
+    background-color: #53aee2;
+    color: #fff;
+  }
+}
+
+.operational__dashboard {
+  height: 90%;
+
+
+  .filters {
+    @include flex(column, flex-start, initial, 1.5vh);
+    .cards {
+      width: 100%;
+      @include flex(row, space-between, center);
+
+      .card {
+        width: calc((100% / 5) - 1.5vh);
+        height: 8vh;
+        background-color: #fff;
+        border-radius: 10px;
+      }
+    }
+
+    .actions {
+      width: 100%;
+      padding: 1vh 1vw;
+      background-color: #F9F9FB;
+      border-radius: 10px;
+      @include flex(row, flex-start, center, 1vw);
+
+      .search {
+        width: 20%;
+        height: 100%;
+        background-color: #ffff;
+        border: 2px solid #cccccc40;
+        border-radius: 10px;
+        overflow: hidden;
+        @include flex(row, flex-start, initial);
+
+        svg {
+          width: 40px;
+          height: auto;
+          fill: #8790A7;
+          padding: 10px;
+        }
+
+        input {
+          width: 100%;
+          height: 100%;
+          padding: 10px 5px;
+          font-size: 1.2rem;
+          font-weight: 500;
+          color: #666;
+          border: none;
+          outline: none;
+          &::-webkit-inner-spin-button, &::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+          }
+        }
+      }
+
+      .period {
+        width: 20%;
+        height: 100%;
+        background-color: #ffff;
+        border: 2px solid #cccccc40;
+        border-radius: 10px;
+        overflow: hidden;
+        @include flex(row, flex-start, initial);
+
+        input {
+          width: 100%;
+          height: 100%;
+          padding: 10px 10px 10px 15px;
+          font-size: 1.2rem;
+          font-weight: 600;
+          color: #666;
+          border: none;
+          outline: none;
+          &::-webkit-inner-spin-button, &::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+          }
+        }
+
+      }
+
+      .status {
+        width: 20%;
+        height: 100%;
+        background-color: #ffff;
+        border-radius: 10px;
+
+        select {
+          width: 100%;
+          height: 100%;
+          padding: 10px 10px 10px 15px;
+          font-size: 1.2rem;
+          font-weight: 600;
+          color: #666;
+          border: 2px solid #cccccc40;
+          border-radius: 10px;
+          outline: none;
+
+
+        }
+
+
+      }
+
+      .clear {
+        height: 100%;
+
+        svg {
+          width: 40px;
+          height: auto;
+          fill: #8790A7;
+          padding: 10px;
+          transition: fill ease-in-out .2s;
+
+          &:hover {
+            fill: #333;
+          }
+        }
+
+        button {
+          @include flex(row, flex-start, initial);
+          width: 100%;
+          height: 100%;
+          padding: 10px 5px;
+          font-size: 1.2rem;
+          font-weight: 500;
+          color: #111;
+          outline: none;
+          cursor: pointer;
+          transition: all ease-in-out .1s;
+        }
+
+      }
+    }
+
+  }
+
+  .table_orders {
+    width: 100%;
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 1vh 1vw;
+    max-height: 45vh;
+    overflow-y: auto;
+    margin-top: 1.5vh;
+    table {
+      width: 100%;
+      border-collapse: collapse;
+
+      thead {
+        tr {
+          th {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #777;
+            height: 7vh;
+            border-bottom: 1px solid #cccccc60;
+            text-align: center;
+            padding: 0 10px;
+          }
+        }
+      }
+
+      tbody {
+        tr {
+          border-bottom: 1px solid #cccccc60;
+
+          &:nth-last-child(1) {
+            border-bottom: none;
+          }
+          td {
+            padding: 0 10px;
+
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #333;
+            height: 7vh;
+            text-align: center;
+            user-select: text;
+
+            .status {
+              @include flex(row, flex-start, center, .5vw);
+              .badge {
+                width: 10px;
+                height: 10px;
+                padding: 5px;
+                border-radius: 50%;
+                &.success {
+                  background-color: #27B966;
+                }
+                &.warning {
+                  background-color: #FF9A42;
+                }
+                &.rescheduled {
+                  background-color: #6A31EF;
+                }
+                &.pending {
+                  background-color: #ccc;
+                }
+              }
+
+            }
+
+            .actions_order {
+              margin: 0 auto;
+              width: 20px;
+              height: 20px;
+              fill: #333;
+              cursor: pointer;
+              transition: fill ease-in-out .2s;
+              &:hover {
+                fill: #53AEE2;
+              }
+            }
+
+          }
+        }
+      }
+    }
+
+
+  }
+
+
+}
+
+</style>
