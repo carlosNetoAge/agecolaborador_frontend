@@ -10,6 +10,7 @@ import service from '@/assets/img/app/ageIntegrator/aniel/service.png'
 import {infoPage} from "@/stores/counter";
 import {computed, ref} from "vue";
 import {AXIOS} from "@api/AXIOS";
+import Cookie from "js-cookie";
 
 const info = infoPage();
 const data = ref([]);
@@ -40,6 +41,9 @@ const getDashboard = () => {
     method: 'get',
     params: {
       period: dateFilter.value
+    },
+    headers: {
+      'Authorization': 'Bearer '+Cookie.get('token')
     }
   })
     .then((response) => {
