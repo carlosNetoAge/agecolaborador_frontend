@@ -16,6 +16,7 @@ const info = infoPage();
 const data = ref([]);
 const search = ref('');
 const status = ref('all');
+const typeService = ref('all')
 const today = new Date();
 const year = today.getFullYear();
 const month = String(today.getMonth() + 1).padStart(2, '0');
@@ -73,7 +74,16 @@ const dataFiltered = computed(() => {
       matchesStatus = value.status === 'OS em Deslocamento';
     }
 
-    return matchesSearch && matchesStatus;
+    let matchesTypeService = true;
+    if (typeService.value === 'activations') {
+      matchesTypeService = value.servico === 'Ativação';
+    } else if (typeService.value === 'vt') {
+      matchesTypeService = value.servico === 'Visita Técnica';
+    } else if (typeService.value === 'me') {
+      matchesTypeService = value.servico === 'Mudança De Endereço';
+    }
+
+    return matchesSearch && matchesStatus && matchesTypeService;
   });
 });
 
@@ -95,6 +105,14 @@ const openVoalle = function (personId: number) {
   window.open('https://erp.agetelecom.com.br/people_informations?hash='+hash, '_blank')
 }
 
+
+const clearFilters = () => {
+  search.value = '';
+  status.value = 'all';
+  dateFilter.value = formattedDate;
+  getDashboard();
+
+}
 
 </script>
 
@@ -128,6 +146,14 @@ const openVoalle = function (personId: number) {
             <input type="date" name="period" v-model="dateFilter" @change="getDashboard">
           </div>
           <div class="status">
+            <select name="status" id="status" v-model="typeService">
+              <option value="all">Todos Serviços</option>
+              <option value="activations">Ativações</option>
+              <option value="vt">Visita Técnica</option>
+              <option value="me">Mudança de endereço</option>
+            </select>
+          </div>
+          <div class="status">
             <select name="status" id="status" v-model="status">
               <option value="all">Todos Status</option>
               <option value="closed_productive">Fechada produtiva</option>
@@ -138,7 +164,7 @@ const openVoalle = function (personId: number) {
             </select>
           </div>
           <div class="clear">
-            <button>
+            <button @click="clearFilters()">
               <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 24 24">
                 <path d="m17,0c-3.86,0-7,3.14-7,7s3.14,7,7,7,7-3.14,7-7S20.86,0,17,0Zm0,12c-2.757,0-5-2.243-5-5s2.243-5,5-5,5,2.243,5,5-2.243,5-5,5Zm2.957-6.543l-1.543,1.543,1.543,1.543-1.414,1.414-1.543-1.543-1.543,1.543-1.414-1.414,1.543-1.543-1.543-1.543,1.414-1.414,1.543,1.543,1.543-1.543,1.414,1.414Zm-7.957,9.025c.616.412,1.289.743,2,.995v8.523l-6-4.5v-5.12L0,5.38v-2.38C0,1.346,1.346,0,3,0h8.349c-.706.571-1.325,1.244-1.831,2H3c-.551,0-1,.449-1,1v1.62l8,9v4.88l2,1.5v-5.518Z"/>
               </svg>
