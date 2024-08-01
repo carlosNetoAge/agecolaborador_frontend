@@ -1,5 +1,11 @@
 <script setup lang="ts">
 
+import confirm from '@/assets/img/app/ageIntegrator/aniel/confirm.png'
+import noSending from '@/assets/img/app/ageIntegrator/aniel/pending.png'
+import pending from '@/assets/img/app/ageIntegrator/aniel/not_sending.png'
+import schedule from '@/assets/img/app/ageIntegrator/aniel/schedule.png'
+import place from '@/assets/img/app/ageIntegrator/aniel/place.png'
+import service from '@/assets/img/app/ageIntegrator/aniel/service.png'
 
 import {infoPage} from "@/stores/counter";
 import {computed, ref} from "vue";
@@ -30,7 +36,7 @@ const panel = ref('operational');
 
 const getDashboard = () => {
   AXIOS({
-    url: 'http://localhost:8000/integrator/aniel/management-schedule/dashboard-operational',
+    url: 'https://v2.ageportal.agetelecom.com.br/integrator/aniel/management-schedule/dashboard-operational',
     method: 'get',
     params: {
       period: dateFilter.value
@@ -51,12 +57,16 @@ const dataFiltered = computed(() => {
     const matchesSearch = value.protocolo.toLowerCase().includes(searchValue);
 
     let matchesStatus = true;
-    if (status.value === 'approved') {
-      matchesStatus = value.status_id === 15;
-    } else if (status.value === 'rescheduled') {
-      matchesStatus = value.status_id === 16;
-    } else if (status.value === 'pending') {
-      matchesStatus = value.status_id !== 15 && value.status_id !== 16;
+    if (status.value === 'closed_productive') {
+      matchesStatus = value.status === 'Fechada Produtiva';
+    } else if (status.value === 'pending_att') {
+      matchesStatus = value.status === 'Aberta Aguardando Atendimento';
+    } else if (status.value === 'closed_improductive') {
+      matchesStatus = value.status === 'Fechada Improdutiva';
+    } else if (status.value === 'pending_technical') {
+      matchesStatus = value.status === 'Aberta Aguardando Responsável';
+    } else if (status.value === 'displacement') {
+      matchesStatus = value.status === 'OS em Deslocamento';
     }
 
     return matchesSearch && matchesStatus;
@@ -76,13 +86,13 @@ getDashboard();
 
   <div class="operational__dashboard">
       <div class="filters">
-        <div class="cards">
-          <div class="card"></div>
-          <div class="card"></div>
-          <div class="card"></div>
-          <div class="card"></div>
-          <div class="card"></div>
-        </div>
+<!--        <div class="cards">-->
+<!--          <div class="card"></div>-->
+<!--          <div class="card"></div>-->
+<!--          <div class="card"></div>-->
+<!--          <div class="card"></div>-->
+<!--          <div class="card"></div>-->
+<!--        </div>-->
         <div class="actions">
 
           <div class="search">
@@ -94,15 +104,16 @@ getDashboard();
             <input type="number" placeholder="Pesquisar (Protocolo)" v-model="search" />
           </div>
           <div class="period">
-            <input type="date" name="period" v-model="dateFilter">
+            <input type="date" name="period" v-model="dateFilter" @change="getDashboard">
           </div>
           <div class="status">
             <select name="status" id="status" v-model="status">
               <option value="all">Todos Status</option>
-              <option value="surplus">Excedentes</option>
-              <option value="approved">Aprovado</option>
-              <option value="rescheduled">Reagendas</option>
-              <option value="pending">Pendentes</option>
+              <option value="closed_productive">Fechada produtiva</option>
+              <option value="pending_att">Aguardando atendimento</option>
+              <option value="pending_technical">Aguardando Responsável</option>
+              <option value="displacement">Os em deslocamento</option>
+              <option value="closed_improductive">Fechada improdutiva</option>
             </select>
           </div>
           <div class="clear">
@@ -124,32 +135,57 @@ getDashboard();
           <th style="text-align: left">Serviço</th>
           <th>Agendamento</th>
           <th style="text-align: left">Status</th>
-          <th>Confirmação do cliente</th>
-          <th>Localidade</th>
-          <th>Solicitou aprovacao</th>
-          <th>Aprovado por</th>
+          <th style="text-align: left">Confirmação do cliente</th>
+          <th style="text-align: left">Localidade</th>
           <th>Ações</th>
         </tr>
         </thead>
         <tbody>
         <tr v-for="(item, index) in dataFiltered" :key="index">
-          <td style="text-align: left"># {{ item.protocolo }}</td>
-          <td style="text-align: left">{{ item.tipo_servico }}</td>
-          <td>{{ item.data_agendamento }}</td>
-          <td>
-            <div class="status">
-              <div class="badge" :style="{backgroundColor: item.cor_indicativa}"></div>
-              <span>{{ item.status_descricao }}</span>
+          <td style="text-align: left"><b style="user-select: none"># </b>{{ item.protocolo }}</td>
+          <td style="text-align: left">
+            <div class="flex">
+              <img :src="service" alt="servico">
+              <span>
+                {{ item.servico }}
+              </span>
             </div>
           </td>
-          <td>{{ item.comunicacao ? item.comunicacao : 'Não enviada' }}</td>
-          <td>{{ item.localidade }}</td>
-          <td>{{ item.solicitante ? item.solicitante : '' }}</td>
-          <td>{{item.aprovador ? item.aprovador : ''}}</td>
           <td>
-            <div style="cursor: pointer">
-              <svg  class="actions_order" xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24" width="512" height="512"><circle cx="12" cy="2" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="22" r="2"/></svg>
+            <div class="flex">
+              <img :src="schedule" alt="agenda">
+              <span>{{ item.data_agendamento }}</span>
             </div>
+          </td>
+          <td>
+            <div class="flex">
+              <svg :fill="item.cor_indicativa ?? '#cccccc'" xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 24 24" width="512" height="512"><path d="m24,24H0v-1c0-1.654,1.346-3,3-3h18c1.654,0,3,1.346,3,3v1ZM3.718,5.202L1.4,2.982.018,4.426l2.317,2.22,1.383-1.443Zm3.862-2.493L6.367-.008l-1.826.814,1.213,2.717,1.826-.814Zm16.402,1.717l-1.383-1.443-2.317,2.22,1.383,1.443,2.317-2.22Zm-4.523-3.619L17.633-.008l-1.213,2.717,1.826.814,1.213-2.717Zm1.541,12.193c0-4.963-4.037-9-9-9S3,8.037,3,13v5h18v-5Zm-9-2c-1.103,0-2,.897-2,2h-2c0-2.206,1.794-4,4-4v2Z"/></svg>
+              <span>{{ item.status }}</span>
+            </div>
+          </td>
+          <td  style="text-align: left">
+            <div class="flex">
+              <img v-if="item.confirmacao_cliente == 'Confirmado'" :src="confirm" alt="confirmado">
+              <img v-else-if="item.confirmacao_cliente == 'Pendente'" :src="pending" alt="pendente">
+              <img v-else-if="item.confirmacao_cliente == 'Atendente'" :src="confirm" alt="confirmado">
+              <img v-else :src="noSending" alt="confirmado">
+
+              <span>
+              {{ item.confirmacao_cliente ?? 'Não enviada' }}
+            </span>
+            </div>
+
+          </td>
+          <td>
+            <div class="flex">
+              <img :src="place" alt="local">
+              <span>{{ item.localidade }}</span>
+            </div>
+          </td>
+          <td>
+<!--            <div style="cursor: pointer">-->
+<!--              <svg  class="actions_order" xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24" width="512" height="512"><circle cx="12" cy="2" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="22" r="2"/></svg>-->
+<!--            </div>-->
           </td>
         </tr>
         </tbody>
@@ -209,7 +245,7 @@ getDashboard();
 
     .actions {
       width: 100%;
-      padding: 1vh 1vw;
+      padding: 0vh 1vw;
       background-color: #F9F9FB;
       border-radius: 10px;
       @include flex(row, flex-start, center, 1vw);
@@ -333,7 +369,7 @@ getDashboard();
     background-color: #fff;
     border-radius: 10px;
     padding: 1vh 1vw;
-    max-height: 45vh;
+    max-height: 67vh;
     overflow-y: auto;
     margin-top: 1.5vh;
     table {
@@ -348,7 +384,7 @@ getDashboard();
             color: #777;
             height: 7vh;
             border-bottom: 1px solid #cccccc60;
-            text-align: center;
+            text-align: left;
             padding: 0 10px;
           }
         }
@@ -368,16 +404,18 @@ getDashboard();
             font-weight: 500;
             color: #333;
             height: 7vh;
-            text-align: center;
+            text-align: left;
             user-select: text;
 
             .status {
-              @include flex(row, flex-start, center, .5vw);
+              text-align: left;
+              font-size: 1.2rem;
+              @include flex(row, flex-start, center, 0.5vw);
+              svg {
+                width: 1vw;
+                height: auto;
+              }
               .badge {
-                width: 10px;
-                height: 10px;
-                padding: 5px;
-                border-radius: 50%;
                 &.success {
                   background-color: #27B966;
                 }
@@ -407,6 +445,18 @@ getDashboard();
             }
 
           }
+
+          .flex {
+            @include flex(row, flex-start, center, .5vw);
+
+
+          }
+
+          img, svg {
+            width: 1.2vw;
+            height: auto;
+          }
+
         }
       }
     }
@@ -417,4 +467,45 @@ getDashboard();
 
 }
 
+@media (max-width: 1400px) {
+
+  .options {
+
+    a {
+      padding: 5px 15px;
+    }
+
+  }
+  .operational__dashboard {
+    .filters {
+      .actions {
+
+      }
+    }
+    .table_orders {
+      max-height: 65vh;
+
+      table {
+        thead {
+          tr {
+            th {
+              font-size: 1rem;
+            }
+          }
+        }
+        tbody {
+          tr {
+            td {
+              font-size: 1.1rem;
+
+              img {
+                width: 1vw;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
 </style>
