@@ -168,7 +168,7 @@ const openVoalle = function (personId: number) {
             <div class="flex">
               <img :src="service" alt="servico">
               <span>
-                {{ item.servico }}
+                {{ item.sub_servico }}
               </span>
             </div>
           </td>
