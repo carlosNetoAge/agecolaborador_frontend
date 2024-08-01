@@ -79,6 +79,23 @@ const dataFiltered = computed(() => {
 
 getDashboard();
 
+setInterval(() => {
+  getDashboard();
+}, 10000);
+
+const openVoalle = function (personId: number) {
+  const dataHash = {
+    personId: personId,
+    pbxInfo: {},
+    availableAttendance: true
+  }
+
+  const hash = btoa(JSON.stringify(dataHash));
+
+  window.open('https://erp.agetelecom.com.br/people_informations?hash='+hash, '_blank')
+}
+
+
 </script>
 
 <template>
@@ -146,7 +163,7 @@ getDashboard();
         </thead>
         <tbody>
         <tr v-for="(item, index) in dataFiltered" :key="index">
-          <td style="text-align: left"><b style="user-select: none"># </b>{{ item.protocolo }}</td>
+          <td style="text-align: left"><b @click="openVoalle(item.cliente_id)" style="user-select: none; cursor: pointer"># </b>{{item.protocolo}}</td>
           <td style="text-align: left">
             <div class="flex">
               <img :src="service" alt="servico">
