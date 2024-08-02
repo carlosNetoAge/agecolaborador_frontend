@@ -33,10 +33,27 @@ const close = () => {
 
 const copyToClipboard = () => {
   const formattedItem = `*Nome:* Luana Silva de Souza,\n*Celular:* (61) 99999-9999,\n*Contrato:* 10293,\n*Endereço:* Qn 7D conjunto 30, casa 209, Planaltina, Brasília/DF,\n*Serviço:* Plano Combo ativação,\n*Protocolo:* 192812,\n*Agendamento:* 01/08/2024 08:00`
-  navigator.clipboard.writeText(formattedItem).then(() => {
-  }).catch(err => {
-    console.log(err)
-  })
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(formattedItem).then(() => {
+      alert('Item copiado para a área de transferência!')
+    }).catch(err => {
+      console.error('Erro ao copiar para a área de transferência: ', err)
+    })
+  } else {
+    // Método alternativo para copiar para a área de transferência
+    const textArea = document.createElement('textarea')
+    textArea.value = formattedItem
+    document.body.appendChild(textArea)
+    textArea.select()
+    try {
+      document.execCommand('copy')
+      alert('Item copiado para a área de transferência!')
+    } catch (err) {
+      console.error('Erro ao copiar para a área de transferência: ', err)
+      alert('Erro ao copiar para a área de transferência.')
+    }
+    document.body.removeChild(textArea)
+  }
 }
 
 </script>
