@@ -11,6 +11,7 @@ import {infoPage} from "@/stores/counter";
 import {computed, ref} from "vue";
 import {AXIOS} from "@api/AXIOS";
 import Cookie from "js-cookie";
+import OptionsSchedule from "@/components/app/ageIntegrator/aniel/actionsSchedule/OptionsSchedule.vue";
 
 const info = infoPage();
 const data = ref([]);
@@ -22,6 +23,7 @@ const year = today.getFullYear();
 const month = String(today.getMonth() + 1).padStart(2, '0');
 const day = String(today.getDate()).padStart(2, '0');
 const formattedDate = `${year}-${month}-${day}`;
+const modal = ref(false)
 
 const dateFilter = ref(formattedDate);
 
@@ -38,7 +40,7 @@ const panel = ref('operational');
 
 const getDashboard = () => {
   AXIOS({
-    url: 'https://v2.ageportal.agetelecom.com.br/integrator/aniel/management-schedule/dashboard-operational',
+    url: 'http://localhost:8000/integrator/aniel/management-schedule/dashboard-operational',
     method: 'get',
     params: {
       period: dateFilter.value
@@ -48,7 +50,7 @@ const getDashboard = () => {
     }
   })
     .then((response) => {
-      data.value = response.data
+      data.value = response.data.dashboard
     })
     .catch((error) => {
       console.log(error);
@@ -108,6 +110,7 @@ const openVoalle = function (personId: number) {
 
 const clearFilters = () => {
   search.value = '';
+  typeService.value = 'all';
   status.value = 'all';
   dateFilter.value = formattedDate;
   getDashboard();
@@ -230,15 +233,17 @@ const clearFilters = () => {
             </div>
           </td>
           <td>
-<!--            <div style="cursor: pointer">-->
-<!--              <svg  class="actions_order" xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24" width="512" height="512"><circle cx="12" cy="2" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="22" r="2"/></svg>-->
-<!--            </div>-->
+            <div style="cursor: pointer" @click="modal = true">
+              <svg  class="actions_order" xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24" width="512" height="512"><circle cx="12" cy="2" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="22" r="2"/></svg>
+            </div>
           </td>
         </tr>
         </tbody>
       </table>
     </div>
   </div>
+
+  <OptionsSchedule v-if="modal == true" @closeModal="modal = false" />
 </template>
 
 <style scoped lang="scss">
