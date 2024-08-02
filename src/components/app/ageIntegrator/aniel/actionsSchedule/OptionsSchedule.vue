@@ -35,6 +35,7 @@ const copyToClipboard = () => {
   const formattedItem = `*Nome:* Luana Silva de Souza,\n*Celular:* (61) 99999-9999,\n*Contrato:* 10293,\n*Endereço:* Qn 7D conjunto 30, casa 209, Planaltina, Brasília/DF,\n*Serviço:* Plano Combo ativação,\n*Protocolo:* 192812,\n*Agendamento:* 01/08/2024 08:00`
   navigator.clipboard.writeText(formattedItem).then(() => {
   }).catch(err => {
+    console.log(err)
   })
 }
 
