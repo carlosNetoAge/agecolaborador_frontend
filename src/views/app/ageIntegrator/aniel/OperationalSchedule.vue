@@ -15,6 +15,7 @@ import OptionsSchedule from "@/components/app/ageIntegrator/aniel/actionsSchedul
 
 const info = infoPage();
 const data = ref([]);
+const permissions = ref([]);
 const search = ref('');
 const status = ref('all');
 const typeService = ref('all')
@@ -40,7 +41,7 @@ const panel = ref('operational');
 
 const getDashboard = () => {
   AXIOS({
-    url: 'https://v2.ageportal.agetelecom.com.br/integrator/aniel/management-schedule/dashboard-operational',
+    url: 'http://localhost:8000/integrator/aniel/management-schedule/dashboard-operational',
     method: 'get',
     params: {
       period: dateFilter.value
@@ -51,6 +52,7 @@ const getDashboard = () => {
   })
     .then((response) => {
       data.value = response.data.dashboard
+      permissions.value = response.data.permissions
     })
     .catch((error) => {
       console.log(error);
@@ -114,6 +116,13 @@ const clearFilters = () => {
   status.value = 'all';
   getDashboard();
 
+}
+
+const osSelected = ref({});
+
+const showOsInfo = (item: object) => {
+  modal.value = true;
+  osSelected.value = item;
 }
 
 </script>
@@ -232,7 +241,7 @@ const clearFilters = () => {
             </div>
           </td>
           <td>
-            <div style="cursor: pointer" @click="modal = true">
+            <div style="cursor: pointer" @click="showOsInfo(item)">
               <svg  class="actions_order" xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24" width="512" height="512"><circle cx="12" cy="2" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="22" r="2"/></svg>
             </div>
           </td>
@@ -242,7 +251,7 @@ const clearFilters = () => {
     </div>
   </div>
 
-  <OptionsSchedule v-if="modal == true" @closeModal="modal = false" />
+  <OptionsSchedule v-if="modal == true" :osInfo="osSelected" :permissions="permissions" @closeModal="modal = false" />
 </template>
 
 <style scoped lang="scss">

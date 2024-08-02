@@ -21,11 +21,21 @@ import numberPlate from '@/assets/img/app/ageIntegrator/aniel/number_plate.png'
 import neighborhood from '@/assets/img/app/ageIntegrator/aniel/neighborhood.png'
 import city from '@/assets/img/app/ageIntegrator/aniel/city.png'
 import copy from '@/assets/img/app/ageIntegrator/aniel/copy.png'
+import noInfo from '@/assets/img/app/ageIntegrator/aniel/pending.png'
+import danger from '@/assets/img/app/ageIntegrator/aniel/danger.png'
 
-import {defineEmits} from "vue";
+import {defineEmits, ref} from "vue";
+import {AXIOS} from "@api/AXIOS";
+import Cookie from "js-cookie";
 
 const emit = defineEmits(['closeModal']);
+const props = defineProps<{
+  osInfo: object,
+  permissions: object
+}>();
 
+const os = ref(props.osInfo);
+const permissions = ref(props.permissions)
 
 const close = () => {
   emit('closeModal');
@@ -51,6 +61,118 @@ const copyToClipboard = () => {
     }
     document.body.removeChild(textArea)
   }
+}
+
+const formatDateTime = (dateTime: any) => {
+  // Cria um objeto Date a partir da string
+  const date = new Date(dateTime);
+
+  // Obtém os componentes da data e hora
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // getMonth() retorna o mês baseado em zero
+  const year = date.getFullYear();
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+
+  // Formata a data e hora
+  return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+};
+
+const verifyStatusConfirm = (send: string) => {
+  switch (send) {
+    case 'Confirmado':
+      return {
+        src: confirm,
+        alt: 'confirmado',
+        text: 'Confirmado'
+      };
+    case 'Pendente':
+      return {
+        src: pending,
+        alt: 'pendente',
+        text: 'Pendente'
+      };
+    default:
+      return {
+        src: noInfo,
+        alt: 'não enviado',
+        text: 'Não enviado'
+      };
+  }
+};
+
+const verifyStatusOrder = (status: string) => {
+  const statusMap = {
+    'Fechada Produtiva': confirm,
+    'Fechada Improdutiva': danger,
+    'OS em Deslocamento': carDisplacement,
+    'Transbordo da capacidade': danger,
+    'Agenda fechada': danger,
+    'Fora do período': danger
+  };
+
+  return statusMap[status] || noInfo;
+};
+
+const verifyOrderToApprove = (status: string) => {
+  const approvalStatuses = [
+    'Transbordo da capacidade',
+    'Agenda fechada',
+    'Fora do período'
+  ];
+
+  return permissions.value.approval && approvalStatuses.includes(status)
+
+};
+
+const verifyOrderToPreApprove = (status: string) => {
+  const approvalStatuses = [
+    'Transbordo da capacidade',
+    'Agenda fechada',
+    'Fora do período'
+  ];
+
+  return permissions.value.preApproval && approvalStatuses.includes(status)
+
+};
+
+const verifyOrderReschedule = (status: string) => {
+  const statusTypes = [
+    'OS em Deslocamento',
+    'Atendimento Iniciado',
+    'Fora do período',
+    'Transbordo da capacidade',
+    'Agenda fechada',
+    'Aberta Aguardando Responsável',
+    'Aberta Aguardando Agendamento',
+    'Aberta Aguardando Atendimento'
+  ];
+
+  return statusTypes.includes(status);
+};
+
+const verifyOrderConfirm = (statusOrderConfirm: string) => {
+  const statusSending = ['Confirmado', 'Pendente'];
+  return !statusSending.includes(statusOrderConfirm) && os.value.status === 'Aberta Aguardando Atendimento';
+};
+
+const sendingConfirm = () => {
+  // AXIOS({
+  //   url: 'http://localhost:8000/integrator/aniel/communicate-order/send/confirm ',
+  //   method: 'post',
+  //   headers: {
+  //     'Content-Type': 'application/json',
+  //     'Authorization': 'Bearer ' + Cookie.get('token')
+  //   },
+  //   data: {
+  //     protocol: os.value.protocolo
+  //   }
+  //   }).then((res) => {
+  //     console.log(res)
+  // }).catch((err) => {
+  //   console.error(err)
+  // })
 }
 
 </script>
@@ -148,25 +270,25 @@ const copyToClipboard = () => {
               <td>
                 <div class="flex">
                   <img :src="service" alt="calendar">
-                  <span>Ativação</span>
+                  <span>{{ os.servico }}</span>
                 </div>
               </td>
               <td>
                 <div class="flex">
                   <img :src="service" alt="calendar">
-                  <span>Plano combo ativação</span>
+                  <span>{{ os.sub_servico }}</span>
                 </div>
               </td>
               <td>
                 <div class="flex">
                   <img :src="protocol" alt="calendar">
-                  <span>182712</span>
+                  <span>{{ os.protocolo }}</span>
                 </div>
               </td>
               <td>
                 <div class="flex">
-                  <img :src="carDisplacement" alt="calendar">
-                  <span>OS em deslocamento</span>
+                  <img :src="verifyStatusOrder(os.status)" alt="calendar">
+                  <span>{{ os.status }}</span>
                 </div>
               </td>
             </tr>
@@ -180,19 +302,19 @@ const copyToClipboard = () => {
               <td>
                 <div class="flex">
                   <img :src="calendar" alt="calendar">
-                  <span>01/08/2024 08:00</span>
+                  <span>{{formatDateTime(os.data_agendamento)}}</span>
                 </div>
               </td>
               <td>
                 <div class="flex">
-                  <img :src="confirm" alt="calendar">
-                  <span>Confirmado</span>
+                  <img :src="verifyStatusConfirm(os.confirmacao_cliente).src" alt="calendar">
+                  <span>{{ verifyStatusConfirm(os.confirmacao_cliente).text }}</span>
                 </div>
               </td>
               <td>
                 <div class="flex">
-                  <img :src="pending" alt="calendar">
-                  <span>Pendente</span>
+                  <img :src="verifyStatusConfirm(os.confirmacao_cliente).src" alt="calendar">
+                  <span>{{ verifyStatusConfirm(os.confirmacao_cliente).text }}</span>
                 </div>
               </td>
               <td>
@@ -200,8 +322,8 @@ const copyToClipboard = () => {
                     <img :src="starFull" alt="star">
                     <img :src="starFull" alt="star">
                     <img :src="starFull" alt="star">
-                    <img :src="star" alt="star">
-                    <img :src="star" alt="star">
+                    <img :src="starFull" alt="star">
+                    <img :src="starFull" alt="star">
                   </div>
               </td>
             </tr>
@@ -211,20 +333,36 @@ const copyToClipboard = () => {
           <h4>Ações disponíveis</h4>
 
           <div class="buttons">
-            <button @click="copyToClipboard">
+            <button
+                @click="sendingConfirm()"
+                :disabled="!verifyOrderConfirm(os.confirmacao_cliente)"
+                :class="{'disabled-button': !verifyOrderConfirm(os.confirmacao_cliente)}"
+            >
               <img :src="sendConfirm" alt="enviar confirmação">
               <span>Enviar confirmação</span>
             </button>
-            <button>
-              <img :src="approval" alt="aprovar">
+            <button
+                @click="sendingConfirm(os.protocolo)"
+                :disabled="!verifyOrderToApprove(os.status)"
+                :class="{'disabled-button': !verifyOrderToApprove(os.status) }"
+            >
+              <img :src="approval" alt="aprovar os">
               <span>Aprovar</span>
             </button>
-            <button>
-              <img :src="preApproval" alt="pré aprovar">
-              <span>Pré aprovar</span>
+            <button
+                @click="sendingConfirm(os.protocolo)"
+                :disabled="!verifyOrderToPreApprove(os.status)"
+                :class="{'disabled-button': !verifyOrderToPreApprove(os.status) }"
+            >
+              <img :src="preApproval" alt="aprovar os">
+              <span>Solicitar aprovação</span>
             </button>
-            <button>
-              <img :src="calendar" alt="reagendar">
+            <button
+                @click="sendingConfirm(os.protocolo)"
+                :disabled="!verifyOrderReschedule(os.status)"
+                :class="{'disabled-button': !verifyOrderReschedule(os.status) }"
+            >
+              <img :src="calendar" alt="reagendar os">
               <span>Reagendar</span>
             </button>
             <button @click="copyToClipboard">
@@ -457,6 +595,14 @@ const copyToClipboard = () => {
             img {
               width: 1vw;
               height: auto;
+            }
+          }
+
+          .disabled-button {
+            background-color: #cccccc70;
+            cursor: not-allowed;
+            &:hover {
+              background-color: #cccccc70;
             }
           }
         }
