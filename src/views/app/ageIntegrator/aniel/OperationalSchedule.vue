@@ -112,7 +112,6 @@ const clearFilters = () => {
   search.value = '';
   typeService.value = 'all';
   status.value = 'all';
-  dateFilter.value = formattedDate;
   getDashboard();
 
 }
