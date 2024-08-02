@@ -20,6 +20,7 @@ import address from '@/assets/img/app/ageIntegrator/aniel/address.png'
 import numberPlate from '@/assets/img/app/ageIntegrator/aniel/number_plate.png'
 import neighborhood from '@/assets/img/app/ageIntegrator/aniel/neighborhood.png'
 import city from '@/assets/img/app/ageIntegrator/aniel/city.png'
+import copy from '@/assets/img/app/ageIntegrator/aniel/copy.png'
 
 import {defineEmits} from "vue";
 
@@ -28,6 +29,13 @@ const emit = defineEmits(['closeModal']);
 
 const close = () => {
   emit('closeModal');
+}
+
+const copyToClipboard = () => {
+  const formattedItem = `*Nome:* Luana Silva de Souza,\n*Celular:* (61) 99999-9999,\n*Contrato:* 10293,\n*Endereço:* Qn 7D conjunto 30, casa 209, Planaltina, Brasília/DF,\n*Serviço:* Plano Combo ativação,\n*Protocolo:* 192812,\n*Agendamento:* 01/08/2024 08:00`
+  navigator.clipboard.writeText(formattedItem).then(() => {
+  }).catch(err => {
+  })
 }
 
 </script>
@@ -188,7 +196,7 @@ const close = () => {
           <h4>Ações disponíveis</h4>
 
           <div class="buttons">
-            <button>
+            <button @click="copyToClipboard">
               <img :src="sendConfirm" alt="enviar confirmação">
               <span>Enviar confirmação</span>
             </button>
@@ -203,6 +211,10 @@ const close = () => {
             <button>
               <img :src="calendar" alt="reagendar">
               <span>Reagendar</span>
+            </button>
+            <button @click="copyToClipboard">
+              <img :src="copy" alt="copiar">
+              <span>Copiar informações</span>
             </button>
             <button>
               <img :src="register" alt="histórico">
@@ -281,6 +293,7 @@ const close = () => {
         border-radius: 10px;
         background-color: #fff;
         grid-area: info;
+        position: relative;
 
         table {
           width: 100%;
@@ -323,6 +336,22 @@ const close = () => {
             }
           }
 
+        }
+
+        .copy {
+          position: absolute;
+          top: -3vh;
+          left: -1vw;
+          border: none;
+          cursor: pointer;
+          background-color: #F9F9FB;
+          padding: 10px;
+          border-radius: 50%;
+
+          img {
+            width: 1.5vw;
+            height: auto;
+          }
         }
       }
 
@@ -402,7 +431,7 @@ const close = () => {
             border: 1px solid #cccccc70;
             color: #333;
             font-weight: 500;
-            border-radius: 15px;
+            border-radius: 10px;
             font-size: 1.2rem;
             cursor: pointer;
             transition: background-color ease-in-out .2s;
