@@ -12,6 +12,7 @@ import {computed, ref} from "vue";
 import {AXIOS} from "@api/AXIOS";
 import Cookie from "js-cookie";
 import OptionsSchedule from "@/components/app/ageIntegrator/aniel/actionsSchedule/OptionsSchedule.vue";
+import noInfo from "@/assets/img/app/ageIntegrator/aniel/pending.png";
 
 const info = infoPage();
 const data = ref([]);
@@ -19,6 +20,7 @@ const permissions = ref([]);
 const search = ref('');
 const status = ref('all');
 const typeService = ref('all')
+const period = ref('all')
 const today = new Date();
 const year = today.getFullYear();
 const month = String(today.getMonth() + 1).padStart(2, '0');
@@ -76,6 +78,8 @@ const dataFiltered = computed(() => {
       matchesStatus = value.status === 'Aberta Aguardando Responsável';
     } else if (status.value === 'displacement') {
       matchesStatus = value.status === 'OS em Deslocamento';
+    } else if (status.value === 'pending_schedule') {
+      matchesStatus = value.status === 'Aberta Aguardando Agendamento';
     }
 
     let matchesTypeService = true;
@@ -87,7 +91,15 @@ const dataFiltered = computed(() => {
       matchesTypeService = value.servico === 'Mudança De Endereço';
     }
 
-    return matchesSearch && matchesStatus && matchesTypeService;
+    let matchesPeriod = true;
+    const time = new Date(value.data_agendamento).getHours();
+    if (period.value === 'morning') {
+      matchesPeriod = time < 12;
+    } else if (period.value === 'afternoon') {
+      matchesPeriod = time >= 12;
+    }
+
+    return matchesSearch && matchesStatus && matchesTypeService && matchesPeriod;
   });
 });
 
@@ -114,6 +126,7 @@ const clearFilters = () => {
   search.value = '';
   typeService.value = 'all';
   status.value = 'all';
+  period.value = 'all'
   getDashboard();
 
 }
@@ -124,6 +137,35 @@ const showOsInfo = (item: object) => {
   modal.value = true;
   osSelected.value = item;
 }
+
+const verifyStatusConfirm = (send: string) => {
+  switch (send) {
+    case 'Confirmado':
+      return {
+        src: confirm,
+        alt: 'confirmado',
+        text: 'Confirmado'
+      };
+    case 'Pendente':
+      return {
+        src: pending,
+        alt: 'pendente',
+        text: 'Pendente'
+      };
+    case 'Atendente':
+      return {
+        src: confirm,
+        alt: 'Confirmado',
+        text: 'Confirmado'
+      };
+    default:
+      return {
+        src: noInfo,
+        alt: 'não enviado',
+        text: 'Não enviado'
+      };
+  }
+};
 
 </script>
 
@@ -136,13 +178,6 @@ const showOsInfo = (item: object) => {
 
   <div class="operational__dashboard">
       <div class="filters">
-<!--        <div class="cards">-->
-<!--          <div class="card"></div>-->
-<!--          <div class="card"></div>-->
-<!--          <div class="card"></div>-->
-<!--          <div class="card"></div>-->
-<!--          <div class="card"></div>-->
-<!--        </div>-->
         <div class="actions">
 
           <div class="search">
@@ -165,11 +200,19 @@ const showOsInfo = (item: object) => {
             </select>
           </div>
           <div class="status">
+            <select name="period" id="period" v-model="period">
+              <option value="all">Todos os periodos</option>
+              <option value="morning">Manhã</option>
+              <option value="afternoon">Tarde</option>
+            </select>
+          </div>
+          <div class="status">
             <select name="status" id="status" v-model="status">
               <option value="all">Todos Status</option>
               <option value="closed_productive">Fechada produtiva</option>
               <option value="pending_att">Aguardando atendimento</option>
               <option value="pending_technical">Aguardando Responsável</option>
+              <option value="pending_schedule">Aguardando Agendamento</option>
               <option value="displacement">Os em deslocamento</option>
               <option value="closed_improductive">Fechada improdutiva</option>
             </select>
@@ -222,15 +265,17 @@ const showOsInfo = (item: object) => {
             </div>
           </td>
           <td  style="text-align: left">
-            <div class="flex">
-              <img v-if="item.confirmacao_cliente == 'Confirmado'" :src="confirm" alt="confirmado">
-              <img v-else-if="item.confirmacao_cliente == 'Pendente'" :src="pending" alt="pendente">
-              <img v-else-if="item.confirmacao_cliente == 'Atendente'" :src="confirm" alt="confirmado">
-              <img v-else :src="noSending" alt="confirmado">
-
+            <div class="flex" v-if="item.status != 'OS em Deslocamento'">
+              <img :src="verifyStatusConfirm(item.confirmacao_cliente).src" :alt="verifyStatusConfirm(item.confirmacao_deslocamento).alt">
               <span>
-              {{ item.confirmacao_cliente ?? 'Não enviada' }}
-            </span>
+              {{ verifyStatusConfirm(item.confirmacao_cliente).text }}
+              </span>
+            </div>
+            <div class="flex" v-else>
+              <img :src="verifyStatusConfirm(item.confirmacao_deslocamento).src" :alt="verifyStatusConfirm(item.confirmacao_deslocamento).alt">
+              <span>
+              {{ verifyStatusConfirm(item.confirmacao_deslocamento).text }}
+              </span>
             </div>
 
           </td>
