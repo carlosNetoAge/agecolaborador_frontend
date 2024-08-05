@@ -35,14 +35,34 @@ const props = defineProps<{
 }>();
 
 const os = ref(props.osInfo);
+const dataOs = ref({})
 const permissions = ref(props.permissions)
 
 const close = () => {
   emit('closeModal');
 }
 
-const copyToClipboard = () => {
-  const formattedItem = `*Nome:* Luana Silva de Souza,\n*Celular:* (61) 99999-9999,\n*Contrato:* 10293,\n*Endereço:* Qn 7D conjunto 30, casa 209, Planaltina, Brasília/DF,\n*Serviço:* Plano Combo ativação,\n*Protocolo:* 192812,\n*Agendamento:* 01/08/2024 08:00`
+const getData = () => {
+  AXIOS({
+    url: 'http://localhost:8000/integrator/aniel/management-order/data',
+    method: 'get',
+    headers: {
+      'Authorization': 'Bearer '+Cookie.get('token')
+    },
+    params: {
+      protocol: os.value.protocolo
+    }
+  }).then((res) => {
+     dataOs.value = res.data
+  }).catch((err) => {
+    console.error(err)
+  })
+}
+
+getData();
+
+const copyToClipboard = (data: object) => {
+  const formattedItem = `*Nome:* ${data.cliente_nome},\n*Celular:* ${data.celular_1},\n*Contrato:* ${data.contrato_id},\n*Endereço:* ${data.endereco}, ${data.numero}, ${data.area_despacho}, ${data.cidade}/DF,\n*Serviço:* ${data.sub_servico},\n*Protocolo:* ${data.protocolo},\n*Agendamento:* ${formatDateTime(data.data_agendamento)}`
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(formattedItem).then(() => {
     }).catch(err => {
@@ -158,21 +178,21 @@ const verifyOrderConfirm = (statusOrderConfirm: string) => {
 };
 
 const sendingConfirm = () => {
-  // AXIOS({
-  //   url: 'http://localhost:8000/integrator/aniel/communicate-order/send/confirm ',
-  //   method: 'post',
-  //   headers: {
-  //     'Content-Type': 'application/json',
-  //     'Authorization': 'Bearer ' + Cookie.get('token')
-  //   },
-  //   data: {
-  //     protocol: os.value.protocolo
-  //   }
-  //   }).then((res) => {
-  //     console.log(res)
-  // }).catch((err) => {
-  //   console.error(err)
-  // })
+  AXIOS({
+    url: 'https://v2.ageportal.agetelecom.com.br/integrator/aniel/management-order/send/confirm ',
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + Cookie.get('token')
+    },
+    data: {
+      protocol: os.value.protocolo
+    }
+    }).then((res) => {
+      getData();
+  }).catch((err) => {
+    console.error(err)
+  })
 }
 
 </script>
@@ -202,27 +222,27 @@ const sendingConfirm = () => {
               <td>
                 <div class="flex">
                   <img :src="identify" alt="calendar">
-                  <span>Luana Silva de Souza</span>
+                  <span>{{ dataOs.cliente_nome }}</span>
                 </div>
               </td>
               <td>
                 <div class="flex">
                   <img :src="cellphone" alt="calendar">
-                  <span>(61) 99999-9999</span>
+                  <span>{{ dataOs.celular_1 }}</span>
                 </div>
               </td>
               <td>
                 <div class="flex">
                   <img :src="email" alt="calendar">
                   <span>
-                    luanasilva@agelelecom.com.br
+                    {{ dataOs.email }}
                   </span>
                 </div>
               </td>
               <td>
                 <div class="flex">
                   <img :src="contract" alt="contrato">
-                  <span>182712</span>
+                  <span>{{ dataOs.contrato_id }}</span>
                 </div>
               </td>
             </tr>
@@ -236,24 +256,24 @@ const sendingConfirm = () => {
               <td>
                 <div class="flex">
                   <img :src="address" alt="endereço">
-                  <span>Qn 7d conjunto 30 quadra 2</span>
+                  <span>{{ dataOs.endereco }}</span>
                 </div>
               </td>
               <td>
                 <div class="flex">
                   <img :src="numberPlate" alt="número">
-                  <span>Casa 209</span>
+                  <span>{{ dataOs.numero }}</span>
                 </div>
               </td>
               <td>
                 <div class="flex">
                   <img :src="neighborhood" alt="número">
-                  <span>Planaltina</span>
+                  <span>{{ dataOs.area_despacho }}</span>
                 </div>
               </td>
               <td><div class="flex">
                 <img :src="city" alt="número">
-                <span>Brasília - DF</span>
+                <span>{{ dataOs.cidade }} - DF</span>
               </div></td>
             </tr>
           </table>
@@ -270,25 +290,25 @@ const sendingConfirm = () => {
               <td>
                 <div class="flex">
                   <img :src="service" alt="calendar">
-                  <span>{{ os.servico }}</span>
+                  <span>{{ dataOs.servico }}</span>
                 </div>
               </td>
               <td>
                 <div class="flex">
                   <img :src="service" alt="calendar">
-                  <span>{{ os.sub_servico }}</span>
+                  <span>{{ dataOs.sub_servico }}</span>
                 </div>
               </td>
               <td>
                 <div class="flex">
                   <img :src="protocol" alt="calendar">
-                  <span>{{ os.protocolo }}</span>
+                  <span>{{ dataOs.protocolo }}</span>
                 </div>
               </td>
               <td>
                 <div class="flex">
                   <img :src="verifyStatusOrder(os.status)" alt="calendar">
-                  <span>{{ os.status }}</span>
+                  <span>{{ dataOs.status }}</span>
                 </div>
               </td>
             </tr>
@@ -302,19 +322,19 @@ const sendingConfirm = () => {
               <td>
                 <div class="flex">
                   <img :src="calendar" alt="calendar">
-                  <span>{{formatDateTime(os.data_agendamento)}}</span>
+                  <span>{{formatDateTime(dataOs.data_agendamento)}}</span>
                 </div>
               </td>
               <td>
                 <div class="flex">
-                  <img :src="verifyStatusConfirm(os.confirmacao_cliente).src" alt="calendar">
-                  <span>{{ verifyStatusConfirm(os.confirmacao_cliente).text }}</span>
+                  <img :src="verifyStatusConfirm(dataOs.confirmacao_cliente).src" alt="calendar">
+                  <span>{{ verifyStatusConfirm(dataOs.confirmacao_cliente).text }}</span>
                 </div>
               </td>
               <td>
                 <div class="flex">
-                  <img :src="verifyStatusConfirm(os.confirmacao_cliente).src" alt="calendar">
-                  <span>{{ verifyStatusConfirm(os.confirmacao_cliente).text }}</span>
+                  <img :src="verifyStatusConfirm(dataOs.confirmacao_cliente).src" alt="calendar">
+                  <span>{{ verifyStatusConfirm(dataOs.confirmacao_cliente).text }}</span>
                 </div>
               </td>
               <td>
@@ -335,41 +355,43 @@ const sendingConfirm = () => {
           <div class="buttons">
             <button
                 @click="sendingConfirm()"
-                :disabled="!verifyOrderConfirm(os.confirmacao_cliente)"
-                :class="{'disabled-button': !verifyOrderConfirm(os.confirmacao_cliente)}"
+                :disabled="!verifyOrderConfirm(dataOs.confirmacao_cliente)"
+                :class="{'disabled-button': !verifyOrderConfirm(dataOs.confirmacao_cliente)}"
             >
               <img :src="sendConfirm" alt="enviar confirmação">
               <span>Enviar confirmação</span>
             </button>
             <button
-                @click="sendingConfirm(os.protocolo)"
-                :disabled="!verifyOrderToApprove(os.status)"
-                :class="{'disabled-button': !verifyOrderToApprove(os.status) }"
+                @click="sendingConfirm(dataOs.protocolo)"
+                :disabled="!verifyOrderToApprove(dataOs.status)"
+                :class="{'disabled-button': !verifyOrderToApprove(dataOs.status) }"
             >
               <img :src="approval" alt="aprovar os">
               <span>Aprovar</span>
             </button>
             <button
-                @click="sendingConfirm(os.protocolo)"
-                :disabled="!verifyOrderToPreApprove(os.status)"
-                :class="{'disabled-button': !verifyOrderToPreApprove(os.status) }"
+                @click="sendingConfirm(dataOs.protocolo)"
+                :disabled="!verifyOrderToPreApprove(dataOs.status)"
+                :class="{'disabled-button': !verifyOrderToPreApprove(dataOs.status) }"
             >
               <img :src="preApproval" alt="aprovar os">
               <span>Solicitar aprovação</span>
             </button>
             <button
-                @click="sendingConfirm(os.protocolo)"
-                :disabled="!verifyOrderReschedule(os.status)"
-                :class="{'disabled-button': !verifyOrderReschedule(os.status) }"
+                @click="sendingConfirm(dataOs.protocolo)"
+                :disabled="!verifyOrderReschedule(dataOs.status)"
+                :class="{'disabled-button': !verifyOrderReschedule(dataOs.status) }"
+                disabled
+                class="disabled-button"
             >
               <img :src="calendar" alt="reagendar os">
               <span>Reagendar</span>
             </button>
-            <button @click="copyToClipboard">
+            <button @click="copyToClipboard(dataOs)">
               <img :src="copy" alt="copiar">
               <span>Copiar informações</span>
             </button>
-            <button>
+            <button disabled class="disabled-button">
               <img :src="register" alt="histórico">
               <span>Histórico</span>
             </button>
