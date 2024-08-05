@@ -38,6 +38,17 @@ const os = ref(props.osInfo);
 const dataOs = ref({})
 const permissions = ref(props.permissions)
 
+
+const buttons = ref({
+  sendConfirm: false,
+  approval: false,
+  preApproval: false,
+  reschedule: false,
+  copy: false,
+  register: false
+})
+
+
 const close = () => {
   emit('closeModal');
 }
@@ -53,7 +64,10 @@ const getData = () => {
       protocol: os.value.protocolo
     }
   }).then((res) => {
-     dataOs.value = res.data
+    dataOs.value = res.data
+    buttons.value.sendConfirm = verifyOrderConfirm()
+    buttons.value.approval = verifyOrderToApprove()
+    buttons.value.preApproval = verifyOrderToPreApprove()
   }).catch((err) => {
     console.error(err)
   })
@@ -141,25 +155,32 @@ const verifyStatusOrder = (status: string) => {
   return statusMap[status] || noInfo;
 };
 
-const verifyOrderToApprove = (status: string) => {
+const verifyOrderToApprove = () => {
   const approvalStatuses = [
     'Transbordo da capacidade',
     'Agenda fechada',
     'Fora do período'
   ];
 
-  return permissions.value.approval && approvalStatuses.includes(status)
+  const statusTypes = approvalStatuses.includes(dataOs.value.status);
+  const permission = permissions.value.approval
+
+  return statusTypes && permission
 
 };
 
-const verifyOrderToPreApprove = (status: string) => {
+const verifyOrderToPreApprove = () => {
   const approvalStatuses = [
     'Transbordo da capacidade',
     'Agenda fechada',
     'Fora do período'
   ];
 
-  return permissions.value.preApproval && approvalStatuses.includes(status)
+  const statusTypes = approvalStatuses.includes(dataOs.value.status);
+  const permission = permissions.value.preApproval
+  console.log(statusTypes, permissions.value)
+
+  return statusTypes && permission
 
 };
 
@@ -178,9 +199,16 @@ const verifyOrderReschedule = (status: string) => {
   return statusTypes.includes(status);
 };
 
-const verifyOrderConfirm = (statusOrderConfirm: string) => {
-  const statusSending = ['Confirmado', 'Pendente'];
-  return !statusSending.includes(statusOrderConfirm) && os.value.status === 'Aberta Aguardando Atendimento';
+const verifyOrderConfirm = () => {
+
+  const statusSending = ['Confirmado', 'Pendente', 'Atendente'];
+
+  const confirm = !statusSending.includes(dataOs.value.confirmacao_cliente)
+  const displacement = !statusSending.includes(dataOs.value.confirmacao_deslocamento)
+  const status = dataOs.value.status == 'Aberta Aguardando Atendimento'
+
+  return confirm && displacement && status
+
 };
 
 const sendingConfirm = () => {
@@ -201,6 +229,26 @@ const sendingConfirm = () => {
   })
 }
 
+
+const approveOrder = () => {
+  AXIOS({
+    url: 'https://v2.ageportal.agetelecom.com.br/integrator/aniel/management-schedule/approval-order',
+    method: 'POST',
+    data: {
+      order: dataOs.value.protocolo
+    },
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + Cookie.get('token')
+    }
+  }).then((res) => {
+    getData();
+  }).catch((err) => {
+    console.error(err)
+  })
+
+}
+
 </script>
 
 <template>
@@ -214,7 +262,7 @@ const sendingConfirm = () => {
       <h3>Informações sobre a ordem de serviço - <b>EM DESENVOLVIMENTO</b></h3>
 
       <div class="content__info">
-        <div class="info">
+        <div class="info" v-if="dataOs.protocolo">
           <table>
             <tr>
               <th>
@@ -284,7 +332,7 @@ const sendingConfirm = () => {
             </tr>
           </table>
         </div>
-        <div class="info_service">
+        <div class="info_service" v-if="dataOs.protocolo">
           <table>
             <tr>
               <th>Serviço</th>
@@ -355,30 +403,29 @@ const sendingConfirm = () => {
             </tr>
           </table>
         </div>
-        <div class="actions">
+        <div class="actions"  v-if="dataOs.protocolo">
           <h4>Ações disponíveis</h4>
-
           <div class="buttons">
             <button
                 @click="sendingConfirm()"
-                :disabled="!verifyOrderConfirm(dataOs.confirmacao_cliente)"
-                :class="{'disabled-button': !verifyOrderConfirm(dataOs.confirmacao_cliente)}"
+                :disabled="!buttons.sendConfirm"
+                :class="{'disabled-button': !buttons.sendConfirm}"
             >
               <img :src="sendConfirm" alt="enviar confirmação">
               <span>Enviar confirmação</span>
             </button>
             <button
-                @click="sendingConfirm(dataOs.protocolo)"
-                :disabled="!verifyOrderToApprove(dataOs.status)"
-                :class="{'disabled-button': !verifyOrderToApprove(dataOs.status) }"
+                @click="approveOrder()"
+                :disabled="!buttons.approval"
+                :class="{'disabled-button': !buttons.approval}"
             >
               <img :src="approval" alt="aprovar os">
               <span>Aprovar</span>
             </button>
             <button
                 @click="sendingConfirm(dataOs.protocolo)"
-                :disabled="!verifyOrderToPreApprove(dataOs.status)"
-                :class="{'disabled-button': !verifyOrderToPreApprove(dataOs.status) }"
+                :disabled="!buttons.preApproval"
+                :class="{'disabled-button': !buttons.preApproval}"
             >
               <img :src="preApproval" alt="aprovar os">
               <span>Solicitar aprovação</span>
