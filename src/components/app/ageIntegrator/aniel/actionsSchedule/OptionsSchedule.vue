@@ -113,6 +113,12 @@ const verifyStatusConfirm = (send: string) => {
         alt: 'pendente',
         text: 'Pendente'
       };
+    case 'Atendente':
+      return {
+        src: confirm,
+        alt: 'Confirmado',
+        text: 'Confirmado'
+      };
     default:
       return {
         src: noInfo,
@@ -333,8 +339,8 @@ const sendingConfirm = () => {
               </td>
               <td>
                 <div class="flex">
-                  <img :src="verifyStatusConfirm(dataOs.confirmacao_cliente).src" alt="calendar">
-                  <span>{{ verifyStatusConfirm(dataOs.confirmacao_cliente).text }}</span>
+                  <img :src="verifyStatusConfirm(dataOs.confirmacao_deslocamento).src" alt="calendar">
+                  <span>{{ verifyStatusConfirm(dataOs.confirmacao_deslocamento).text }}</span>
                 </div>
               </td>
               <td>
