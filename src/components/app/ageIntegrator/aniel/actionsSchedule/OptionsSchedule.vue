@@ -423,7 +423,7 @@ const approveOrder = () => {
               <span>Aprovar</span>
             </button>
             <button
-                @click="sendingConfirm(dataOs.protocolo)"
+                @click=""
                 :disabled="!buttons.preApproval"
                 :class="{'disabled-button': !buttons.preApproval}"
             >
