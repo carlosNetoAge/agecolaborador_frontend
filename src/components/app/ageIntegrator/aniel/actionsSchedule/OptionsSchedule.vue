@@ -44,7 +44,7 @@ const close = () => {
 
 const getData = () => {
   AXIOS({
-    url: 'http://localhost:8000/integrator/aniel/management-order/data',
+    url: 'https://v2.ageportal.agetelecom.com.br/integrator/aniel/management-order/data',
     method: 'get',
     headers: {
       'Authorization': 'Bearer '+Cookie.get('token')
