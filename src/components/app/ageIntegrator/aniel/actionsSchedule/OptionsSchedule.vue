@@ -249,6 +249,22 @@ const approveOrder = () => {
 
 }
 
+const rescheduleOrder = () => {
+  AXIOS({
+    url: 'https://v2.ageportal.agetelecom.com.br/integrator/aniel/management-order/actions/clear-technical',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + Cookie.get('token')
+    }
+  }).then((res) => {
+    getData();
+  }).catch((err) => {
+    console.error(err)
+  })
+
+}
+
 </script>
 
 <template>
@@ -431,11 +447,9 @@ const approveOrder = () => {
               <span>Solicitar aprovação</span>
             </button>
             <button
-                @click="sendingConfirm(dataOs.protocolo)"
+                @click="rescheduleOrder()"
                 :disabled="!verifyOrderReschedule(dataOs.status)"
                 :class="{'disabled-button': !verifyOrderReschedule(dataOs.status) }"
-                disabled
-                class="disabled-button"
             >
               <img :src="calendar" alt="reagendar os">
               <span>Reagendar</span>
