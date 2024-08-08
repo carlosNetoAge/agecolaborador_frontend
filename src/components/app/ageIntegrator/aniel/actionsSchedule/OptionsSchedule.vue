@@ -27,6 +27,8 @@ import danger from '@/assets/img/app/ageIntegrator/aniel/danger.png'
 import {defineEmits, ref} from "vue";
 import {AXIOS} from "@api/AXIOS";
 import Cookie from "js-cookie";
+import RescheduleOrderOperational
+  from "@/components/app/ageIntegrator/aniel/actionsSchedule/RescheduleOrderOperational.vue";
 
 const emit = defineEmits(['closeModal']);
 const props = defineProps<{
@@ -37,6 +39,7 @@ const props = defineProps<{
 const os = ref(props.osInfo);
 const dataOs = ref({})
 const permissions = ref(props.permissions)
+const modalReschedule = ref(false)
 
 
 const buttons = ref({
@@ -184,6 +187,8 @@ const verifyOrderToPreApprove = () => {
 
 };
 
+const rescheduleAction = ref(false);
+
 const verifyOrderReschedule = (status: string) => {
   const statusTypes = [
     'OS em Deslocamento',
@@ -196,7 +201,7 @@ const verifyOrderReschedule = (status: string) => {
     'Aberta Aguardando Atendimento'
   ];
 
-  return statusTypes.includes(status);
+  return statusTypes.includes(status) && !rescheduleAction.value;
 };
 
 const verifyOrderConfirm = () => {
@@ -251,8 +256,13 @@ const approveOrder = () => {
 
 const rescheduleOrder = () => {
   AXIOS({
-    url: 'https://v2.ageportal.agetelecom.com.br/integrator/aniel/management-order/actions/clear-technical',
+    url: 'https://v2.ageportal.agetelecom.com.br/integrator/aniel/management-order/actions/reschedule',
     method: 'POST',
+    data: {
+      protocol: dataOs.value.protocolo,
+      date: '2024-08-10',
+      period: 'Manhã'
+    },
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + Cookie.get('token')
@@ -469,6 +479,7 @@ const rescheduleOrder = () => {
 
     </div>
   </div>
+  <RescheduleOrderOperational :protocol="dataOs.protocolo" v-if="!modalReschedule"/>
 </template>
 
 <style scoped lang="scss">
@@ -480,7 +491,7 @@ const rescheduleOrder = () => {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 99;
+  z-index: 90;
   @include flex(row, center, center);
 
   .card {
