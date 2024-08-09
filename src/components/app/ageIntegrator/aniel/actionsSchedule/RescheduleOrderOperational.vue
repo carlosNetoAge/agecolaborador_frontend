@@ -9,6 +9,9 @@ import robot3Gif from '@/assets/img/app/ageIntegrator/aniel/robot3.gif';
 import robot4Gif from '@/assets/img/app/ageIntegrator/aniel/robot4.gif';
 import robot5Gif from '@/assets/img/app/ageIntegrator/aniel/robot5.gif';
 import error from '@/assets/img/app/ageIntegrator/aniel/404.gif';
+import cleaner from '@/assets/img/app/ageIntegrator/aniel/remove-folder.gif';
+import watcher from '@/assets/img/app/ageIntegrator/aniel/watcher.gif';
+import question from '@/assets/img/app/ageIntegrator/aniel/question.gif';
 
 const emit = defineEmits(['closeModal']);
 
@@ -100,7 +103,7 @@ const rescheduleOrder = () => {
       'Authorization': 'Bearer ' + Cookie.get('token')
     }
   }).then(() => {
-    loadingActual.value = 6;
+    loadingActual.value = 8;
 
     setTimeout(() => {
       statusRequest.value = false;
@@ -123,10 +126,10 @@ const loadingActual = ref(1)
 
 const alterLoading = () => {
   setInterval(() => {
-    if (loadingActual.value < 5) {
+    if (loadingActual.value < 7) {
       loadingActual.value++
     }
-  }, 5000)
+  }, 4000)
 }
 
 const preloadImages = () => {
@@ -137,6 +140,9 @@ const preloadImages = () => {
     robot4Gif,
     robot5Gif,
     error,
+    cleaner,
+    watcher,
+    question
   ];
   images.forEach((src) => {
     const img = new Image();
@@ -193,21 +199,29 @@ onMounted(() => {
       </div>
       <div class="content_loading" id="loading_2" v-if="loadingActual == 2">
         <img :src="robot2Gif" alt="Carregando..." />
-        <h3><b>Encontrei!</b> <br>Só um momento que já vou começar o meu trabalho</h3>
+        <h3><b>Encontrei!</b> <br>Deixa que essa eu resolvo!</h3>
       </div>
       <div class="content_loading" id="loading_3" v-if="loadingActual == 3">
         <img :src="robot3Gif" alt="Carregando..." />
-        <h3><b>Trabalha... trabalha...</b> <br>Estou alterando a data do agendamento, um momento...</h3>
+        <h3><b>Clica aqui... Clica ali...</b> <br>Estou alterando a data do agendamento, um momento...</h3>
       </div>
       <div class="content_loading" id="loading_4" v-if="loadingActual == 4">
-        <img :src="robot4Gif" alt="Carregando..." />
-        <h3><b>Removendo da esteira do técnico...</b> <br>Tenho que fazer tudo por aqui mesmo?</h3>
+        <img :src="cleaner" alt="Carregando..." />
+        <h3><b>Limpando a agenda do técnico...</b> <br>Tenho que fazer tudo por aqui mesmo?</h3>
       </div>
-      <div class="content_loading" id="loading_5" v-if="loadingActual == 5">
+      <div class="content_loading" id="loading_4" v-if="loadingActual == 5">
+        <img :src="watcher" alt="Carregando..." />
+        <h3><b>Dedurando você...</b> <br>Q-quer dizer... Registrando o log de alteração</h3>
+      </div>
+      <div class="content_loading" id="loading_4" v-if="loadingActual == 6">
+        <img :src="question" alt="Carregando..." />
+        <h3><b>Eu recebo por isso?</b> <br>Bem que eu gostaria de mais armazenamento...</h3>
+      </div>
+      <div class="content_loading" id="loading_5" v-if="loadingActual == 7">
         <img :src="robot5Gif" alt="Carregando..." />
         <h3><b>Verificando status...</b> <br>Se algo deu errado, a culpa é do desenvolvedor...</h3>
       </div>
-      <div class="content_loading" id="loading_6" v-if="loadingActual == 6">
+      <div class="content_loading" id="loading_6" v-if="loadingActual == 8">
         <img :src="robot2Gif" alt="Carregando..." />
         <h3><b>Tudo certo!</b> <br>Se precisar, estou por aqui.</h3>
       </div>
@@ -368,10 +382,9 @@ onMounted(() => {
   .card_loading {
     background-color: #fff;
     border-radius: 10px;
-    padding: 8vh 2vw;
+    padding: 6vh 1vw;
     width: 30vw;
-    height: 40vh;
-
+    min-height: 30vh;
 
     .content_loading {
       @include flex(column, center, center);
