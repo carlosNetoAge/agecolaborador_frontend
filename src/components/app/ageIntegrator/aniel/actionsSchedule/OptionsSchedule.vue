@@ -457,7 +457,7 @@ const rescheduleOrder = () => {
               <span>Solicitar aprovação</span>
             </button>
             <button
-                @click="rescheduleOrder()"
+                @click="modalReschedule = true"
                 :disabled="!verifyOrderReschedule(dataOs.status)"
                 :class="{'disabled-button': !verifyOrderReschedule(dataOs.status) }"
             >
@@ -479,7 +479,7 @@ const rescheduleOrder = () => {
 
     </div>
   </div>
-  <RescheduleOrderOperational :protocol="dataOs.protocolo" v-if="!modalReschedule"/>
+  <RescheduleOrderOperational :dataOs="dataOs" v-if="modalReschedule" @closeModal="[modalReschedule = false, getData()]"/>
 </template>
 
 <style scoped lang="scss">
