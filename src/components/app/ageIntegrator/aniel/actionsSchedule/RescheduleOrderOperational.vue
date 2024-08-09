@@ -128,6 +128,27 @@ const alterLoading = () => {
     }
   }, 5000)
 }
+
+const preloadImages = () => {
+  const images = [
+    robot1Gif,
+    robot2Gif,
+    robot3Gif,
+    robot4Gif,
+    robot5Gif,
+    error,
+  ];
+  images.forEach((src) => {
+    const img = new Image();
+    img.src = src;
+  });
+}
+
+onMounted(() => {
+  preloadImages();
+  getCapacityReschedule();
+});
+
 </script>
 
 <template>
