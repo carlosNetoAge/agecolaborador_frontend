@@ -42,7 +42,6 @@ const buttons = [
 
 <template>
   <div class="options">
-    <router-link exact-active-class="select" to="/ageIntegra/agenda-aniel">Capacidade</router-link>
     <router-link exact-active-class="select" to="/ageIntegra/agenda-aniel/dashboard">Dashboard</router-link>
     <router-link exact-active-class="select" to="/ageIntegra/agenda-aniel/gerenciamento">Gerenciamento</router-link>
   </div>

@@ -173,7 +173,6 @@ const verifyStatusConfirm = (send: string) => {
   <div class="options">
     <router-link exact-active-class="select" to="/ageIntegra/agenda-aniel" @click="panel = 'capacity'">Capacidade</router-link>
     <router-link exact-active-class="select" to="/ageIntegra/agenda-aniel/operacional" @click="panel = 'operational'">Operacional</router-link>
-    <router-link exact-active-class="select" to="/ageIntegra/agenda-aniel/gerenciamento" @click="panel = 'management'">Gerenciamento</router-link>
   </div>
 
   <div class="operational__dashboard">
