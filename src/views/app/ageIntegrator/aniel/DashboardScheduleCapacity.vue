@@ -131,6 +131,7 @@ setInfoPage();
       <div class="navbar">
         <router-link exact-active-class="select" to="/ageIntegra/agenda-aniel" @click="panel = 'operational'">Operacional</router-link>
         <router-link exact-active-class="select" to="/ageIntegra/agenda-aniel/dashboard" @click="panel = 'dashboard'">Dashboard</router-link>
+        <router-link exact-active-class="select" to="/ageIntegra/agenda-aniel/gerenciamento" @click="panel = 'management'">Gerenciamento</router-link>
       </div>
     </div>
     <div class="cards">
