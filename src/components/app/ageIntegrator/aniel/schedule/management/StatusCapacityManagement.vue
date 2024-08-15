@@ -44,7 +44,7 @@ const formattedDateReschedule = (dateParam: any) => {
 
 const getData = () => {
   AXIOS({
-    url: 'http://localhost:8000/integrator/aniel/management-schedule/schedule',
+    url: 'https://v2.ageportal.agetelecom.com.br/integrator/aniel/management-schedule/schedule',
     method: 'GET',
     headers: {
       'Authorization': 'Bearer '+Cookie.get('token')
