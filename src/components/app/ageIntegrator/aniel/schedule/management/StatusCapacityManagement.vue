@@ -44,7 +44,7 @@ const formattedDateReschedule = (dateParam: any) => {
 
 const getData = () => {
   AXIOS({
-    url: 'https://v2.ageportal.agetelecom.com.br/integrator/aniel/management-schedule/schedule',
+    url: 'http://localhost:8000/integrator/aniel/management-schedule/schedule',
     method: 'GET',
     headers: {
       'Authorization': 'Bearer '+Cookie.get('token')
@@ -70,6 +70,12 @@ const statusSchedule = (item: any) => {
 
 }
 
+setInterval(() => {
+  if(alterCapacityIndex.value == -1) {
+    getData();
+  }
+}, 5000);
+
 const alterStatusSchedule = () => {
   AXIOS({
     url: 'https://v2.ageportal.agetelecom.com.br/integrator/aniel/management-schedule/schedule/alter-status',
@@ -92,11 +98,21 @@ const alterStatusSchedule = () => {
 
 const alterCapacityBuilder = () => {
   alterCapacityData.value.forEach(item => {
-    if (item.tecnicos === undefined) {
-      item.tecnicos = item.capacidade / 2;
+    if (item.novo_contingente === undefined) {
+
+      if(item.contingente != null) {
+        item.novo_contingente = item.contingente;
+      } else {
+        item.novo_contingente = item.capacidade / 2;
+      }
     }
-    if (item.sla === undefined) {
-      item.sla = 2;
+
+    if (item.novo_contingente_servicos === undefined) {
+      if(item.contingente_servicos != null) {
+        item.novo_contingente_servicos = item.contingente_servicos;
+      } else {
+        item.novo_contingente_servicos = 2;
+      }
     }
 
     if (item.nova_capacidade === undefined) {
@@ -246,19 +262,19 @@ const alterCapacity = () => {
                 <td>
                   <div class="flex">
                     <img :src="technician" alt="">
-                    <input type="number" v-model="item.tecnicos">
+                    <input type="number" v-model="item.novo_contingente">
                   </div>
                 </td>
                 <td>
                   <div class="flex">
                     <img :src="sla" alt="">
-                    <input type="number"  v-model="item.sla">
+                    <input type="number"  v-model="item.novo_contingente_servicos">
                   </div>
                 </td>
                 <td>
                   <div class="flex">
                     <img :src="calculator" alt="">
-                    <span>{{ item.nova_capacidade = item.tecnicos * item.sla }}</span>
+                    <span>{{ item.nova_capacidade = item.novo_contingente * item.novo_contingente_servicos }}</span>
                   </div>
                 </td>
                 <td>
