@@ -6,20 +6,27 @@ import afternoon from '@/assets/img/app/ageIntegrator/aniel/afternoon.png';
 import deadline from '@/assets/img/app/ageIntegrator/aniel/deadline.png';
 import team from '@/assets/img/app/ageIntegrator/aniel/team.png';
 import description from '@/assets/img/app/ageIntegrator/aniel/description.png';
-import closed from '@/assets/img/app/ageIntegrator/aniel/closed.png';
-import close from '@/assets/img/app/ageIntegrator/aniel/close.png';
+import unlock from '@/assets/img/app/ageIntegrator/aniel/unlock.png';
+import lock from '@/assets/img/app/ageIntegrator/aniel/lock.png';
 import open from '@/assets/img/app/ageIntegrator/aniel/open.png';
-import danger from '@/assets/img/app/ageIntegrator/aniel/danger.png';
+import unsafe from '@/assets/img/app/ageIntegrator/aniel/unsafe.png';
 import capacity from '@/assets/img/app/ageIntegrator/aniel/capacity.png';
 import schedule from '@/assets/img/app/ageIntegrator/aniel/schedule.png';
-import explosion from '@/assets/img/app/ageIntegrator/aniel/explosion.png';
-import available from '@/assets/img/app/ageIntegrator/aniel/check.png';
+import safe from '@/assets/img/app/ageIntegrator/aniel/safe.png';
+import configuration from '@/assets/img/app/ageIntegrator/aniel/cogwheel.png';
+import sla from '@/assets/img/app/ageIntegrator/aniel/sla.png';
+import technician from '@/assets/img/app/ageIntegrator/aniel/technician.png';
+import calculator from '@/assets/img/app/ageIntegrator/aniel/calculator.png';
 import {AXIOS} from "@api/AXIOS";
 import Cookie from "js-cookie";
+import AlterCapacitySchedule from "@/components/app/ageIntegrator/aniel/schedule/management/AlterCapacitySchedule.vue";
 
 const modal = ref(false);
 const data = ref([]);
 const scheduleSelected = ref({});
+const alterCapacityModal = ref(false);
+const alterCapacityData = ref([]);
+const alterCapacityIndex = ref(-1);
 
 const months = [
   'janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho',
@@ -51,20 +58,14 @@ const getData = () => {
 
 getData();
 
-setInterval(() => {
-  getData();
-}, 5000);
-
 const statusSchedule = (item: any) => {
 
-  if (item.capacidade === item.utilizado) {
-    return close;
-  } else if (item.capacidade - item.utilizado < 0) {
-    return explosion;
+  if (item.capacidade - item.utilizado < 0) {
+    return unsafe;
   } else if (item.capacidade - item.utilizado < 5) {
-    return danger;
+    return unsafe;
   } else {
-    return available;
+    return safe;
   }
 
 }
@@ -89,34 +90,92 @@ const alterStatusSchedule = () => {
   });
 }
 
+const alterCapacityBuilder = () => {
+  alterCapacityData.value.forEach(item => {
+    if (item.tecnicos === undefined) {
+      item.tecnicos = item.capacidade / 2;
+    }
+    if (item.sla === undefined) {
+      item.sla = 2;
+    }
+
+    if (item.nova_capacidade === undefined) {
+      item.nova_capacidade = item.capacidade;
+    }
+  });
+
+}
+
+const alterCapacity = () => {
+  AXIOS({
+    url: 'https://v2.ageportal.agetelecom.com.br/integrator/aniel/management-schedule/schedule/alter-capacity',
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer '+Cookie.get('token')
+    },
+    data: {
+      schedule: alterCapacityData.value
+    }
+  }).then((res) => {
+    getData();
+    alterCapacityIndex.value = -1;
+    alterCapacityData.value = [];
+  }).catch((error) => {
+
+  });
+}
+
 </script>
 
 <template>
   <div class="content__capacity">
     <div class="days">
       <div class="day" v-for="(items, day) in data" :key="day">
-        <span>
+        <div class="action_alter_capacity">
+          <button v-if="alterCapacityIndex != day" @click="[alterCapacityData = items, alterCapacityIndex = day, alterCapacityBuilder()]">
+            <img :src="configuration" alt="">
+          </button>
+          <template v-else>
+            <button @click="[alterCapacityIndex = -1, alterCapacityData = []]">
+              <img :src="unsafe" alt="">
+            </button>
+            <button @click="alterCapacity">
+              <img :src="safe" alt="">
+            </button>
+          </template>
+        </div>
+        <h4>
           {{ items[0].dia_semana.charAt(0).toUpperCase() + items[0].dia_semana.slice(1) }}, {{ formattedDateReschedule(day) }}
-        </span>
+        </h4>
         <div class="services-container">
           <div class="services">
             <table>
               <thead>
-              <tr>
+              <tr v-if="alterCapacityIndex != day">
                 <th style="width: 5%; text-align: center">Período</th>
                 <th>Serviço</th>
                 <th>Capacidade</th>
                 <th>Agendados</th>
-                <th>Disponíveis</th>
+                <th>Líquido</th>
                 <th>Status</th>
                 <th>Motivo fechamento</th>
                 <th>Data e hora do fechamento</th>
                 <th>Alterado por</th>
                 <th>ações</th>
               </tr>
+              <tr v-else>
+                <th style="width: 5%; text-align: center">Período</th>
+                <th>Serviço</th>
+                <th>Capacidade atual</th>
+                <th>Líquido</th>
+                <th>Técnicos</th>
+                <th>Quantidade de serviços</th>
+                <th>Capacidade calculada</th>
+                <th>Alterado por</th>
+              </tr>
               </thead>
               <tbody>
-              <tr v-for="(item, index) in items" :key="index">
+              <tr v-if="alterCapacityIndex != day" v-for="(item, index) in items" :key="index">
                 <td  style="width: 5%">
                   <img :src="item.periodo == 'manha' ? morning : afternoon" alt="">
                 </td>
@@ -136,12 +195,12 @@ const alterStatusSchedule = () => {
                 <td>
                   <div class="flex">
                     <img :src="statusSchedule(item)" alt="">
-                    <span>{{ Math.abs(item.capacidade - item.utilizado ) }}</span>
+                    <span>{{ item.capacidade - item.utilizado }}</span>
                   </div>
                 </td>
                 <td>
                   <div class="flex">
-                    <img :src="item.status == 'aberta' ? open : closed" alt="">
+                    <img style="width: 1vw" :src="item.status == 'aberta' ? unlock : lock" alt="">
                     <span>{{ item.status }}</span>
                   </div>
                 </td>
@@ -165,6 +224,48 @@ const alterStatusSchedule = () => {
                 </td>
                 <td class="actions_table">
                   <svg @click="[modal = true, scheduleSelected = item]" xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24" width="512" height="512"><circle cx="12" cy="2" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="22" r="2"/></svg>
+                </td>
+              </tr>
+              <tr v-else v-for="(item, idx) in alterCapacityData" :key="item.id">
+                <td  style="width: 5%">
+                  <img :src="item.periodo == 'manha' ? morning : afternoon" alt="">
+                </td>
+                <td style="text-align: left">{{ item.servico }}</td>
+                <td>
+                  <div class="flex">
+                    <img :src="capacity" alt="">
+                    <span>{{ item.capacidade }}</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="flex">
+                    <img :src="statusSchedule(item)" alt="">
+                    <span>{{ item.capacidade - item.utilizado }}</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="flex">
+                    <img :src="technician" alt="">
+                    <input type="number" v-model="item.tecnicos">
+                  </div>
+                </td>
+                <td>
+                  <div class="flex">
+                    <img :src="sla" alt="">
+                    <input type="number"  v-model="item.sla">
+                  </div>
+                </td>
+                <td>
+                  <div class="flex">
+                    <img :src="calculator" alt="">
+                    <span>{{ item.nova_capacidade = item.tecnicos * item.sla }}</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="flex">
+                    <img :src="team" alt="">
+                    <span> {{ item.user.nome }} </span>
+                  </div>
                 </td>
               </tr>
               </tbody>
@@ -221,6 +322,7 @@ const alterStatusSchedule = () => {
     @include flex(row, flex-start, initial, 2vh);
     flex-wrap: wrap;
     height: 100%;
+    padding-top: 2vh;
 
     .day {
       @include flex(column, flex-start, initial);
@@ -230,11 +332,26 @@ const alterStatusSchedule = () => {
       border-radius: 10px;
       border: 1px solid #cccccc20;
       transition: border-color 0.3s ease-in-out;
+      position: relative;
       &:hover {
         border-color: #cccccc60;
       }
 
-      span:nth-child(1) {
+      .action_alter_capacity {
+        position: absolute;
+        top: 1vh;
+        z-index: 99;
+        right: 2vw;
+        cursor: pointer;
+        @include flex(row, flex-start, center, .5vw);
+
+        img {
+          width: 1.5vw;
+          height: auto;
+        }
+      }
+
+      h4 {
         font-size: 1.2rem;
         font-weight: 500;
         color: #666;
@@ -284,9 +401,17 @@ const alterStatusSchedule = () => {
                 .flex {
                   @include flex(row, flex-start, center, .5vw);
 
-
                   img {
                     margin: 0;
+                  }
+
+                  input {
+                    border: 1px solid #cccccc60;
+                    border-radius: 7px;
+                    padding: 3px 15px;
+                    font-size: 1.2rem;
+                    color: #333;
+                    font-weight: 500;
                   }
                 }
 
