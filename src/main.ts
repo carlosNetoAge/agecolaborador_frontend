@@ -9,7 +9,6 @@ import "@/assets/styles/main.css"
 import { setupCalendar, Calendar, DatePicker } from 'v-calendar';
 import 'v-calendar/style.css';
 
-
 const app = createApp(App)
 
 app.use(createPinia())

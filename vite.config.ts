@@ -14,6 +14,7 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
       '@api/AXIOS': fileURLToPath(new URL('./services/api.ts', import.meta.url)),
+      '@config/echo': fileURLToPath(new URL('./services/config/echo.ts', import.meta.url)),
     }
   },
   css: {

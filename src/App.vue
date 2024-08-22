@@ -5,12 +5,20 @@ import { stateLoading, stateMenu } from "@/stores/counter";
 import MenuComponent from "@/components/widgets/menu/MenuComponent.vue";
 import { useRoute } from 'vue-router';
 import TitleComponent from "@/components/widgets/header/TitleComponent.vue";
+import {onMounted, ref} from "vue";
+import echo from "@config/echo";
 
 const route = useRoute();
 const loading = stateLoading();
 const menu = stateMenu();
+const items = ref([]);
 
-
+onMounted(() => {
+  echo.channel('public')
+      .listen('AlertMessageAlterStatusEvent', (e: any) => {
+        items.value.push(e);
+      });
+});
 </script>
 
 <template>

@@ -8,6 +8,7 @@ import { infoPage} from "@/stores/counter";
 import CalendarOperational from "@/components/app/ageIntegrator/aniel/CalendarOperational.vue";
 import {AXIOS} from "@api/AXIOS";
 import Cookie from "js-cookie";
+import echo from '@config/echo';
 
 const info = infoPage();
 
@@ -62,6 +63,8 @@ setInterval(() => {
 const updateStatusService = (servico:string) => {
   statusService.value = servico;
 };
+
+
 
 </script>
 
