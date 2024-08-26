@@ -156,8 +156,8 @@ const verifyStatusConfirm = (send: string) => {
     case 'Atendente':
       return {
         src: confirm,
-        alt: 'Confirmado',
-        text: 'Confirmado'
+        alt: 'Atendente',
+        text: 'Atendente'
       };
     default:
       return {
