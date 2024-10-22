@@ -158,7 +158,7 @@ onBeforeUnmount(() => {
   padding: 1vh 0;
   background-color: #fff;
   border-radius: 15px;
-  border:  1px solid #cccccc50;
+  box-shadow: rgba(67, 71, 85, 0.27) 0px 0px 0.25em, rgba(90, 125, 188, 0.05) 0px 0.25em 1em;
   @include flex(column, center, initial, 0);
   position: relative;
   .months {

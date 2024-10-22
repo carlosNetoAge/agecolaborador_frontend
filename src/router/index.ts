@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginPage from "@/views/web/login/LoginPage.vue";
 import { useAuthStore } from '@/stores/counter';
+import Cookie from "js-cookie";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -13,7 +14,8 @@ const router = createRouter({
         const authStore = useAuthStore()
 
         if (authStore.isAuthenticated) {
-          next('/inicio')
+          Cookie.remove('token')
+          next()
         } else {
           next()
         }
@@ -55,6 +57,38 @@ const router = createRouter({
       path: '/ageIntegra/agenda-aniel',
       name: 'ScheduleCapacity',
       component: () => import('@/views/app/ageIntegrator/aniel/ScheduleCapacity.vue'),
+      meta: {
+        auth: true
+      }
+    },
+    {
+      path: '/ageReport/relatorios',
+      name: 'DashboardReports',
+      component: () => import('@/views/app/ageReport/DashboardReports.vue'),
+      meta: {
+        auth: true
+      }
+    },
+    {
+      path: '/ageReport/relatorio/novo',
+      name: 'NewReport',
+      component: () => import('@/views/app/ageReport/management/NewReport.vue'),
+      meta: {
+        auth: true
+      }
+    },
+    {
+      path: '/ageReport/relatorio/:hash',
+      name: 'DashboardReport',
+      component: () => import('@/views/app/ageReport/DashboardReport.vue'),
+      meta: {
+        auth: true
+      }
+    },
+    {
+      path: '/ageReport/gerenciamento/permissoes',
+      name: 'UserRoles',
+      component: () => import('@/views/app/ageReport/management/UserRoles.vue'),
       meta: {
         auth: true
       }

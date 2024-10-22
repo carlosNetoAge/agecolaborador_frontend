@@ -6,21 +6,19 @@ import Cookie from "js-cookie";
 window.Pusher = Pusher;
 
 
-// Configura o Echo
 window.Echo = new Echo({
     broadcaster: 'pusher',
-    key: 'local',
-    wsHost: '127.0.0.1',
-    wsPort: 6001,
-    cluster: 'mt1',
-    forceTLS: false,
-    disableStats: true,
-    authEndpoint: 'http://127.0.0.1:8000/api/broadcasting/auth',
+    key: '4ee36fedb81a01084111',
+    cluster: 'sa1',
+    forceTLS: true,
+    authEndpoint: 'https://v2.ageportal.agetelecom.com.br/broadcasting/auth',
+    // authEndpoint: 'http://localhost:8000/broadcasting/auth',
     auth: {
         headers: {
-            Authorization: 'Bearer ' + Cookie.get('token'),
-        },
-    },
-});
+            'X-Requested-With': 'XMLHttpRequest',
+            Authorization: 'Bearer ' + Cookie.get('token')
+        }
+    }
 
+});
 export default window.Echo;

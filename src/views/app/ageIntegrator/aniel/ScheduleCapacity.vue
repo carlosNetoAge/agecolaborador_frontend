@@ -160,23 +160,25 @@ const updateStatusService = (servico:string) => {
   a {
     background-color: #fff;
     border-radius: 10px;
-    border:  1px solid #cccccc50;
+    box-shadow: rgba(67, 71, 85, 0.27) 0px 0px 0.25em, rgba(90, 125, 188, 0.05) 0px 0.25em 1em;
     font-size: 1.2rem;
     font-weight: 500;
     color: #333;
     cursor: pointer;
     transition: all ease-in-out .1s;
-    padding: 10px 25px;
+    padding: 5px 25px;
+    border: 1px solid transparent;
 
     &:hover {
-      background-color: #53aee2;
-      color: #fff;
+      @extend .select;
+      opacity: .9;
     }
   }
 
   .select {
-    background-color: #53aee2;
-    color: #fff;
+    background-color: #EBF3FE;
+    color: #53aee2;
+    border-color: #53aee2;
     }
 }
 
@@ -195,7 +197,7 @@ const updateStatusService = (servico:string) => {
       height: 100%;
       background-color: #fff;
       border-radius: 15px;
-      border:  1px solid #cccccc50;
+      box-shadow: rgba(67, 71, 85, 0.27) 0px 0px 0.25em, rgba(90, 125, 188, 0.05) 0px 0.25em 1em;
       @include flex(column, flex-start, initial, 1vh);
       padding: 2vh 1vw;
 

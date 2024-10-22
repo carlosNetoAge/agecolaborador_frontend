@@ -15,7 +15,7 @@ export const stateLoading = defineStore('loading', () => {
 // Menu
 
 export const stateMenu = defineStore('menu', () => {
-  const status = ref(false)
+  const status = ref(true)
 
   function alternateState(state:boolean) {
     status.value = state
@@ -92,24 +92,89 @@ export const sellerInfoStore = defineStore('sellerInfo', () => {
 })
 
 
-export const colaboratorInfoStore = defineStore('colaboratorInfo', () => {
+// export const collaboratorInfoStore = defineStore('colaboratorInfo', () => {
+//
+//   const colaboratorData = ref({})
+//   const periodRefer = ref('')
+//
+//   function setInfo(seller: object, date: string) {
+//     colaboratorData.value = seller;
+//     periodRefer.value = date;
+//   }
+//
+//   function getInfo() {
+//     return { colaboratorData: colaboratorData.value, periodRefer: periodRefer.value}
+//   }
+//
+//   function removeInfo() {
+//     colaboratorData.value = {}
+//     periodRefer.value = ''
+//   }
+//
+//   return { setInfo, getInfo, removeInfo, colaboratorData, periodRefer}
+// })
 
-  const colaboratorData = ref({})
-  const periodRefer = ref('')
 
-  function setInfo(seller: object, date: string) {
-    colaboratorData.value = seller;
-    periodRefer.value = date;
-  }
 
-  function getInfo() {
-    return { colaboratorData: colaboratorData.value, periodRefer: periodRefer.value}
-  }
+interface Notification {
+  type: string;
+  command: string;
+  title: string;
+  message: string;
+  read: boolean;
+  report: any | undefined;
+}
 
-  function removeInfo() {
-    colaboratorData.value = {}
-    periodRefer.value = ''
-  }
+export const useUserNotification = defineStore('userNotification', {
+  state: () => ({
+    data: ref<Notification[]>([]), // Correção: ref direto aqui
+    modalStatus: false
+  }),
 
-  return { setInfo, getInfo, removeInfo, colaboratorData, periodRefer}
-})
+  getters: {
+    getNotification: (state) => state.data,
+    unreadCount: (state) =>
+        state.data.filter((notification) => !notification.read).length,
+    getStatusModal: (state) => state.modalStatus
+  },
+
+  actions: {
+    setNotification(notification: Omit<Notification, 'read'>) {
+      // Garante que 'read' seja sempre falso ao criar uma nova notificação
+      this.data.unshift({ ...notification, read: false });
+    },
+
+    activateModal(status) {
+      if (this.modalStatus && status) {
+        this.modalStatus = false;
+        return;
+      }
+      this.modalStatus = status;
+    },
+
+    updateNotification(index: number) {
+      if (this.data[index]) {
+        this.data[index].read = true;
+      }
+    },
+
+    removeNotification(index: number) {
+      if (index >= 0 && index < this.data.length) {
+        this.data.splice(index, 1); // Remove a notificação pelo índice
+      }
+    },
+
+    clearAllNotifications() {
+      this.data = [];
+    },
+    closeModalNotification() {
+
+    }
+  },
+
+  persist: {
+    key: 'userNotifications', // Chave personalizada no storage
+    storage: localStorage, // Pode ser alterado para sessionStorage, se necessário
+    paths: ['data'], // Persiste apenas 'data'
+  },
+});

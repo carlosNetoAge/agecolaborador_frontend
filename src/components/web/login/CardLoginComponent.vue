@@ -19,7 +19,7 @@ import SocialMediaCardLoginComponent from "@/components/web/login/SocialMediaCar
     <SocialMediaCardLoginComponent />
 
    <div id="copy">
-      <span>&copy; 2024 Age Telecom. Todos os direitos reservados.</span>
+      <span>&copy; 2024 Age Fibra. Todos os direitos reservados.</span>
    </div>
 
    <div id="term">

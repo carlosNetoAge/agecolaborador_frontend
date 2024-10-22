@@ -23,5 +23,9 @@ export default defineConfig({
         additionalData: `@import "@/assets/styles/global.scss";`
       }
     }
-  }
+  },
+    // server: {
+    //   host: '192.168.69.37',
+    //   port: '8080',
+    // }
 })

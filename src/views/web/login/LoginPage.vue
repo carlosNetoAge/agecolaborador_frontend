@@ -16,7 +16,7 @@ import OnBoardingLoginComponent from "@/components/web/login/onBoardingLoginComp
 <style scoped lang="scss">
 
 .login__container {
-  @include container(100% !important, 100%, $padding: 4vh 2vw !important, $bg: #F6F7F9);
+  @include container(100% !important, 100%, $padding: 4vh 2vw !important, $bg: #fff);
   @include flex($justify: space-between);
 
   .content__login {

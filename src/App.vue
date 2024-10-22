@@ -1,38 +1,44 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
 import LoadingWidget from "@/components/widgets/LoadingWidget.vue";
-import { stateLoading, stateMenu } from "@/stores/counter";
+import { stateLoading, stateMenu, useUserNotification } from "@/stores/counter";
 import MenuComponent from "@/components/widgets/menu/MenuComponent.vue";
 import { useRoute } from 'vue-router';
 import TitleComponent from "@/components/widgets/header/TitleComponent.vue";
 import {onMounted, ref} from "vue";
 import echo from "@config/echo";
+import IconsGeneral from "@/components/widgets/header/IconsGeneral.vue";
 
+const notifications = useUserNotification();
 const route = useRoute();
 const loading = stateLoading();
 const menu = stateMenu();
-const items = ref([]);
 
 onMounted(() => {
-  echo.channel('public')
-      .listen('AlertMessageAlterStatusEvent', (e: any) => {
-        items.value.push(e);
+  echo.private('Notifications.112')
+      .listen('SendNotificationsForUser', (e: any) => {
+        notifications.setNotification(e)
       });
 });
+
+
 </script>
 
 <template>
-      <div class="content" :class="{'app': route.meta.auth, 'menu__retract': menu.status}">
-        <MenuComponent v-if="route.meta.auth"/>
-        <TitleComponent v-if="route.meta.auth"/>
-        <div class="page" :class="{'page__container' : route.meta.auth}">
-          <RouterView
-          />
-        </div>
-        <transition name="fade">
-          <LoadingWidget v-if="loading.status"/>
-        </transition>
-      </div>
+  <div class="content"
+           :class="{'app': route.meta.auth, 'menu__retract': menu.status}">
+    <MenuComponent v-if="route.meta.auth"/>
+    <IconsGeneral v-if="route.meta.auth"/>
+
+    <!--        <TitleComponent v-if="route.meta.auth"/>-->
+    <div class="page" @click="notifications.activateModal(false);" :class="{'page__container' : route.meta.auth}">
+      <RouterView
+      />
+    </div>
+    <transition name="fade">
+      <LoadingWidget v-if="loading.status"/>
+    </transition>
+  </div>
 </template>
 
 <style lang="scss">
@@ -55,12 +61,18 @@ onMounted(() => {
   -moz-osx-font-smoothing: grayscale;
   width: 100vw;
   height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+  background-color: #EBEBEB;
 
   .content {
     width: 100%;
     height: 100%;
-    background: $global-background-color;
     position: relative;
+    background-image: url('assets/img/backgrouds/background_portal.png');
+    background-size: cover;
+    max-height: 100%;
+    overflow-y: auto;
 
     .page {
       @include container(100%,100%);
@@ -68,33 +80,31 @@ onMounted(() => {
     }
 
     .page__container {
-      grid-area: content;
-      padding: 0 0 4vh 0;
+      padding: 6vh 15% 0 19%;
+
     }
 
-  }
-
-  .app {
-    display: grid;
-    grid-template-columns: 15% 83%;
-    grid-template-rows: 10% 88%;
-    gap: 2%;
-    grid-template-areas: 'menu header'
-                      'menu content';
-    transition: grid-template-columns 0.3s ease-in-out;
-    padding-right: 2%;
-  }
-
-  .menu__retract {
-    grid-template-columns: 5% 93%;
 
   }
 
 }
 
 
+@media (max-width: 1300px) {
+  #app {
+
+
+    .content {
+      padding: 4vh 11% 0 16%;
+    }
+  }
+}
+
+
 html {
   font-size: 62.5%;
+  background: $global-background-color;
+
 }
 
 /* custom scrollbar */
@@ -128,5 +138,40 @@ html {
 .fade-leave-to {
   opacity: 0;
 }
+
+@keyframes appears {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes appears-tooltip-left-to-right {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes appears-tooltip-down-to-up {
+  from {
+    opacity: 0;
+    transform: translate(-45%, 10px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-45%, 0);
+  }
+}
+
+
 
 </style>

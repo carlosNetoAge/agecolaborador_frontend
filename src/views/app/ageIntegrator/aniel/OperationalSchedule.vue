@@ -317,13 +317,14 @@ const verifyStatusConfirm = (send: string) => {
   a {
     background-color: #fff;
     border-radius: 10px;
-    border:  1px solid #cccccc50;
+    box-shadow: rgba(67, 71, 85, 0.27) 0px 0px 0.25em, rgba(90, 125, 188, 0.05) 0px 0.25em 1em;
     font-size: 1.2rem;
     font-weight: 500;
     color: #333;
     cursor: pointer;
     transition: all ease-in-out .1s;
     padding: 10px 25px;
+
 
     &:hover {
       background-color: #53aee2;
@@ -361,6 +362,7 @@ const verifyStatusConfirm = (send: string) => {
       background-color: #F9F9FB;
       border-radius: 10px;
       @include flex(row, flex-start, center, 1vw);
+      box-shadow: rgba(67, 71, 85, 0.27) 0px 0px 0.25em, rgba(90, 125, 188, 0.05) 0px 0.25em 1em;
 
       .search {
         width: 20%;
@@ -481,9 +483,11 @@ const verifyStatusConfirm = (send: string) => {
     background-color: #fff;
     border-radius: 10px;
     padding: 1vh 1vw;
-    max-height: 67vh;
+    max-height: 90%;
     overflow-y: auto;
     margin-top: 1.5vh;
+    box-shadow: rgba(67, 71, 85, 0.27) 0px 0px 0.25em, rgba(90, 125, 188, 0.05) 0px 0.25em 1em;
+
     table {
       width: 100%;
       border-collapse: collapse;

@@ -6,7 +6,7 @@
   <div class="onboarding__login">
     <img src="@/assets/img/web/login/onboarding/ilustration.png" alt="">
     <p>Descomplique sua rotina com ferramentas que fazem a diferença no seu dia a dia!</p>
-    <h1>Portal Age Telecom</h1>
+    <h1>Portal Age Fibra</h1>
   </div>
 </template>
 

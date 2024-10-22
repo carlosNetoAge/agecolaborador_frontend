@@ -7,7 +7,6 @@
 import { infoPage } from "@/stores/counter";
 import { onMounted, ref } from "vue";
 import router from "@/router";
-import { colaboratorInfoStore } from "@/stores/counter";
 import gold from "@/assets/img/web/medal gold.svg";
 import silver from "@/assets/img/web/medal silver.svg";
 import bronze from "@/assets/img/web/medal bronze.svg";

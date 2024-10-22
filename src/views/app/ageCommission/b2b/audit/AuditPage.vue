@@ -28,6 +28,7 @@ const periodOptions = ref([
   { label: 'Junho de 2024', value: '2024-04-01' , refer: 'Abril de 2024'},
   { label: 'Julho de 2024', value: '2024-05-01' , refer: 'Maio de 2024'},
   { label: 'Agosto de 2024', value: '2024-06-01' , refer: 'Junho de 2024'},
+  { label: 'Setembro de 2024', value: '2024-07-01' , refer: 'Julho de 2024'},
 ]);
 
 // Função para visualizar detalhes do vendedor

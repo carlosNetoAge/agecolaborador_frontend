@@ -41,8 +41,7 @@ onMounted(setInfoPage)
 
 <style lang="scss" scoped>
 .rvScreen {
-  background-image: url('../../../../assets/img/backgrouds/rvRetencao.png');
-  background-size: cover;
+
   height: 100%;
   width: 100%;
   z-index: 10;

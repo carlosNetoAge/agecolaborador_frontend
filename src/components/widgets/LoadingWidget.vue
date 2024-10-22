@@ -18,7 +18,7 @@
         <circle r="14" cy="17" cx="17" class="back"></circle>
         <circle r="14" cy="17" cx="17" class="front"></circle>
       </svg>
-      <div data-text="Portal Age Telecom" class="text"></div>
+      <div data-text="Portal Age Fibra" class="text"></div>
     </div>
 
   </div>
