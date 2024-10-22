@@ -3,8 +3,10 @@
 import {reactive, ref} from 'vue';
 import {AXIOS} from "@api/AXIOS";
 import Router from "@/router";
-import {stateLoading, useAuthStore} from "@/stores/counter";
-import { nextTick } from 'process';
+import {stateLoading, useAuthStore, useUserInfo} from "@/stores/counter";
+
+
+const userStore = useUserInfo();
 
 
 interface Payload {
@@ -137,6 +139,8 @@ const login = async () => {
     },
   }).then((response) => {
     authStore.login(response.data.access_token, payload)
+    console.log(response.data.user)
+    userStore.setUser(response.data.user)
   }).catch((error) => {
     validateForm.form.errors = true;
 

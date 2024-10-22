@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
 import LoadingWidget from "@/components/widgets/LoadingWidget.vue";
-import { stateLoading, stateMenu, useUserNotification } from "@/stores/counter";
+import {stateLoading, stateMenu, useUserInfo, useUserNotification} from "@/stores/counter";
 import MenuComponent from "@/components/widgets/menu/MenuComponent.vue";
 import { useRoute } from 'vue-router';
 import TitleComponent from "@/components/widgets/header/TitleComponent.vue";
@@ -13,9 +13,10 @@ const notifications = useUserNotification();
 const route = useRoute();
 const loading = stateLoading();
 const menu = stateMenu();
+const user = useUserInfo().getUser;
 
 onMounted(() => {
-  echo.private('Notifications.112')
+  echo.private('Notifications.'+user.id)
       .listen('SendNotificationsForUser', (e: any) => {
         notifications.setNotification(e)
       });

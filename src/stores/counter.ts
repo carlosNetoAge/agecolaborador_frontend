@@ -178,3 +178,26 @@ export const useUserNotification = defineStore('userNotification', {
     paths: ['data'], // Persiste apenas 'data'
   },
 });
+
+
+export const useUserInfo = defineStore('useUserInfo', {
+  state: () => ({
+    dataUser: ref({}), // Correção: ref direto aqui
+  }),
+
+  getters: {
+    getUser: (state) => state.dataUser,
+  },
+
+  actions: {
+    setUser(user: any) {
+      this.dataUser = user; // Atribuição direta
+    },
+  },
+
+  persist: {
+    key: 'userInfo', // Chave personalizada no storage
+    storage: localStorage, // Ou sessionStorage, se preferir
+    paths: ['dataUser'], // Persiste apenas 'data'
+  },
+});

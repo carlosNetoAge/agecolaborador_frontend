@@ -106,24 +106,24 @@ getReports();
 
       </div>
       <div class="actions">
-        <router-link to="/ageReport/relatorio/novo" >
-          <ReportAdd/>
-          <div class="tooltip">
-            <span>Novo relatório</span>
-          </div>
-        </router-link>
-<!--        <RouterLink to="dayjs">-->
-<!--          <ReportManagment/>-->
+<!--        <router-link to="/ageReport/relatorio/novo" >-->
+<!--          <ReportAdd/>-->
 <!--          <div class="tooltip">-->
-<!--            <span>Gerenciar relatórios</span>-->
+<!--            <span>Novo relatório</span>-->
 <!--          </div>-->
-<!--        </RouterLink>-->
-        <router-link to="/ageReport/gerenciamento/permissoes" >
-          <UserManagament/>
-          <div class="tooltip">
-            <span>Gerenciar permissões</span>
-          </div>
-        </router-link>
+<!--        </router-link>-->
+<!--&lt;!&ndash;        <RouterLink to="dayjs">&ndash;&gt;-->
+<!--&lt;!&ndash;          <ReportManagment/>&ndash;&gt;-->
+<!--&lt;!&ndash;          <div class="tooltip">&ndash;&gt;-->
+<!--&lt;!&ndash;            <span>Gerenciar relatórios</span>&ndash;&gt;-->
+<!--&lt;!&ndash;          </div>&ndash;&gt;-->
+<!--&lt;!&ndash;        </RouterLink>&ndash;&gt;-->
+<!--        <router-link to="/ageReport/gerenciamento/permissoes" >-->
+<!--          <UserManagament/>-->
+<!--          <div class="tooltip">-->
+<!--            <span>Gerenciar permissões</span>-->
+<!--          </div>-->
+<!--        </router-link>-->
       </div>
     </div>
     <div v-if="statusRequest" class="report" v-for="(report, index) in dataFiltered" :key="index"
