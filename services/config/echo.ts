@@ -8,8 +8,8 @@ window.Pusher = Pusher;
 
 window.Echo = new Echo({
     broadcaster: 'pusher',
-    key: 'ec640c0984aafe2e4aa4',
-    // key: '80d6d3165b9d9ad11b13',
+    // key: 'ec640c0984aafe2e4aa4',
+    key: '4ee36fedb81a01084111',
     cluster: 'sa1',
     forceTLS: true,
     authEndpoint: 'https://v2.ageportal.agetelecom.com.br/broadcasting/auth',
