@@ -99,7 +99,7 @@ const alterRole = (report) => {
 
   AXIOS({
     method: 'post',
-    url: '/agereport/management/users/roles/',
+    url: '/agereport/management/users/roles',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + Cookie.get('token')
