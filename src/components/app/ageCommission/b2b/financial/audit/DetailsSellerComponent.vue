@@ -17,7 +17,7 @@ const returnPage = () => {
   page.value = 'list'
 }
 
-const selectedPeriod = ref('2024-01-01');
+const selectedPeriod = ref('2024-09-01');
 const statusReq = ref(false);
 
 // Opções de período para seleção
@@ -28,6 +28,10 @@ const periodOptions = ref([
   { label: 'Junho de 2024', value: '2024-04-01' , refer: 'Abril de 2024'},
   { label: 'Julho de 2024', value: '2024-05-01' , refer: 'Maio de 2024'},
   { label: 'Agosto de 2024', value: '2024-06-01' , refer: 'Junho de 2024'},
+  { label: 'Setembro de 2024', value: '2024-07-01' , refer: 'Setembro de 2024'},
+  { label: 'Outubro de 2024', value: '2024-08-01' , refer: 'Outubro de 2024'},
+  { label: 'Novembro de 2024', value: '2024-09-01' , refer: 'Novembro de 2024'},
+  { label: 'Dezembro de 2024', value: '2024-10-01' , refer: 'Dezembro de 2024'},
 ]);
 
 const store = sellerInfoStore();

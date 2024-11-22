@@ -149,7 +149,11 @@ const updateStatusService = (servico:string) => {
   </div>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
+
+#app .content .page__container {
+  padding: 6vh 5% 0 9% !important;
+}
 
 .options  {
   width: 100%;

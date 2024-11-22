@@ -28,12 +28,12 @@ const itemsMenu = ref([
     icon: markRaw(CommissionIcon),
     route: '/ageComissiona/b2b/dashboard/executivo'
   },
-  {
-    name: 'ageReport',
-    tooltip: 'Relatórios',
-    icon: markRaw(ReportIcon),
-    route: '/ageReport/relatorios'
-  },
+  // {
+  //   name: 'ageReport',
+  //   tooltip: 'Relatórios',
+  //   icon: markRaw(ReportIcon),
+  //   route: '/ageReport/relatorios'
+  // },
   {
     name: 'ageIntegrator',
     tooltip: 'Agenda Aniel',
