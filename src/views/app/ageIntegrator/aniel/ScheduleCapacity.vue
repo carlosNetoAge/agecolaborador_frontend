@@ -58,7 +58,7 @@ const statusService = ref('')
 
 setInterval(() => {
   getData(dateSelected.value);
-}, 10000);
+}, 20000);
 
 const updateStatusService = (servico:string) => {
   statusService.value = servico;
@@ -193,7 +193,7 @@ const updateStatusService = (servico:string) => {
   margin-top: 2vh;
   .capacity {
     width: 100%;
-    height: 100%;
+    height: 70%;
     @include flex(row, space-between, center, 1vw);
 
     .period {

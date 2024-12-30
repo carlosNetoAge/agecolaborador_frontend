@@ -11,10 +11,7 @@ const dateCalendar = ref({})
 
 const emit = defineEmits(['updateData']);
 
-
-
 const dateActual = new Date();
-
 const monthActual = ref(getNameMonth(dateActual));
 const dayActual = ref(dateActual.getDate());
 
@@ -30,20 +27,32 @@ const updateData = (period?: Date) => {
   }
 
   return emit('updateData', period);
-
 }
 
+const yearSelected = ref(dateActual.getFullYear());
 
 const getCalendar = async () => {
   AXIOS({
     method: 'get',
-    url: 'https://v2.ageportal.agetelecom.com.br/integrator/aniel/capacity/calendar',
+    url: 'https://v2.ageportal.agetelecom.com.br/integrator/aniel/capacity/calendar/' + yearSelected.value,
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + Cookie.get('token')
-    },
+    }
   }).then((response) => {
+    dateCalendar.value = {};
     dateCalendar.value = response.data;
+
+    if (yearSelected.value === dateActual.getFullYear()) {
+      monthActual.value = getNameMonth(dateActual); // Mês e dia da data atual
+      dayActual.value = dateActual.getDate();
+    } else {
+      const firstDayOfYear = new Date(yearSelected.value, 0, 1); // Primeiro dia de janeiro
+      monthActual.value = getNameMonth(firstDayOfYear); // Nome do mês de janeiro
+      dayActual.value = 1; // Seleciona o dia 1
+    }
+
+
     updateData();
     activeDrag();
   });
@@ -93,9 +102,6 @@ const activeDrag = () => {
 
 
 
-
-
-
 onMounted(() => {
   getCalendar();
 
@@ -115,6 +121,10 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="calendar">
+    <div class="buttons">
+      <button :class="{'selected' : yearSelected === 2024}" @click="[yearSelected = 2024, getCalendar()]">2024</button>
+      <button :class="{'selected' : yearSelected === 2025}" @click="[yearSelected = 2025, getCalendar()]">2025</button>
+    </div>
     <div class="months">
       <div
           v-for="(month, i) in dateCalendar"
@@ -154,13 +164,41 @@ onBeforeUnmount(() => {
 <style scoped lang="scss">
 .calendar {
   width: 100%;
-  height: 15%;
+  height: 20vh !important;
   padding: 1vh 0;
   background-color: #fff;
   border-radius: 15px;
   box-shadow: rgba(67, 71, 85, 0.27) 0px 0px 0.25em, rgba(90, 125, 188, 0.05) 0px 0.25em 1em;
   @include flex(column, center, initial, 0);
   position: relative;
+
+  .buttons {
+    width: 100%;
+    @include flex(row, space-evenly, center, 1vh);
+    margin-bottom: 1vh;
+    animation: up .3s ease-in-out forwards;
+    opacity: 0;
+
+    button {
+      padding: .5vh 1vw;
+      font-size: 1.2rem;
+      font-weight: 400;
+      color: #888;
+      cursor: pointer;
+      transition: color ease-in-out .3s;
+
+      &:hover {
+        color: #333;
+      }
+
+      &.selected {
+        background-color: #53AEE2;
+        color: #fff;
+        border-radius: 5px;
+      }
+    }
+  }
+
   .months {
     width: 100%;
     @include flex(row, space-evenly, center, 1vh);
