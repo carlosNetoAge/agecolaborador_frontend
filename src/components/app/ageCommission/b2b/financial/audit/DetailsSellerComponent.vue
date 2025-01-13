@@ -32,6 +32,8 @@ const periodOptions = ref([
   { label: 'Outubro de 2024', value: '2024-08-01' , refer: 'Outubro de 2024'},
   { label: 'Novembro de 2024', value: '2024-09-01' , refer: 'Novembro de 2024'},
   { label: 'Dezembro de 2024', value: '2024-10-01' , refer: 'Dezembro de 2024'},
+  { label: 'Janeiro de 2025', value: '2024-11-01' , refer: 'Janeiro de 2025'},
+  { label: 'Fevereiro de 2025', value: '2024-12-01' , refer: 'Fevereiro de 2025'},
 ]);
 
 const store = sellerInfoStore();
